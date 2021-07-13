@@ -1,9 +1,10 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import logo from '../assets/logo.svg'
+import Link from 'next/link'
 
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import {
     PencilAltIcon,
@@ -67,13 +68,17 @@ export default function Example() {
                                 </div>
                                 <div className="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
                                 {navigation.map((item) => (
-                                    <a key={item.name} href={item.href} className="font-medium text-gray-500 hover:text-gray-900">
-                                    {item.name}
-                                    </a>
+                                    <Link href={item.href}>
+                                        <a key={item.name} className="font-medium text-gray-500 hover:text-gray-900">
+                                            {item.name}
+                                        </a>
+                                    </Link>
                                 ))}
-                                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                    Log in
-                                </a>
+                                <Link href="/auth/login">
+                                    <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                        Login
+                                    </a>
+                                </Link>
                                 </div>
                             </nav>
                             </div>
@@ -144,12 +149,16 @@ export default function Example() {
                         </p>
                         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div className="rounded-md shadow">
-                            <a
-                                href="#"
-                                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
-                            >
-                                Get started
-                            </a>
+                            
+                            <Link href="/auth/signup">
+                                <a
+                                    href="#"
+                                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
+                                >
+                                    Get started
+                                </a>
+                            </Link>
+
                             </div>
                             <div className="mt-3 sm:mt-0 sm:ml-3">
                             <a

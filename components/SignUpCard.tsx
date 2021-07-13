@@ -1,3 +1,5 @@
+import Link from "next/link";
+import React from "react";
 
 export default function SignUpCard() {
     return (
@@ -11,9 +13,11 @@ export default function SignUpCard() {
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
             <p className="mt-2 text-center text-sm text-gray-600">
                 Already have an account?{' '}
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Login
-                </a>
+                <Link href="/auth/login">
+                    <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    Login
+                    </a>
+                </Link>
             </p>
             </div>
     
