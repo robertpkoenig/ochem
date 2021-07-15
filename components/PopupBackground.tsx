@@ -1,12 +1,12 @@
-import { MouseEventHandler } from "react";
 import { XIcon } from '@heroicons/react/outline'
 
 interface IProps {
     children: React.ReactNode
-    popupCloseFunction: MouseEventHandler<HTMLButtonElement>
+    popupCloseFunction: () => void
 }
 
-const popupCSS = `absolute top-0 left-0 w-screen h-screen bg-gray-400
+// TODO make this not scroll with the page
+const popupCSS = ` absolute top-0 left-0 w-screen h-screen bg-gray-400
                   bg-opacity-70 flex place-content-center place-items-center`
 
 const closeButtonCSS = `bg-white w-10 h-10 rounded-full shadow flex 
@@ -18,7 +18,7 @@ export default function PopupBackground(props: IProps) {
     return (
 
         <div className={popupCSS}>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 ">
 
                 <div className="flex flex-row-reverse ">
                     <button className={closeButtonCSS} onClick={props.popupCloseFunction}>

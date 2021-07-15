@@ -1,25 +1,25 @@
-import React, { FormEventHandler, MouseEventHandler } from "react";
+import React from "react";
 import { primaryButtonMd } from "../../styles/common-styles";
 
 interface IProps {
     popupCloseFunction: () => void
-    moduleAdditionFunction: (string: string) => void
+    sectionAdditionFunction: (string: string) => void
 }
 
 interface State {
     moduleNameInput: string
 }
 
-class ModulePopup extends React.Component<IProps, State> {
+class SectionPopup extends React.Component<IProps, State> {
 
     popupCloseFunction: () => void
-    moduleAdditionFunction: (string: string) => void
+    sectionAdditionFunction: (string: string) => void
 
     constructor(props: IProps) {
 
         super(props)
         this.popupCloseFunction = props.popupCloseFunction
-        this.moduleAdditionFunction = props.moduleAdditionFunction
+        this.sectionAdditionFunction = props.sectionAdditionFunction
 
         this.state = {
             moduleNameInput: ""
@@ -36,7 +36,7 @@ class ModulePopup extends React.Component<IProps, State> {
 
     onSubmit(event: React.FormEvent) {
         event.preventDefault();
-        this.moduleAdditionFunction(this.state.moduleNameInput)
+        this.sectionAdditionFunction(this.state.moduleNameInput)
         this.popupCloseFunction()
     }
 
@@ -51,13 +51,13 @@ class ModulePopup extends React.Component<IProps, State> {
 
                     <div className="w-96">
                       <label htmlFor="module-name" className="block text-sm font-medium text-gray-700">
-                        Module name
+                        Section name
                       </label>
                       <input
                         type="text"
                         name="module-name"
-                        placeholder="Type module name here"
                         value={this.state.moduleNameInput}
+                        placeholder="Type module name here"
                         onChange={this.onChange}
                         id="module-name"
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
@@ -69,9 +69,7 @@ class ModulePopup extends React.Component<IProps, State> {
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
                   <input
                     type="submit"
-                    name="submit"
-                    value="Create Module"
-                    placeholder="Type module name here"
+                    value="Create Section"
                     className={primaryButtonMd + "cursor-pointer"}
                   />
                 </div>
@@ -84,4 +82,4 @@ class ModulePopup extends React.Component<IProps, State> {
 
 }
 
-export default ModulePopup
+export default SectionPopup

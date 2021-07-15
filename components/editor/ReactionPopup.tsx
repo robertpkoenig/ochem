@@ -3,26 +3,26 @@ import { primaryButtonMd } from "../../styles/common-styles";
 
 interface IProps {
     popupCloseFunction: () => void
-    moduleAdditionFunction: (string: string) => void
+    createReactionFunction: (sectionID: string) => void
 }
 
 interface State {
-    moduleNameInput: string
+    reactionNameInput: string
 }
 
-class ModulePopup extends React.Component<IProps, State> {
+class ReactionPopup extends React.Component<IProps, State> {
 
     popupCloseFunction: () => void
-    moduleAdditionFunction: (string: string) => void
+    createReactionFunction: (reactionID: string) => void
 
     constructor(props: IProps) {
 
         super(props)
         this.popupCloseFunction = props.popupCloseFunction
-        this.moduleAdditionFunction = props.moduleAdditionFunction
+        this.createReactionFunction = props.createReactionFunction
 
         this.state = {
-            moduleNameInput: ""
+            reactionNameInput: ""
         }
 
         this.onChange = this.onChange.bind(this);
@@ -31,12 +31,12 @@ class ModulePopup extends React.Component<IProps, State> {
     }
 
     onChange(event: React.FormEvent<HTMLInputElement>) {
-        this.setState({ moduleNameInput: event.currentTarget.value });
+        this.setState({ reactionNameInput: event.currentTarget.value });
     }
 
     onSubmit(event: React.FormEvent) {
         event.preventDefault();
-        this.moduleAdditionFunction(this.state.moduleNameInput)
+        this.createReactionFunction(this.state.reactionNameInput)
         this.popupCloseFunction()
     }
 
@@ -51,13 +51,13 @@ class ModulePopup extends React.Component<IProps, State> {
 
                     <div className="w-96">
                       <label htmlFor="module-name" className="block text-sm font-medium text-gray-700">
-                        Module name
+                        Reaction name
                       </label>
                       <input
                         type="text"
                         name="module-name"
-                        placeholder="Type module name here"
-                        value={this.state.moduleNameInput}
+                        value={this.state.reactionNameInput}
+                        placeholder="Type reaction name here"
                         onChange={this.onChange}
                         id="module-name"
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
@@ -69,9 +69,7 @@ class ModulePopup extends React.Component<IProps, State> {
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
                   <input
                     type="submit"
-                    name="submit"
-                    value="Create Module"
-                    placeholder="Type module name here"
+                    value="Create Section"
                     className={primaryButtonMd + "cursor-pointer"}
                   />
                 </div>
@@ -84,4 +82,4 @@ class ModulePopup extends React.Component<IProps, State> {
 
 }
 
-export default ModulePopup
+export default ReactionPopup
