@@ -2,7 +2,8 @@ interface ReactionListing {
 
     name: string,
     order: number,
-    reactionId: string,
+    published: boolean,
+    uuid: string,
     creationDate: string,
     authorId: string
 

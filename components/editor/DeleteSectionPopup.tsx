@@ -2,14 +2,14 @@ import Section from "../../model/SectionListing"
 
 interface IProps {
     section: Section
-    deleteSectionFunction: (sectionId: string) => void
+    deleteSectionFunction: () => void
     toggleDeleteSectionPopup: () => void
 }
 
 function DeleteSectionPopup(props: IProps) {
 
     function deleteSectionAndClosePopup() {
-        props.deleteSectionFunction(props.section.uuid)
+        props.deleteSectionFunction()
         props.toggleDeleteSectionPopup()
     }
 

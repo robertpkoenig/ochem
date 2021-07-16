@@ -3,23 +3,18 @@ import { primaryButtonMd } from "../../styles/common-styles";
 
 interface IProps {
     popupCloseFunction: () => void
-    createReactionFunction: (sectionID: string) => void
+    createReactionFunction: (reactionName: string) => void
 }
 
 interface State {
     reactionNameInput: string
 }
 
-class ReactionPopup extends React.Component<IProps, State> {
-
-    popupCloseFunction: () => void
-    createReactionFunction: (reactionID: string) => void
+class ReactionCreationPopup extends React.Component<IProps, State> {
 
     constructor(props: IProps) {
 
         super(props)
-        this.popupCloseFunction = props.popupCloseFunction
-        this.createReactionFunction = props.createReactionFunction
 
         this.state = {
             reactionNameInput: ""
@@ -36,8 +31,8 @@ class ReactionPopup extends React.Component<IProps, State> {
 
     onSubmit(event: React.FormEvent) {
         event.preventDefault();
-        this.createReactionFunction(this.state.reactionNameInput)
-        this.popupCloseFunction()
+        this.props.createReactionFunction(this.state.reactionNameInput)
+        this.props.popupCloseFunction()
     }
 
     render(): React.ReactNode {
@@ -82,4 +77,4 @@ class ReactionPopup extends React.Component<IProps, State> {
 
 }
 
-export default ReactionPopup
+export default ReactionCreationPopup
