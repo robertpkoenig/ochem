@@ -4,23 +4,10 @@ import { useState } from 'react';
 import Module from '../../model/Module';
 import ReactionListing from '../../model/ReactionListing';
 import Section from '../../model/SectionListing';
-import { primaryButtonSm, secondaryButtonSm } from '../../styles/common-styles';
+import { primaryButtonSm, roundEditButtonContainer, secondaryButtonSm } from '../../styles/common-styles';
 import PopupBackground from '../PopupBackground';
+import DeletionPopup from './DeletionPopup';
 import DeleteReactionPopup from './DeleteReactionPopup';
-
-const roundEditButtonContainer =
-    `
-    flex
-    flex-col
-    items-center
-    content-center
-    justify-center
-    bg-gray-200
-    rounded-full
-    w-6
-    h-6
-    text-gray-500
-    `
 
 export interface IReactionCardProps {
     reactionListing: ReactionListing
@@ -152,7 +139,6 @@ export default function ReactionCard (props: IReactionCardProps) {
 
             <div className="flex flex-row gap-4 items-center justify-center text-sm">
                 {props.reactionListing.name}
-                {props.reactionListing.order}
                 {
                     props.reactionListing.published
                     ?
@@ -216,10 +202,11 @@ export default function ReactionCard (props: IReactionCardProps) {
                 <PopupBackground
                     popupCloseFunction={toggleReactionDeletionPopup} 
                 >
-                    <DeleteReactionPopup 
-                        reactionListing={props.reactionListing} 
-                        deleteReactionFunction={deleteReaction}
-                        toggleDeleteReactionPopup={toggleReactionDeletionPopup}
+                    <DeletionPopup 
+                        thing={props.reactionListing} 
+                        thingType="reaction"
+                        deletionFunction={deleteReaction}
+                        togglePopupFunction={toggleReactionDeletionPopup}
                     />
                 </PopupBackground>
                 :

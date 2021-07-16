@@ -10,12 +10,14 @@ import { v4 as uuid } from 'uuid'
 import ModuleCard from '../../../components/editor/ModuleCard'
 import ModuleListing from '../../../model/ModuleListing'
 import Module from '../../../model/Module'
+import { emptyState } from '../../../styles/common-styles'
 
 interface IProps {
 }
 
 interface IState {
-    popupVisible: boolean
+    createModulePopupVisible: boolean
+    deleteModulePopupVisible: boolean
     moduleListings: ModuleListing[]
 }
 
@@ -24,10 +26,13 @@ export default class Modules extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props)
         this.state = {
-            popupVisible: false,
+            createModulePopupVisible: false,
+            deleteModulePopupVisible: false,
             moduleListings: []
         }
         this.createModule = this.createModule.bind(this)
+        this.toggleDeleteModulePopup = this.toggleDeleteModulePopup.bind(this)
+        this.updateListOfModules = this.updateListOfModules.bind(this)
     }
 
     // Get modules from local storage
@@ -45,14 +50,21 @@ export default class Modules extends React.Component<IProps, IState> {
         }
     }
 
-    togglePopup() {
-        // this.setState(
-        //     {
-        //         popupVisible: !this.state.popupVisible
-        //     }
-        // )
-        this.setState((prevState, props) => {
-            return {popupVisible: !prevState.popupVisible};
+    toggleCreateModulePopup() {
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                createModulePopupVisible: !prevState.createModulePopupVisible
+            }
+        })
+    }
+
+    toggleDeleteModulePopup() {
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                deleteModulePopupVisible: !prevState.deleteModulePopupVisible
+            }
         })
     }
 
@@ -92,11 +104,19 @@ export default class Modules extends React.Component<IProps, IState> {
         )
     }
 
+    updateListOfModules(moduleListCopy: ModuleListing[]) {
+
+        // Reset the state with the filter list
+        this.setState({
+            ...this.state,
+            moduleListings: moduleListCopy
+        })
+
+    }
+
     render() {
 
-        const moduleListEmptyState = <div className="h-24 border border-dashed border-gray-200
-                                              rounded-lg text-gray-400 font-light flex
-                                              flex-col place-content-center items-center "
+        const moduleListEmptyState = <div className={emptyState}
                                       >
                                       You don't have any modules yet
                                       </div>
@@ -108,7 +128,11 @@ export default class Modules extends React.Component<IProps, IState> {
                 <ul className="divide-y divide-gray-300">
                     {this.state.moduleListings.map((moduleListing: ModuleListing) => 
                         <li key={moduleListing.uuid} className="px-6 py-4">
-                            <ModuleCard moduleListing={moduleListing} />
+                            <ModuleCard
+                                moduleListing={moduleListing}
+                                moduleListings={this.state.moduleListings}
+                                updateModuleListings={this.updateListOfModules}
+                            />
                         </li>
                     )}
                 </ul>
@@ -135,17 +159,17 @@ export default class Modules extends React.Component<IProps, IState> {
                 <button
                     type="button"
                     className="mt-6 inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                    onClick={this.togglePopup.bind(this)}
+                    onClick={this.toggleCreateModulePopup.bind(this)}
                 >
                     <PlusIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
                     New Module
                 </button>
 
-                {this.state.popupVisible 
+                {this.state.createModulePopupVisible 
                     ?
-                    <PopupBackground popupCloseFunction={this.togglePopup.bind(this)}>
+                    <PopupBackground popupCloseFunction={this.toggleCreateModulePopup.bind(this)}>
                         <ModulePopup
-                            popupCloseFunction={this.togglePopup.bind(this)} 
+                            popupCloseFunction={this.toggleCreateModulePopup.bind(this)} 
                             moduleAdditionFunction={this.createModule} 
                         />
                     </PopupBackground>

@@ -3,25 +3,13 @@ import * as React from 'react';
 import Module from '../../model/Module';
 import ReactionListing from '../../model/ReactionListing';
 import Section from '../../model/SectionListing';
-import { secondaryButtonSm } from '../../styles/common-styles';
+import { emptyState, roundEditButtonContainer, secondaryButtonSm } from '../../styles/common-styles';
 import PopupBackground from '../PopupBackground';
 import DeleteSectionPopup from './DeleteSectionPopup';
 import ReactionCard from './ReactionCard';
 import ReactionCreationPopup from './ReactionPopup';
 import { v4 as uuid } from 'uuid'
-
-const roundEditButtonContainer =
-    `
-    flex
-    flex-col
-    items-center
-    content-center
-    justify-center
-    bg-gray-200
-    rounded-full
-    w-6
-    h-6
-    `
+import DeletionPopup from './DeletionPopup';
 
 interface ISectionCardProps {
     section: Section
@@ -213,9 +201,7 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
     }
 
     render() {
-        const sectionListEmptyState =   <div className="h-24 border-2 border-dashed border-gray-300
-                                        rounded-lg text-gray-400 font-light flex
-                                        flex-col place-content-center items-center"
+        const sectionListEmptyState =   <div className={emptyState}
                                         >
                                         This section has no reactions yet
                                         </div>
@@ -254,19 +240,19 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
                                 className={roundEditButtonContainer}
                                 onClick={() => this.incrementSectionOrder()}
                             >
-                                <ChevronDownIcon className="stroke-2 w-5 h-5 text-gray-500 hover:text-gray-600" />
+                                <ChevronDownIcon className="stroke-2 w-4 h-4 hover:text-gray-600" />
                             </button>
                             <button
                                 className={roundEditButtonContainer}
                                 onClick={() => this.decrementSectionOrder()}
                             >
-                                <ChevronUpIcon className="stroke-2 w-5 h-5 text-gray-500 hover:text-gray-600" />
+                                <ChevronUpIcon className="stroke-2 w-4 h-4 hover:text-gray-600" />
                             </button>
                             <button
-                                className={roundEditButtonContainer + "text-gray-500"}
+                                className={roundEditButtonContainer}
                                 onClick={() => this.toggleSectionDeletePopup()}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
@@ -302,10 +288,11 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
                     this.state.sectionDeletePopupVisible
                     ?
                     <PopupBackground popupCloseFunction={this.toggleSectionDeletePopup}>
-                        <DeleteSectionPopup
-                            section={this.props.section}
-                            deleteSectionFunction={this.deleteThisSection}
-                            toggleDeleteSectionPopup = {this.toggleSectionDeletePopup}
+                        <DeletionPopup
+                            thing={this.props.section}
+                            thingType="section"
+                            deletionFunction={this.deleteThisSection}
+                            togglePopupFunction = {this.toggleSectionDeletePopup}
                         />
                     </PopupBackground>
                     :

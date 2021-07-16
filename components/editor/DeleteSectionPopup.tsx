@@ -1,4 +1,5 @@
 import Section from "../../model/SectionListing"
+import { redButtonMd } from "../../styles/common-styles"
 
 interface IProps {
     section: Section
@@ -26,7 +27,7 @@ function DeleteSectionPopup(props: IProps) {
             <button
                 onClick={() => deleteSectionAndClosePopup()}
                 type="button"
-                className="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 sm:text-sm"
+                className={redButtonMd}
             >
                 Delete section
             </button>

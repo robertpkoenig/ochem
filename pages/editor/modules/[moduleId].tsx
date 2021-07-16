@@ -8,7 +8,7 @@ import { PlusIcon } from "@heroicons/react/solid";
 import PopupBackground from "../../../components/PopupBackground";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
-import { primaryButtonMd } from "../../../styles/common-styles";
+import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
 
 interface WithRouterProps {
     router: NextRouter
@@ -132,9 +132,7 @@ class ModulePage extends React.Component<IProps, IState> {
 
     render() {
 
-        const sectionListEmptyState = <div className="h-24 border border-dashed border-gray-200
-                                              rounded-lg text-gray-400 font-light flex
-                                              flex-col place-content-center items-center "
+        const sectionListEmptyState = <div className={emptyState}
                                       >
                                       This module has no sections
                                       </div>
