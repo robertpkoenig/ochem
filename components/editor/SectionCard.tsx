@@ -1,6 +1,5 @@
-import { PlusIcon } from '@heroicons/react/solid';
+import { PlusIcon, XIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid';
 import * as React from 'react';
-import { MouseEventHandler } from 'react';
 import ReactionListing from '../../model/ReactionListing';
 import Section from '../../model/SectionListing';
 import { secondaryButtonSm } from '../../styles/common-styles';
@@ -9,8 +8,11 @@ import ReactionCard from './ReactionCard';
 
 export interface ISectionCardProps {
     section: Section
-    togglePopup: () => void
+    toggleReactionCreationPopup: () => void
     setSelectedSection: (sectionId: string) => void
+    decrementSectionOrder: (sectionId: string) => void
+    incrementSectionOrder: (sectionId: string) => void
+    toggleSectionDeletionPopup: () => void
 }
 
 export default function SectionCard (props: ISectionCardProps) {
@@ -41,15 +43,34 @@ export default function SectionCard (props: ISectionCardProps) {
 
     function showReactionCreationPopup() {
         props.setSelectedSection(props.section.uuid)
-        props.togglePopup()
+        props.toggleReactionCreationPopup()
+    }
+
+    function showSectionDeletePopup() {
+        props.setSelectedSection(props.section.uuid)
+        props.toggleSectionDeletionPopup()
     }
 
     return (
         <div className=" px-6 py-4 flex flex-col gap-4 bg-gray-100 overflow-hidden rounded-md">
 
-                <div className="font-semibold text-md bg-gray-100">
-                    {props.section.name}
-                </div>
+                <div className="flex flex-row justify-between items-center">
+                    <div className="font-semibold text-md bg-gray-100">
+                        {props.section.name}
+                    </div>
+
+                    <div>
+                        <button onClick={() => props.incrementSectionOrder(props.section.uuid)}>
+                            <ChevronDownIcon className="w-5 h-5 text-gray-500 hover:text-gray-600" />
+                        </button>
+                        <button onClick={() => props.decrementSectionOrder(props.section.uuid)}>
+                            <ChevronUpIcon className="w-5 h-5 text-gray-500 hover:text-gray-600" />
+                        </button>
+                        <button onClick={() => showSectionDeletePopup()}>
+                            <XIcon className="stroke-2 w-5 text-gray-500 hover:text-gray-600" />
+                        </button>
+                    </div>
+             </div>
 
                 <div>
 

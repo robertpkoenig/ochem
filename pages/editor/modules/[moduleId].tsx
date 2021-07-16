@@ -11,6 +11,7 @@ import { stringify, v4 as uuid } from 'uuid'
 import { primaryButtonMd } from "../../../styles/common-styles";
 import ReactionPopup from "../../../components/editor/ReactionPopup";
 import ReactionListing from "../../../model/ReactionListing";
+import DeleteSectionPopup from "../../../components/editor/DeleteSectionPopup";
 
 interface WithRouterProps {
     router: NextRouter
@@ -24,7 +25,8 @@ interface IState {
     uuid: string,
     sectionPopupVis: boolean,
     reactionPopupVis: boolean,
-    copyOfSelectedSession: Section | null,
+    deleteSectionPopupVis: boolean,
+    selectedSection: Section | null,
     module: Module
 }
 
@@ -47,13 +49,18 @@ class ModulePage extends React.Component<IProps, IState> {
             uuid: moduleId as string,
             sectionPopupVis: false,
             reactionPopupVis: false,
-            copyOfSelectedSession: null,
+            deleteSectionPopupVis: false,
+            selectedSection: null,
             module: dummyModule
         }
 
         this.toggleReactionPopup = this.toggleReactionPopup.bind(this)
         this.setSelectedReaction = this.setSelectedReaction.bind(this)
         this.createReaction = this.createReaction.bind(this)
+        this.decrementSectionOrder = this.decrementSectionOrder.bind(this)
+        this.incrementSectionOrder = this.incrementSectionOrder.bind(this)
+        this.toggleDeleteSectionPopup = this.toggleDeleteSectionPopup.bind(this)
+        this.deleteSection = this.deleteSection.bind(this)
     }
 
     componentDidMount() {
@@ -66,6 +73,7 @@ class ModulePage extends React.Component<IProps, IState> {
         const moduleFromLocalStorageString: string | null = localStorage.getItem(this.state.uuid)
         if (moduleFromLocalStorageString) {
             const module: Module = JSON.parse(moduleFromLocalStorageString)
+
             this.setState({
                 ...this.state,
                 module: module
@@ -74,10 +82,195 @@ class ModulePage extends React.Component<IProps, IState> {
 
     }
 
+    decrementSectionOrder(sectionId: string) {
+
+        // Create copy of the module
+        const moduleCopy: Module = Object.assign(this.state.module)
+
+        let sectionToDecrementOrder: Section | null = null
+        let sectionToIncrementOrder: Section | null = null
+
+        for (const section of moduleCopy.sections) {
+            if (sectionId === section.uuid) {
+                sectionToDecrementOrder = section
+            }
+        }
+
+        if (sectionToDecrementOrder == null) {
+            throw new Error("tried to retrieve section that does not exist")
+        }
+
+        // Get the section above
+        const orderAboveSectionToIncrementOrder = sectionToDecrementOrder.order - 1
+        for (const section of moduleCopy.sections) {
+            if (section.order === orderAboveSectionToIncrementOrder) {
+                sectionToIncrementOrder = section
+            }
+        }
+
+        // If the section above is not there, just ignore the rest of the logic
+        if (sectionToIncrementOrder != null) {
+
+            sectionToDecrementOrder.order--
+            sectionToIncrementOrder.order++
+
+            // Reset the module in the working memory
+            this.setState((prevState: IState) => {
+                return {
+                    ...prevState,
+                    module: moduleCopy
+                }
+            })
+
+            // Mirror this change in the local storage copy of the module
+            localStorage.setItem(
+                moduleCopy.uuid,
+                JSON.stringify(moduleCopy)
+            )
+
+            this.sortSectionsByOrder()
+
+        }
+
+    }
+
+    incrementSectionOrder(sectionId: string) {
+
+        // Create copy of the module
+        const moduleCopy: Module = Object.assign(this.state.module)
+
+        let sectionToDecrementOrder: Section | null = null
+        let sectionToIncrementOrder: Section | null = null
+
+        for (const section of moduleCopy.sections) {
+            if (sectionId === section.uuid) {
+                sectionToIncrementOrder = section
+            }
+        }
+
+        if (sectionToIncrementOrder == null) {
+            throw new Error("tried to retrieve section that does not exist")
+        }
+
+        // Get the section above
+        const orderAboveSectionToDecrementOrder = sectionToIncrementOrder.order + 1
+        for (const section of moduleCopy.sections) {
+            if (section.order === orderAboveSectionToDecrementOrder) {
+                sectionToDecrementOrder = section
+            }
+        }
+
+        // If the section above is not there, just ignore the rest of the logic
+        if (sectionToDecrementOrder != null) {
+
+            sectionToDecrementOrder.order--
+            sectionToIncrementOrder.order++
+
+            // Reset the module in the working memory
+            this.setState((prevState: IState) => {
+                return {
+                    ...prevState,
+                    module: moduleCopy
+                }
+            })
+
+            // Mirror this change in the local storage copy of the module
+            localStorage.setItem(
+                moduleCopy.uuid,
+                JSON.stringify(moduleCopy)
+            )
+
+            this.sortSectionsByOrder()
+
+        }
+
+    }
+
+    deleteSection(sectionId: string) {
+
+        // Create copy of the module
+        const moduleCopy: Module = Object.assign(this.state.module)
+
+        // Get the section to delete
+        let sectionToDelete: Section | null = null
+        for (const section of moduleCopy.sections) {
+            if (sectionId === section.uuid) {
+                sectionToDelete = section
+            }
+        }
+
+        // Throw error if section not found
+        if (sectionToDelete === null) {
+            throw new Error("tried to delete section that does not exist")
+        }
+
+        // Decrement the order of all sections above this section
+        for (const section of moduleCopy.sections) {
+            if (section.order > sectionToDelete.order) {
+                section.order--
+            }
+        }
+
+        // Filter out the section to delete
+        moduleCopy.sections = moduleCopy.sections.filter(section => {
+            return section.uuid != sectionId
+        })
+
+        // Reset the module in the working memory
+        this.setState((prevState: IState) => {
+            return {
+                ...prevState,
+                module: moduleCopy
+            }
+        })
+
+        // Mirror this change in the local storage copy of the module
+        localStorage.setItem(
+            moduleCopy.uuid,
+            JSON.stringify(moduleCopy)
+        )
+
+    }
+
+    toggleDeleteSectionPopup() {
+        this.setState((prevState: IState) => {
+            return {
+                ...prevState,
+                deleteSectionPopupVis: !prevState.deleteSectionPopupVis
+            }
+        })
+    }
+
+    sortSectionsByOrder() {
+        // Create copy of the module
+        const moduleCopy: Module = Object.assign(this.state.module)
+
+        // Sort the moduleCopy's sections by order
+        moduleCopy.sections.sort((a, b) => {
+            return a.order - b.order
+        })
+
+        // Reset the module in the working memory
+        this.setState((prevState: IState) => {
+            return {
+                ...this.state,
+                module: moduleCopy
+            }
+        })
+
+        // Mirror this change in the local storage copy of the module
+        localStorage.setItem(
+            moduleCopy.uuid,
+            JSON.stringify(moduleCopy)
+        )
+    }
+
     toggleSectionPopup() {
-        this.setState({
-            ...this.state,
-            sectionPopupVis: !this.state.sectionPopupVis
+        this.setState((prevState: IState) => {
+            return {
+                ...prevState,
+                sectionPopupVis: !prevState.sectionPopupVis
+            }
         })
     }
 
@@ -86,7 +279,7 @@ class ModulePage extends React.Component<IProps, IState> {
         this.setState((prevState: IState) => {
             return {
                 ...prevState,
-            reactionPopupVis: !this.state.reactionPopupVis
+            reactionPopupVis: !prevState.reactionPopupVis
             }
         })
     }
@@ -112,7 +305,7 @@ class ModulePage extends React.Component<IProps, IState> {
         this.setState((prevState: IState) => {
             return {
                 ...prevState,
-                copyOfSelectedSession: copyOfSelectedSession
+                selectedSection: copyOfSelectedSession
             }
         })
 
@@ -122,11 +315,11 @@ class ModulePage extends React.Component<IProps, IState> {
 
         // At this point, there may be no selected section
         // Not sure how to avoid this eventuality
-        if (this.state.copyOfSelectedSession == null) {
+        if (this.state.selectedSection == null) {
             throw new Error("trying to create reaction, but no selected section")
         }
 
-        const order = this.state.copyOfSelectedSession.reactionListings.length
+        const order = this.state.selectedSection.reactionListings.length
         const reactionId = uuid()
         const creationDate = Date.now().toString()
 
@@ -139,29 +332,20 @@ class ModulePage extends React.Component<IProps, IState> {
             authorId: "dummy"
         }
 
-        const copyOfSelectedSession = this.state.copyOfSelectedSession
-
-        // add the new reaction listing to the selected section
-        // create a copy of the module
-        // filter out the selectedReaction
-        
-        copyOfSelectedSession.reactionListings.push(newReactionListing)
-
         // Create copy of the module
         const moduleCopy: Module = Object.assign(this.state.module)
 
-        // Filter out the old version of the selected section
-        moduleCopy.sections = moduleCopy.sections.filter(section => {
-            return section.uuid != copyOfSelectedSession.uuid
-        })
-
-        // Add in the new version of the selected session
-        moduleCopy.sections.push(copyOfSelectedSession)
+        for (const section of moduleCopy.sections) {
+            if (section.uuid == this.state.selectedSection.uuid) {
+                section.reactionListings.push(newReactionListing)
+                break
+            }
+        }
 
         // Reset the module in the working memory
         this.setState((prevState: IState) => {
             return {
-                ...this.state,
+                ...prevState,
                 module: moduleCopy
             }
         })
@@ -177,7 +361,7 @@ class ModulePage extends React.Component<IProps, IState> {
     setSelectedSectionToNull() {
         this.setState({
             ...this.state,
-            copyOfSelectedSession: null
+            selectedSection: null
         })
     }
 
@@ -220,9 +404,6 @@ class ModulePage extends React.Component<IProps, IState> {
 
     render() {
 
-        console.log("in render", this.state.copyOfSelectedSession);
-        
-
         const sectionListEmptyState = <div className="h-24 border border-dashed border-gray-200
                                               rounded-lg text-gray-400 font-light flex
                                               flex-col place-content-center items-center "
@@ -239,8 +420,11 @@ class ModulePage extends React.Component<IProps, IState> {
                         <div key={sectionListing.order}>
                             <SectionCard
                                 section={sectionListing}
-                                togglePopup={this.toggleReactionPopup}
+                                toggleReactionCreationPopup={this.toggleReactionPopup}
                                 setSelectedSection = {this.setSelectedReaction}
+                                decrementSectionOrder = {this.decrementSectionOrder}
+                                incrementSectionOrder = {this.incrementSectionOrder}
+                                toggleSectionDeletionPopup = {this.toggleDeleteSectionPopup}
                             />
                         </div>
                     )}
@@ -296,6 +480,21 @@ class ModulePage extends React.Component<IProps, IState> {
                     <ReactionPopup
                         popupCloseFunction={this.toggleReactionPopup} 
                         createReactionFunction={this.createReaction} 
+                    />
+                </PopupBackground>
+                :
+                ''
+                }
+
+                {/* Toggle the delete section popup */}
+                {           
+                this.state.deleteSectionPopupVis && this.state.selectedSection != null
+                ?
+                <PopupBackground popupCloseFunction={this.toggleDeleteSectionPopup}>
+                    <DeleteSectionPopup
+                        section={this.state.selectedSection}
+                        deleteSectionFunction={this.deleteSection}
+                        toggleDeleteSectionPopup = {this.toggleDeleteSectionPopup}
                     />
                 </PopupBackground>
                 :

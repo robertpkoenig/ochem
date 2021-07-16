@@ -23,6 +23,7 @@ export default function ReactionCard (props: IReactionCardProps) {
         <Link href={"editor/modules/" + props.reactionListing.reactionId}>
             <a className={ primaryButtonMd }>Edit</a>
         </Link>
+        
     </div>
 </div>
   );
