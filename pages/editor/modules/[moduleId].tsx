@@ -27,6 +27,7 @@ interface IState {
 class ModulePage extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
+        
         super(props)
 
         const moduleId = this.props.router.query.moduleId
@@ -46,7 +47,7 @@ class ModulePage extends React.Component<IProps, IState> {
         }
 
         this.updateModule = this.updateModule.bind(this)
-        // this.createReaction = this.createReaction.bind(this)
+
     }
 
     componentDidMount() {
@@ -178,7 +179,7 @@ class ModulePage extends React.Component<IProps, IState> {
                     onClick={() => this.toggleSectionCreationPopup()}
                 >
                     <PlusIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-                    New Section
+                    New section
                 </button>
 
                 {/* Toggle the section popup */}

@@ -162,7 +162,7 @@ export default class Modules extends React.Component<IProps, IState> {
                     onClick={this.toggleCreateModulePopup.bind(this)}
                 >
                     <PlusIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-                    New Module
+                    New module
                 </button>
 
                 {this.state.createModulePopupVisible 

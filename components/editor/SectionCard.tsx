@@ -5,11 +5,11 @@ import ReactionListing from '../../model/ReactionListing';
 import Section from '../../model/SectionListing';
 import { emptyState, roundEditButtonContainer, secondaryButtonSm } from '../../styles/common-styles';
 import PopupBackground from '../PopupBackground';
-import DeleteSectionPopup from './DeleteSectionPopup';
 import ReactionCard from './ReactionCard';
 import ReactionCreationPopup from './ReactionPopup';
 import { v4 as uuid } from 'uuid'
 import DeletionPopup from './DeletionPopup';
+import LocalStorageReaction from '../../model/LocalStorageReaction';
 
 interface ISectionCardProps {
     section: Section
@@ -197,6 +197,15 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
 
         // Update the module model on the parent element
         this.props.updateModule(moduleCopy)
+
+        // Create a new full reaction object
+        const newReaction: LocalStorageReaction = {
+            name: reactionName,
+            uuid: reactionId
+        }
+
+        // Store this in local storage
+        localStorage.setItem(reactionId, JSON.stringify(newReaction))
 
     }
 

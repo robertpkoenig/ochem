@@ -97,7 +97,6 @@ export const redButtonSm =
     text-red-700
     bg-red-100
     hover:bg-red-200
-    sm:text-sm
     `
 
 export const emptyState = 

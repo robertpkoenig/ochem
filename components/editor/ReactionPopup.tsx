@@ -64,7 +64,7 @@ class ReactionCreationPopup extends React.Component<IProps, State> {
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
                   <input
                     type="submit"
-                    value="Create Section"
+                    value="Create reaction"
                     className={primaryButtonMd + "cursor-pointer"}
                   />
                 </div>

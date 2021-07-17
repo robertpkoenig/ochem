@@ -184,11 +184,11 @@ export default function ReactionCard (props: IReactionCardProps) {
                 </div>
 
                 <div className="flex flex-row gap-2">
-                    <Link href={"viewer/modules/" + props.reactionListing.uuid}>
+                    <Link href={"/viewer/modules/" + props.reactionListing.uuid}>
                         <a className={ secondaryButtonSm }>Preview</a>
                     </Link>
 
-                    <Link href={"editor/modules/" + props.reactionListing.uuid}>
+                    <Link href={"/editor/reactions/" + props.reactionListing.uuid}>
                         <a className={ primaryButtonSm }>Edit</a>
                     </Link>
                 </div>
