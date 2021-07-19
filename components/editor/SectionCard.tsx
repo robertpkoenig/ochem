@@ -10,6 +10,8 @@ import ReactionCreationPopup from './ReactionPopup';
 import { v4 as uuid } from 'uuid'
 import DeletionPopup from './DeletionPopup';
 import LocalStorageReaction from '../../model/LocalStorageReaction';
+import Reaction from '../../p5/model/Reaction';
+import ReactionStep from '../../p5/model/ReactionStep';
 
 interface ISectionCardProps {
     section: Section
@@ -199,10 +201,12 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
         this.props.updateModule(moduleCopy)
 
         // Create a new full reaction object
-        const newReaction: LocalStorageReaction = {
-            name: reactionName,
-            uuid: reactionId
-        }
+        const newReaction = new Reaction()
+        newReaction.name = reactionName
+        newReaction.uuid = reactionId
+        const firstReactionStep = new ReactionStep(0)
+        newReaction.steps.push(firstReactionStep)
+        newReaction.currentStep = firstReactionStep
 
         // Store this in local storage
         localStorage.setItem(reactionId, JSON.stringify(newReaction))

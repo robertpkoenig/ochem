@@ -22,6 +22,9 @@ class Molecule {
         molOne.atoms.push(...molTwo.atoms)
         molOne.bonds.push(...molTwo.bonds)
 
+        if (!reaction.currentStep)
+            throw new Error("reaciton has no current step defined")
+
         // remove molecule two from the model
         reaction.currentStep.molecules =
             reaction.currentStep.molecules.filter(function(molecule) {

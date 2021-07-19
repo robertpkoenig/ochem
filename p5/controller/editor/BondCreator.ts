@@ -7,6 +7,7 @@ import Molecule from "../../model/chemistry/Molecule";
 import Reaction from "../../model/Reaction";
 import Utilities from "../../utilities/Utilities";
 import { EditorController } from "./EditorController";
+import ReactionSaver from "./ReactionSaver";
 
 class BondCreator {
 
@@ -74,6 +75,8 @@ class BondCreator {
 
         this.startAtom.bonds.push(newBond)
         endAtom.bonds.push(newBond)
+
+        ReactionSaver.saveReaction(this.editorController.reaction)
             
     }
 

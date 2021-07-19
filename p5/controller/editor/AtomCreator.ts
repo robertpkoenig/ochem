@@ -3,6 +3,7 @@ import { AtomFactory } from "../../model/chemistry/atoms/AtomFactory";
 import Molecule from "../../model/chemistry/Molecule";
 import Reaction from "../../model/Reaction";
 import { EditorController } from "./EditorController";
+import ReactionSaver from "./ReactionSaver";
 
 class SingleAtomMoleculeCreator {
 
@@ -24,6 +25,8 @@ class SingleAtomMoleculeCreator {
         const newMolecule = new Molecule()
         newMolecule.atoms.push(newAtom)
         this.reaction.currentStep.molecules.push(newMolecule)
+
+        ReactionSaver.saveReaction(this.editorController.reaction)
         
     }
 

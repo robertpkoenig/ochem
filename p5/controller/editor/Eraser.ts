@@ -1,6 +1,7 @@
 import DeleteManager from "./DeleteManager";
 import { EditorController } from "./EditorController";
 import Reaction from "../../model/Reaction";
+import ReactionSaver from "./ReactionSaver";
 
 class Eraser {
 
@@ -26,6 +27,7 @@ class Eraser {
         if (atomCurrentlyHovered != null) {
             this.editorController.undoManager.addUndoPoint()
             DeleteManager.deleteAtom(this.reaction, atomCurrentlyHovered)
+            ReactionSaver.saveReaction(this.editorController.reaction)
         }
 
     }
@@ -38,6 +40,7 @@ class Eraser {
         if (bondCurrentlyHovered != null) {
             this.editorController.undoManager.addUndoPoint()
             DeleteManager.deleteBond(this.reaction, bondCurrentlyHovered)
+            ReactionSaver.saveReaction(this.editorController.reaction)
         }
 
     }
@@ -48,6 +51,7 @@ class Eraser {
         if (arrowHovered != null) {
             this.editorController.undoManager.addUndoPoint()
             this.editorController.reaction.currentStep.curlyArrow = null
+            ReactionSaver.saveReaction(this.editorController.reaction)
         }
     }
 

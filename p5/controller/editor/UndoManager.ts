@@ -1,8 +1,7 @@
-import ReactionStepLoader from "../../utilities/ReactionStepLoader"
+import Reaction from "../../model/Reaction"
+import ReactionLoader from "../../utilities/ReactionLoader"
 import Utilities from "../../utilities/Utilities"
 import { EditorController } from "./EditorController"
-
-
 
 class UndoManager {
 
@@ -21,7 +20,7 @@ class UndoManager {
 
     addUndoPoint() {
 
-        const oldModel = this.editorController.reaction.currentStep
+        const oldModel = this.editorController.reaction
         const oldModelJSON = JSON.stringify(oldModel)
         
         this.undoStack.push(oldModelJSON)
@@ -31,28 +30,30 @@ class UndoManager {
     }
 
     addRedoPoint() {
-        const currentModel = this.editorController.reaction.currentStep
+        const currentModel = this.editorController.reaction
         const currentModelJSON = JSON.stringify(currentModel)
         this.redoStack.push(currentModelJSON)
     }
 
     undo() {
-        if (this.undoStack.length > 0) {
+        const previousModelJSON = this.undoStack.pop()
+        if (previousModelJSON) {
             this.addRedoPoint()
-            const previousModelJSON = this.undoStack.pop()
-            const previousModel = ReactionStepLoader.loadReactionStateFromJSON(previousModelJSON)
-            this.editorController.reaction.currentStep.replaceWithNewModel(previousModel)
+            const previousModel: Reaction = ReactionLoader.loadReactionFromJSON(previousModelJSON)
+            this.editorController.reaction.replaceWithNewModel(previousModel)
         }
     }
 
     redo() {
 
-        if (this.redoStack.length > 0) {
+        const reactionStateToRestore = this.redoStack.pop()
+
+        if (reactionStateToRestore) {
             const currentModel = this.editorController.reaction.currentStep
             const currentModelJSON = JSON.stringify(currentModel)
             this.undoStack.push(currentModelJSON)
-            const previousModel = ReactionStepLoader.loadReactionStateFromJSON(this.redoStack.pop())
-            this.editorController.reaction.currentStep.replaceWithNewModel(previousModel)
+            const previousModel: Reaction = ReactionLoader.loadReactionFromJSON(reactionStateToRestore)
+            this.editorController.reaction.replaceWithNewModel(previousModel)
         }
 
     }

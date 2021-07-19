@@ -4,6 +4,7 @@ import { Bond } from "../model/chemistry/bonds/Bond"
 import { CurlyArrow } from "../model/chemistry/CurlyArrow"
 import Reaction from "../model/Reaction"
 import { EditorController } from "./editor/EditorController"
+import ReactionSaver from "./editor/ReactionSaver"
 
 class ArrowCreator {
 
@@ -68,6 +69,8 @@ class ArrowCreator {
             this.editorController.reaction.currentStep.curlyArrow =
                 this.draftArrow
 
+            ReactionSaver.saveReaction(this.editorController.reaction)
+
 		}
 
     }
@@ -86,6 +89,8 @@ class ArrowCreator {
 
             this.editorController.reaction.currentStep.curlyArrow =
                 this.draftArrow
+
+            ReactionSaver.saveReaction(this.editorController.reaction)
 
 		}
 

@@ -7,15 +7,17 @@ import { v4 as uuid } from 'uuid'
 class ReactionStep {
 
     name: string | null
+    order: number
     molecules: Molecule[]
     curlyArrow: CurlyArrow | null
-    id: string
+    uuid: string
 
-    constructor() {
+    constructor(order: number) {
         this.name = null
+        this.order = order
         this.molecules = []
         this.curlyArrow = null
-        this.id = uuid()
+        this.uuid = uuid()
     }
 
     update() {

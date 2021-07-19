@@ -3,15 +3,17 @@ import { ArrowLeftIcon, PlusIcon } from "@heroicons/react/solid"
 import Link from "next/link"
 import { NextRouter, withRouter } from "next/router"
 import React from "react"
-import LocalStorageReaction from "../../../model/LocalStorageReaction"
+import { RotateCcw, RotateCw } from "react-feather"
+import UndoManager from "../../../p5/controller/editor/UndoManager"
 import { AtomicElements } from "../../../p5/model/chemistry/atoms/elements"
 import BondType from "../../../p5/model/chemistry/bonds/BondType"
 import { ArrowType } from "../../../p5/model/chemistry/CurlyArrow"
 import Reaction from "../../../p5/model/Reaction"
+import ReactionLoader from "../../../p5/utilities/ReactionLoader"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
-const squareButton = `bg-indigo-600 rounded-sm pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
+const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
 const buttonImage = "w-4 h-4"
 
@@ -36,9 +38,12 @@ interface IState {
     eraserOn: boolean
     bondType: BondType | null
     arrowType: ArrowType | null
+    undoManager: UndoManager | null
+    selectedElement: HTMLElement | null
+    published: boolean
 }
 
-class ReactionEditorOld extends React.Component<IProps, IState> {
+class ReactionEditor extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
 
@@ -52,19 +57,26 @@ class ReactionEditorOld extends React.Component<IProps, IState> {
             physicsOn: false,
             eraserOn: false,
             bondType: null,
-            arrowType: null
+            arrowType: null,
+            undoManager: null,
+            selectedElement: null,
+            published: false
         }
 
     }
 
    
-    componentDidMount() {
+    async componentDidMount() {
 
         // Add logic to redirect if uuid of reaction is missing
 
-        const reactionFromLocalStorageString: string | null = localStorage.getItem(this.state.reactionId)
-        if (reactionFromLocalStorageString) {
-            const reaction: Reaction = JSON.parse(reactionFromLocalStorageString)
+        const reactionRawJSON: string | null = localStorage.getItem(this.state.reactionId)
+        let reaction: Reaction | null = null
+        if (reactionRawJSON) {
+            reaction = ReactionLoader.loadReactionFromJSON(reactionRawJSON)
+
+            console.log(reaction);
+            
 
             this.setState({
                 ...this.state,
@@ -73,9 +85,21 @@ class ReactionEditorOld extends React.Component<IProps, IState> {
         }
 
         // Create the p5 element
+        if (window) {
+            const createP5Sketch = (await import("../../../p5/Sketch")).default
+            
+            if (!reaction) throw new Error("reaction not loaded")
+            createP5Sketch(this, reaction)
+        }
 
     }
 
+    togglePublication() {
+        this.setState({
+            ...this.state,
+            published: !this.state.published
+        })
+    }
 
     togglePhysics() {
         this.setState((prevState) => {
@@ -148,6 +172,27 @@ class ReactionEditorOld extends React.Component<IProps, IState> {
        
     }
 
+    setUndoManager(undoManager: UndoManager) {
+        this.setState({
+            ...this.state,
+            undoManager: undoManager
+        })
+    }
+
+    undo() {
+        if (this.state.undoManager == null) {
+            throw new Error("Undo manager has not been assigned")
+        }
+        this.state.undoManager.undo()
+    }
+
+    redo() {
+        if (this.state.undoManager == null) {
+            throw new Error("Undo manager has not been assigned")
+        }
+        this.state.undoManager.redo()
+    }
+
     render() {
 
         const bondTypeButtons = Object.values(BondType).map(bondType => {
@@ -155,6 +200,7 @@ class ReactionEditorOld extends React.Component<IProps, IState> {
                 <button 
                     className={this.state.bondType == bondType ? selectedButton : squareButton}
                     onClick={() => this.setBondType(bondType)}
+                    key={bondType}
                 >
                     <img 
                         src={"/assets/images/bonds/" + bondType + ".svg"}
@@ -170,11 +216,17 @@ class ReactionEditorOld extends React.Component<IProps, IState> {
 
                 // This is the background to the atom which acts as the empty state
                 // when the element is dragged onto the canvas
-                <div className="rounded-full w-10 h-10 bg-gray-200">
+                <div 
+                    className="rounded-full w-40 h-40 bg-gray-200"
+                    key={element.abbreviation}
+                >
 
                     <button
+                        id={element.name}
+                        onMouseDown={() => window.panelController.selectElement(element.name)}
+                        onMouseUp={() => window.panelController.dropElement()}
                         style={{backgroundColor: element.color, cursor: "grab"}}
-                        className="rounded-full w-10 h-10 text-white font-semibold text-md flex items-center justify-center z-10"
+                        className="rounded-full w-40 h-40 text-white font-semibold text-md flex items-center justify-center z-10"
                     >
                         {element.abbreviation}
                     </button>
@@ -219,17 +271,17 @@ class ReactionEditorOld extends React.Component<IProps, IState> {
 
                                     <Switch
                                             checked={this.state.physicsOn}
-                                            onChange={() => this.togglePhysics()}
+                                            onChange={() => this.togglePublication()}
                                             className={
-                                                (this.state.physicsOn ? 'bg-green-600 ' : 'bg-gray-200 ') +
+                                                (this.state.published ? 'bg-green-300 ' : 'bg-gray-200 ') +
                                                 'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
                                             }
                                             >
-                                            <span className="sr-only">Toggle physics</span>
+                                            <span className="sr-only">Toggle publication of this reaction</span>
                                             <span
                                                 aria-hidden="true"
                                                 className={
-                                                    (this.state.physicsOn ? 'translate-x-5 ' : 'translate-x-0 ') + 
+                                                    (this.state.published ? 'translate-x-5 ' : 'translate-x-0 ') + 
                                                     'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                                                 }
                                             />
@@ -254,7 +306,7 @@ class ReactionEditorOld extends React.Component<IProps, IState> {
                                     <li 
                                         key={step.name}
                                         className={"relative px-1 py-0 rounded-md hover:bg-indigo-700 hover:text-white" +
-                                        (step.status === 'current' ? " text-white bg-indigo-800" : "")}
+                                        (step.status === 'current' ? " text-white bg-indigo-700" : "")}
                                     >
                                         <button className="px-2 py-1 flex items-center text-sm font-medium">
                                             Step {stepIdx + 1}
@@ -277,70 +329,97 @@ class ReactionEditorOld extends React.Component<IProps, IState> {
                         {/* Various buttons */}
                         <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 flex flex-col gap-2 h-full">
                             
-                            <button
-                                className={this.state.eraserOn ? selectedButton : squareButton}
-                                onClick={() => this.toggleEraser()}
-                            >
-                                <img className={buttonImage} src="/assets/images/eraser.svg" alt="eraser" />
-                            </button>
+                                {bondTypeButtons}
 
-                            {/* Undo */}
-                            <button
-                                className={squareButton}
-                                // add in logic to trigger the undo
-                            >
-                                <i className="feather-rotate-ccw"></i>
-                            </button>
+                                <hr className="my-2"></hr>
 
-                            {/* Redo */}
-                            <button
-                                className={squareButton}
-                                // add logic to trigger the redo
-                            >
-                                <i  className="feather-rotate-cw"></i>
-                            </button>
+                                {/* Double curly arrow */}
+                                <button
+                                    className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
+                                    onClick={() => this.setArrowType(ArrowType.DOUBLE)}
+                                >
+                                    <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
+                                </button>
 
-                            <hr className="my-2"></hr>
+                                {/* Single curly arrow */}
+                                <button
+                                    className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
+                                    onClick={() => this.setArrowType(ArrowType.SINGLE)}
 
-                            {bondTypeButtons}
+                                >
+                                    <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
+                                </button>
 
-                            <hr className="my-2"></hr>
+                                <hr className="my-2"></hr>
 
-                            {/* Double curly arrow */}
-                            <button
-                                className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
-                                onClick={() => this.setArrowType(ArrowType.DOUBLE)}
-                            >
-                                <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
-                            </button>
+                                <button
+                                    className={this.state.eraserOn ? selectedButton : squareButton}
+                                    onClick={() => this.toggleEraser()}
+                                >
+                                    <img className={buttonImage} src="/assets/images/eraser.svg" alt="eraser" />
+                                </button>
 
-                            {/* Single curly arrow */}
-                            <button
-                                className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
-                                onClick={() => this.setArrowType(ArrowType.SINGLE)}
+                                {/* Undo */}
+                                <button
+                                    onClick={() => this.undo()}
+                                    className={squareButton}
+                                    // add in logic to trigger the undo
+                                >
+                                    <RotateCcw className="w-3.5 h-3.5"/>
+                                </button>
 
-                            >
-                                <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
-                            </button>
-
-                        </div>
+                                {/* Redo */}
+                                <button
+                                    onClick={() => this.redo()}
+                                    className={squareButton}
+                                    // add logic to trigger the redo
+                                >
+                                    <RotateCw className="w-3.5 h-3.5" />
+                                </button>
+                            </div>
 
                         {/* p5 canvas */}
-                        <div id="editor-canvas" className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 flex-grow">
+                        <div id="p5-canvas" className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 flex-grow">
+                            <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
+                                Physics
+                                <Switch
+                                    checked={this.state.physicsOn}
+                                    onChange={() => this.togglePhysics()}
+                                    className={
+                                        (this.state.physicsOn ? 'bg-indigo-600 ' : 'bg-gray-200 ') +
+                                        'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
+                                    }
+                                    >
+                                    <span className="sr-only">Toggle physics</span>
+                                    <span
+                                        aria-hidden="true"
+                                        className={
+                                            (this.state.physicsOn ? 'translate-x-5 ' : 'translate-x-0 ') + 
+                                            'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
+                                        }
+                                />
+                                </Switch>
+                            </div>
                         </div>
 
                         {/* atomic elements */}
-                        <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 flex flex-col gap-2 flex-grow-0">
+                        <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 flex flex-col gap-2 h-full">
                             {listOfAtomicElements}
                         </div>
                     
                     </div>
+
+                    {/* <!-- Eraser highlight --> */}
+                    <div id="eraser-tip" style={{visibility: "hidden"}} className="text-xs bg-gray-400 text-white rounded-sm shadow px-2 py-1 font-light absolute " >
+                        Delete
+                    </div>
                 </main>
             </div>
             </>
-      )
+        )
     }
 
 }
 
-export default withRouter(ReactionEditorOld)
+export default withRouter(ReactionEditor)
+export { ReactionEditor }

@@ -9,13 +9,13 @@ import Utilities from "./Utilities"
 
 class ReactionStepLoader {
 
-    public static loadReactionStateFromJSON(savedModelJSON: string): ReactionStep {
+    public static loadReactionStepFromJSON(reactionStepJSON: string): ReactionStep {
         
-        const savedModel = JSON.parse(savedModelJSON)
+        const reactionStepRawObject = JSON.parse(reactionStepJSON)
         
         const restoredMolecules: Molecule[] = []
 
-        for (const savedMolecule of savedModel["molecules"]) {
+        for (const savedMolecule of reactionStepRawObject["molecules"]) {
 
             const newMolecule = new Molecule()
             restoredMolecules.push(newMolecule)
@@ -42,10 +42,14 @@ class ReactionStepLoader {
 
         }
 
-        const restoredReactionStep = new ReactionStep()
+        const order = reactionStepRawObject["order"]
+        const uuid = reactionStepRawObject["uuid"]
+
+        const restoredReactionStep = new ReactionStep(order)
+        restoredReactionStep.uuid = uuid
         restoredReactionStep.molecules.push(...restoredMolecules)
 
-        const savedCurlyArrow = savedModel["curlyArrow"]
+        const savedCurlyArrow = reactionStepRawObject["curlyArrow"]
 
         if (savedCurlyArrow != null) {
             const restoredCurlyArrow = new CurlyArrow(savedCurlyArrow.type)
