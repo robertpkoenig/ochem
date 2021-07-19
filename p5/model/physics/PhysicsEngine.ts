@@ -16,8 +16,6 @@ class PhysicsEngine {
     }
 
     applyPhysics() {
-        console.log("hello");
-        
         this.applyBodyRepulsionWithinMolecules()
         this.applyPull()
         this.applyAllForces()

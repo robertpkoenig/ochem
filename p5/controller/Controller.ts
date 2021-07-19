@@ -5,6 +5,7 @@ import { EditorController } from "./editor/EditorController"
 import { Vector } from "sat"
 import { IAtomicElement } from "../model/chemistry/atoms/elements"
 import CollisionDetector from "../model/physics/CollisinDetector"
+import ReactionEditor from "../../pages/editor/reactions/test"
 
 class Controller {
 
@@ -17,17 +18,23 @@ class Controller {
     bodyMover: BodyMover
     editorController: EditorController
 
-	// properties
-	selectedElement: IAtomicElement
-
-    constructor(p5: p5, reaction: Reaction, collisionDetector: CollisionDetector) {
+    constructor(p5: p5,
+                reaction: Reaction,
+                collisionDetector: CollisionDetector,
+                reactionEditor: ReactionEditor) {
 
         this.p5 = p5
         this.reaction = reaction
         this.collisionDetector = collisionDetector
         
         this.bodyMover = new BodyMover(p5, reaction)
-        this.editorController = new EditorController(p5, reaction, collisionDetector)
+        this.editorController =
+            new EditorController(
+                p5,
+                reaction,
+                collisionDetector,
+                reactionEditor
+            )
 
     }
 
@@ -38,8 +45,8 @@ class Controller {
 
     routeMousePressed(mouseVector: Vector) {
         this.editorController.routeMousePressed(mouseVector)
-        if (this.editorController.panelController.bondType == null &&
-            this.editorController.panelController.curlyArrowType == null) {
+        if (this.editorController.reactionEditor.state.bondType == null &&
+            this.editorController.reactionEditor.state.arrowType == null) {
             this.bodyMover.startDraggingBodyIfPressed(mouseVector)
         }
     }

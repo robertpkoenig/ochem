@@ -9,9 +9,9 @@ class BodyMover {
 	reaction: Reaction
 	atomBeingDragged: Body
 
-	constructor(p5: p5, model: Reaction) {
+	constructor(p5: p5, reaction: Reaction) {
 		this.p5 = p5
-		this.reaction = model
+		this.reaction = reaction
 		this.atomBeingDragged = null
 	}
 

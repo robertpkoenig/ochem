@@ -1,6 +1,6 @@
 class Constants  {
 
-    public static ATOM_RADIUS = 50
+    public static ATOM_RADIUS = 20
     public static ELECTRON_BOND_DIST = 10
     public static ELECTRON_ORBIT_RADIUS = Constants.ATOM_RADIUS + 10
 

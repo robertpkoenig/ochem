@@ -57,7 +57,7 @@ class EditorView {
 
         if (hoveredAtom != null) {
 
-            if (this.editorController.panelController.eraserOn) {
+            if (this.editorController.reactionEditor.state.eraserOn) {
                 this.drawAtomOutline(hoveredAtom, Constants.RED_OUTLINE_COLOR)
                 this.showEraserTip()
             }
@@ -87,8 +87,8 @@ class EditorView {
     showEraserTip() {
         const eraserTip = this.p5.select("#eraser-tip")
         eraserTip.style("visibility", "visible")
-        const x = this.p5.mouseX + this.editorController.panelController.leftX + 10
-        const y = this.p5.mouseY + this.editorController.panelController.bottomY - 10
+        const x = this.p5.mouseX + this.editorController.panelController.leftX + 35
+        const y = this.p5.mouseY + this.editorController.panelController.bottomY + 35
         eraserTip.position(x, y)
 
         this.eraserTipVisible = true
@@ -106,12 +106,12 @@ class EditorView {
         const hoveredBond = this.editorController.hoverDetector.bondCurrentlyHovered
 
         if (hoveredBond != null) {
-            if (this.editorController.panelController.eraserOn) {
+            if (this.editorController.reactionEditor.state.eraserOn) {
                 this.drawBondOutline(hoveredBond, Constants.RED_OUTLINE_COLOR)
                 this.showEraserTip()
                 this.eraserTipVisible = true
             }
-            if (this.editorController.panelController.curlyArrowType != null) {
+            if (this.editorController.reactionEditor.state.arrowType != null) {
                 this.drawBondOutline(hoveredBond, Constants.BLUE_OUTLINE_COLOR)
             }
         }
@@ -160,7 +160,7 @@ class EditorView {
 
                 this.p5.fill(0)
 
-                if (this.editorController.panelController.bondType == BondType.SINGLE) {
+                if (this.editorController.reactionEditor.state.bondType == BondType.SINGLE) {
                 this.p5.stroke(0)
                 this.p5.line(this.editorController.bondCreator.startAtom.circle.pos.x,
                     this.editorController.bondCreator.startAtom.circle.pos.y,
@@ -168,7 +168,7 @@ class EditorView {
                     this.p5.mouseY)
                 }
 
-                if (this.editorController.panelController.bondType == BondType.DOUBLE) {
+                if (this.editorController.reactionEditor.state.bondType == BondType.DOUBLE) {
                     this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3)
                     this.p5.stroke(0)
                     this.p5.line(this.editorController.bondCreator.startAtom.circle.pos.x,
@@ -194,7 +194,7 @@ class EditorView {
         const arrow = this.editorController.hoverDetector.arrowCurrentlyHovered
         // console.log(arrow);
         
-        if (arrow != null && this.editorController.panelController.eraserOn) {
+        if (arrow != null && this.editorController.reactionEditor.state.eraserOn) {
             this.drawArrowOutline(arrow, Constants.RED_OUTLINE_COLOR)
         }
 

@@ -13,28 +13,28 @@
    version="1.1"
    id="svg8"
    inkscape:version="1.0.1 (c497b03c, 2020-09-10)"
-   sodipodi:docname="double.svg">
+   sodipodi:docname="DOUBLE.svg">
   <style
      id="style833"></style>
   <defs
      id="defs2" />
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#dddddd"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="254.6663"
-     inkscape:cy="245.76122"
+     inkscape:cx="-201.41757"
+     inkscape:cy="253.84244"
      inkscape:document-units="mm"
-     inkscape:current-layer="g986"
+     inkscape:current-layer="g3880"
      inkscape:document-rotation="0"
      showgrid="false"
      units="px"
      inkscape:window-width="1252"
-     inkscape:window-height="819"
+     inkscape:window-height="735"
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="0" />
@@ -46,7 +46,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -60,22 +60,30 @@
       <g
          id="g986"
          transform="translate(0,-16.987053)">
-        <rect
-           style="fill:#ffffff;stroke-width:5.3128;stroke-linejoin:round;fill-opacity:1"
-           id="rect835"
-           width="132.29167"
-           height="19.84375"
-           x="0.0685018"
-           y="43.963139"
-           ry="9.921875" />
-        <rect
-           style="fill:#ffffff;stroke-width:5.31281;stroke-linejoin:round;fill-opacity:1"
-           id="rect835-1"
-           width="132.29167"
-           height="19.84375"
-           x="-2.5431316e-06"
-           y="9.9890289"
-           ry="9.921875" />
+        <g
+           id="g3880"
+           transform="translate(0,-0.66145701)">
+          <g
+             id="g4476"
+             transform="translate(0,-1.5875015)">
+            <rect
+               style="fill:#ffffff;fill-opacity:1;stroke-width:4.33788;stroke-linejoin:round"
+               id="rect835"
+               width="132.29167"
+               height="13.229167"
+               x="0.0685018"
+               y="47.138142"
+               ry="6.6145835" />
+            <rect
+               style="fill:#ffffff;fill-opacity:1;stroke-width:4.33789;stroke-linejoin:round"
+               id="rect835-1"
+               width="132.29167"
+               height="13.229167"
+               x="-2.5431316e-06"
+               y="17.926525"
+               ry="6.6145835" />
+          </g>
+        </g>
       </g>
     </g>
   </g>

@@ -59,11 +59,15 @@ class BondCreator {
         // Put all atoms into the same molecule object
         Molecule.mergeTwoMolecules(this.reaction, moleculeOne, moleculeTwo)
 
+        if (this.editorController.reactionEditor.state.bondType == null) {
+            throw new Error("Tried creating bond without bond type selected")
+        }
+
         const newBond = new Bond(
             this.startAtom,
             endAtom,
             Constants.BOND_DISTANCE,
-            this.editorController.panelController.bondType
+            this.editorController.reactionEditor.state.bondType
         )
 
         moleculeOne.bonds.push(newBond)

@@ -5,8 +5,8 @@ import Reaction from "../model/Reaction";
 class DomElementCreator {
 
     public static populateEditorPanel() {
-        this.createEditorPanelElements()
-        this.createBondTypeSelectors()
+        // this.createEditorPanelElements()
+        // this.createBondTypeSelectors()
     }
 
     private static createEditorPanelElements() {
@@ -76,33 +76,33 @@ class DomElementCreator {
 
     public static setStateCards(reaction: Reaction) {
 
-        let stateSelectorListHTML = ""
+        // let stateSelectorListHTML = ""
 
-        for (const reactionStep of reaction.steps) {
-            stateSelectorListHTML += 
-            `
-                <div 
-                    class="state-card h-space-between"
-                    onclick="window.panelController.setCurrentState('${reactionStep.id}')"
-                >
-                    <div class="r-flex gap5 v-center">
-                        <div id="step-indicator-${reactionStep.id}" class="active-step-indicator" style="display: none"></div>
-                        ${reactionStep.name != null ? reactionStep.name : "New step"}
-                    </div>
-                    <div class="r-flex v-center">
-                        <i class="dots feather-more-vertical"></i>
-                    </div>
-                </div>
-            `
-        }
+        // for (const reactionStep of reaction.steps) {
+        //     stateSelectorListHTML += 
+        //     `
+        //         <div 
+        //             class="state-card h-space-between"
+        //             onclick="window.panelController.setCurrentState('${reactionStep.id}')"
+        //         >
+        //             <div class="r-flex gap5 v-center">
+        //                 <div id="step-indicator-${reactionStep.id}" class="active-step-indicator" style="display: none"></div>
+        //                 ${reactionStep.name != null ? reactionStep.name : "New step"}
+        //             </div>
+        //             <div class="r-flex v-center">
+        //                 <i class="dots feather-more-vertical"></i>
+        //             </div>
+        //         </div>
+        //     `
+        // }
 
-        const listOfSteps = document.getElementById("list-of-steps")
+        // const listOfSteps = document.getElementById("list-of-steps")
 
-        if (listOfSteps == null) {
-            throw new Error("list of steps DOM element not found")
-        }
+        // if (listOfSteps == null) {
+        //     throw new Error("list of steps DOM element not found")
+        // }
 
-        listOfSteps.innerHTML = stateSelectorListHTML
+        // listOfSteps.innerHTML = stateSelectorListHTML
 
     }
 

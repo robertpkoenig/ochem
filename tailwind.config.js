@@ -11,6 +11,10 @@ module.exports = {
             },
             width: {
                 '700': '700px',
+                '40': '40px',
+            },
+            height: {
+                '40': '40px',
             }
         },
     },
