@@ -14,6 +14,8 @@ export const primaryButtonMd =
     text-white
     bg-indigo-600
     hover:bg-indigo-700
+    disabled:bg-indigo-200 
+    disabled:cursor-default
     `
 
 export const secondaryButtonMd = 

@@ -44,6 +44,16 @@ class UndoManager {
         }
     }
 
+    getUndoStackHead(): Reaction | null {
+        const previousModelJSON = this.undoStack.pop()
+        if (previousModelJSON) {
+            this.addRedoPoint()
+            const previousModel: Reaction = ReactionLoader.loadReactionFromJSON(previousModelJSON)
+            return previousModel
+        }
+        return null
+    }
+
     redo() {
 
         const reactionStateToRestore = this.redoStack.pop()

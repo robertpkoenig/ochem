@@ -38,7 +38,8 @@ function createP5EditingContext(reactionEditor: ReactionEditor, reaction: Reacti
                 throw new Error("p5 parent element container was not found")
             }
             const canvasParentRect = canvasParent.getBoundingClientRect()
-            const canvas = p5.createCanvas(canvasParentRect.width - 50, canvasParentRect.height)
+            const canvas = p5.createCanvas(canvasParentRect.width, canvasParentRect.height)
+            p5.select("#defaultCanvas0").style("border-radius", "0.5rem")
             canvas.parent(CANVAS_PARENT_NAME)
     
             studentView = new View(p5, reaction)

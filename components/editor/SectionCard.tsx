@@ -201,9 +201,17 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
         this.props.updateModule(moduleCopy)
 
         // Create a new full reaction object
-        const newReaction = new Reaction()
-        newReaction.name = reactionName
-        newReaction.uuid = reactionId
+        const newReaction = new Reaction(
+            reactionName,
+            reactionId,
+            this.props.module.uuid,
+            this.props.section.uuid,
+            "dummuy author id",
+            false,
+            [],
+            null
+        )
+
         const firstReactionStep = new ReactionStep(0)
         newReaction.steps.push(firstReactionStep)
         newReaction.currentStep = firstReactionStep

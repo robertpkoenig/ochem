@@ -1,27 +1,25 @@
 import { Switch } from "@headlessui/react"
-import { ArrowLeftIcon, PlusIcon } from "@heroicons/react/solid"
+import { ArrowLeftIcon, PlusIcon, XIcon } from "@heroicons/react/solid"
 import Link from "next/link"
 import { NextRouter, withRouter } from "next/router"
 import React from "react"
-import { RotateCcw, RotateCw } from "react-feather"
+import { RotateCcw, RotateCw, ThumbsDown } from "react-feather"
+import ReactionSaver from "../../../p5/controller/editor/ReactionSaver"
 import UndoManager from "../../../p5/controller/editor/UndoManager"
 import { AtomicElements } from "../../../p5/model/chemistry/atoms/elements"
 import BondType from "../../../p5/model/chemistry/bonds/BondType"
 import { ArrowType } from "../../../p5/model/chemistry/CurlyArrow"
 import Reaction from "../../../p5/model/Reaction"
+import ReactionStep from "../../../p5/model/ReactionStep"
 import ReactionLoader from "../../../p5/utilities/ReactionLoader"
+import ReactionStepLoader from "../../../p5/utilities/ReactionStepLoader"
+import Utilities from "../../../p5/utilities/Utilities"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
 const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
 const buttonImage = "w-4 h-4"
-
-const steps = [
-    { id: '01', name: 'Job details', href: '#', status: 'complete' },
-    { id: '02', name: 'Application form', href: '#', status: 'current' },
-    { id: '03', name: 'Preview', href: '#', status: 'upcoming' },
-]
 
 interface WithRouterProps {
     router: NextRouter
@@ -40,7 +38,6 @@ interface IState {
     arrowType: ArrowType | null
     undoManager: UndoManager | null
     selectedElement: HTMLElement | null
-    published: boolean
 }
 
 class ReactionEditor extends React.Component<IProps, IState> {
@@ -60,7 +57,6 @@ class ReactionEditor extends React.Component<IProps, IState> {
             arrowType: null,
             undoManager: null,
             selectedElement: null,
-            published: false
         }
 
     }
@@ -95,10 +91,15 @@ class ReactionEditor extends React.Component<IProps, IState> {
     }
 
     togglePublication() {
-        this.setState({
-            ...this.state,
-            published: !this.state.published
-        })
+
+        this.state.undoManager.addUndoPoint()
+        
+        this.state.reaction.published = !this.state.reaction.published
+
+        this.forceUpdate()
+
+        ReactionSaver.saveReaction(this.state.reaction)
+
     }
 
     togglePhysics() {
@@ -172,6 +173,73 @@ class ReactionEditor extends React.Component<IProps, IState> {
        
     }
 
+    setCurrentStep(stepId: string) {
+        let selectedStep: ReactionStep
+        for (const step of this.state.reaction.steps) {
+            if (step.uuid == stepId) selectedStep = step
+        }
+        this.state.reaction.currentStep = selectedStep
+        ReactionSaver.saveReaction(this.state.reaction)
+    }
+
+    createNewStep() {
+        const steps = this.state.reaction.steps
+        const lastStep = steps[steps.length - 1]
+        const lastStepJSON = JSON.stringify(lastStep)
+        const newStep = ReactionStepLoader.loadReactionStepFromJSON(lastStepJSON)
+        newStep.uuid = Utilities.generateUid()
+        newStep.order += 1
+
+        this.state.reaction.steps.push(newStep)
+        this.state.reaction.currentStep = newStep
+
+        this.forceUpdate()
+        ReactionSaver.saveReaction(this.state.reaction)
+    }
+
+    deleteStep(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, stepId: string) {
+
+        this.state.undoManager.addUndoPoint()
+
+        let stepToDelete: ReactionStep | null = null
+
+        // Get the step to delete
+        for (const step of this.state.reaction.steps) {
+            if (step.uuid == stepId) stepToDelete = step
+        }
+
+        if (stepToDelete == null)
+            throw new Error("Could not find the stepToDelete")
+
+        // Filter the step of out the list of steps
+        this.state.reaction.steps =
+            this.state.reaction.steps.filter(step => {
+                return step != stepToDelete
+            })
+        
+        // Reduce the order of the remaining steps
+        for (const step of this.state.reaction.steps) {
+            if (step.order > stepToDelete.order) {
+                step.order -= 1
+            }
+        }
+
+        if (this.state.reaction.currentStep == stepToDelete) {
+            for (const step of this.state.reaction.steps) {
+                if (step.order == stepToDelete.order - 1) {
+                    this.state.reaction.currentStep = step
+                }
+            }
+        }
+
+        ReactionSaver.saveReaction(this.state.reaction)
+
+        this.forceUpdate()
+
+        event.stopPropagation()
+
+    }
+
     setUndoManager(undoManager: UndoManager) {
         this.setState({
             ...this.state,
@@ -180,10 +248,24 @@ class ReactionEditor extends React.Component<IProps, IState> {
     }
 
     undo() {
-        if (this.state.undoManager == null) {
-            throw new Error("Undo manager has not been assigned")
-        }
+
         this.state.undoManager.undo()
+        this.forceUpdate()
+
+        // if (this.state.undoManager == null) {
+        //     throw new Error("Undo manager has not been assigned")
+        // }
+
+        // const undoStackHead = this.state.undoManager.getUndoStackHead()
+        // if (undoStackHead != null) {
+        //     this.setState({
+        //         ...this.state,
+        //         reaction: undoStackHead
+        //     })
+        // }
+
+        // this.state.undoManager.editorController.reaction.replaceWithNewModel(undoStackHead)
+
     }
 
     redo() {
@@ -236,6 +318,35 @@ class ReactionEditor extends React.Component<IProps, IState> {
             )
         })
 
+        let listOfStepButtons: React.ReactNode
+        if (this.state.reaction) {
+            listOfStepButtons =   this.state.reaction.steps.map(step => (
+                                        <li 
+                                            onClick={() => this.setCurrentStep(step.uuid)}
+                                            key={step.uuid}
+                                            className={"group relative px-2 flex gap-1 items-center rounded-md  hover:bg-indigo-700 hover:text-white cursor-pointer " +
+                                            (step.uuid === this.state.reaction.currentStep.uuid
+                                                ? " text-white bg-indigo-700" : null)}
+                                        >
+                                            <span className="text-sm font-medium my-1">
+                                                Step {step.order + 1}
+                                            </span>
+                                            <button
+                                                onClick={(e) => this.deleteStep(e, step.uuid)}
+                                                className={" invisible absolute top-0 right-0 text-indigo-300 bg-indigo-500 hover:text-white hover:bg-indigo-400 rounded-full p-0.5 " +
+                                                    ((this.state.reaction.steps.length > 1) ? " group-hover:visible" : null)}
+                                                style={{transform: "translate(40%, -40%)"}}
+                                            >
+                                                    <XIcon className="w-3 h-3" />
+                                            </button>
+                                        </li>
+                                    ))
+        }
+        else {
+            listOfStepButtons = "Loading"
+        }
+                                
+
         return (
 
             <>
@@ -243,7 +354,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
                 <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 ">
                     <div className="flex flex-col justify-left border-b border-indigo-400">
 
-                        <Link href="#">
+                        <Link href={"/editor/modules/" + this.state.reaction?.moduleId}>
                             <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
                             <ArrowLeftIcon className="w-3 h-3" />
                             Module name goes here | Section name
@@ -273,7 +384,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
                                             checked={this.state.physicsOn}
                                             onChange={() => this.togglePublication()}
                                             className={
-                                                (this.state.published ? 'bg-green-300 ' : 'bg-gray-200 ') +
+                                                (this.state.reaction?.published ? 'bg-green-300 ' : 'bg-gray-200 ') +
                                                 'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
                                             }
                                             >
@@ -281,7 +392,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
                                             <span
                                                 aria-hidden="true"
                                                 className={
-                                                    (this.state.published ? 'translate-x-5 ' : 'translate-x-0 ') + 
+                                                    (this.state.reaction?.published ? 'translate-x-5 ' : 'translate-x-0 ') + 
                                                     'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                                                 }
                                             />
@@ -302,20 +413,13 @@ class ReactionEditor extends React.Component<IProps, IState> {
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-row gap-4 items-center ">
                             <nav>
                                 <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                                    {steps.map((step, stepIdx) => (
-                                    <li 
-                                        key={step.name}
-                                        className={"relative px-1 py-0 rounded-md hover:bg-indigo-700 hover:text-white" +
-                                        (step.status === 'current' ? " text-white bg-indigo-700" : "")}
-                                    >
-                                        <button className="px-2 py-1 flex items-center text-sm font-medium">
-                                            Step {stepIdx + 1}
-                                        </button>
-                                    </li>
-                                    ))}
+                                    {listOfStepButtons}
                                 </ol>
                             </nav>
-                            <button className="text-indigo-100 hover:text-white text-sm flex flex-row">
+                            <button
+                                onClick={() => this.createNewStep()}
+                                className="text-indigo-100 hover:text-white text-sm flex flex-row"
+                            >
                                 <PlusIcon className="w-5 h-5" />
                                 Add step
                             </button>
@@ -327,7 +431,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
                     <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8 flex flex-row gap-5">
 
                         {/* Various buttons */}
-                        <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 flex flex-col gap-2 h-full">
+                        <div className="bg-white rounded-lg shadow p-5 flex flex-col gap-2 h-full">
                             
                                 {bondTypeButtons}
 
@@ -379,8 +483,8 @@ class ReactionEditor extends React.Component<IProps, IState> {
                             </div>
 
                         {/* p5 canvas */}
-                        <div id="p5-canvas" className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 flex-grow">
-                            <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
+                        <div id="p5-canvas" className="bg-white rounded-lg shadow flex-grow">
+                            <div className=" p-5 absolute flex flex-row items-center gap-2 text-sm text-gray-500">
                                 Physics
                                 <Switch
                                     checked={this.state.physicsOn}
@@ -403,7 +507,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
                         </div>
 
                         {/* atomic elements */}
-                        <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 flex flex-col gap-2 h-full">
+                        <div className="bg-white p-5 rounded-lg shadow flex flex-col gap-2 h-full">
                             {listOfAtomicElements}
                         </div>
                     

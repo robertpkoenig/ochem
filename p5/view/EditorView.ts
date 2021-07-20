@@ -87,8 +87,8 @@ class EditorView {
     showEraserTip() {
         const eraserTip = this.p5.select("#eraser-tip")
         eraserTip.style("visibility", "visible")
-        const x = this.p5.mouseX + this.editorController.panelController.leftX + 35
-        const y = this.p5.mouseY + this.editorController.panelController.bottomY + 35
+        const x = this.p5.mouseX + this.editorController.panelController.leftX + 10
+        const y = this.p5.mouseY + this.editorController.panelController.bottomY + 10
         eraserTip.position(x, y)
 
         this.eraserTipVisible = true

@@ -15,11 +15,18 @@ module.exports = {
             },
             height: {
                 '40': '40px',
-            }
+            },
+            translate: {
+                'n50': "-50%"
+            },
         },
     },
     variants: {
-        extend: {},
+        extend: {
+            visibility: ['group-hover'],
+            backgroundColor: ['disabled'],
+            cursor: ['disabled']
+        },
     },
     plugins: [
         require('@tailwindcss/forms'),

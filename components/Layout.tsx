@@ -14,7 +14,13 @@ export default function Layout(props: LayoutProps) {
             <header className="py-10">
               <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1 className="text-3xl font-bold text-white">{props.title}</h1>
-                <p className="text-l font-regular text-white opacity-60">{props.subtitle}</p>
+                {
+                    props.subtitle
+                    ?
+                    <p className="text-l font-regular text-white opacity-60">{props.subtitle}</p>
+                    :
+                    null
+                }
               </div>
             </header>
           </div>

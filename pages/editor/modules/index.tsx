@@ -120,8 +120,7 @@ export default class Modules extends React.Component<IProps, IState> {
                                       >
                                       You don't have any modules yet
                                       </div>
-        console.log("listing in render function", this.state.moduleListings);
-        
+                                      
         const moduleList: any = (
         
             <div className="bg-white border border-gray-300 overflow-hidden rounded-md">

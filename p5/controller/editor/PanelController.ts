@@ -82,8 +82,8 @@ class PanelController {
             throw new Error("canvas bounding box not defined")
 
         if (this.selectedElement != null) {
-            const xPosition = this.p5.mouseX + this.leftX 
-            const yPosition = this.p5.mouseY + this.bottomY + Constants.ATOM_RADIUS
+            const xPosition = this.p5.mouseX + this.leftX - Constants.ATOM_RADIUS
+            const yPosition = this.p5.mouseY + this.bottomY - Constants.ATOM_RADIUS
             this.selectedElement.position(xPosition, yPosition)
         }
 
@@ -118,47 +118,6 @@ class PanelController {
         atom.style.top = "0"
         atom.style.position = "relative"
 
-    }
-
-    createNewStepFromPopup() {
-
-        // const steps = this.editorController.reaction.steps
-        // const lastStep = steps[steps.length - 1]
-        // const lastStepJSON = JSON.stringify(lastStep)
-        // const newStep = ReactionStepLoader.loadReactionStateFromJSON(lastStepJSON)
-        // newStep.id = Utilities.generateUid()
-
-        // const nameInput = 
-        //     <HTMLInputElement>document.getElementById("step-name")
-        // const newStepName = nameInput.value
-        // newStep.name = newStepName
-
-        // this.editorController.reaction.steps.push(newStep)
-        // document.getElementById("create-step-popup").style.visibility = "hidden"
-        // DomElementCreator.setStateCards(this.editorController.reaction)
-
-        // this.setCurrentState(newStep.id)
-
-    }
-
-    showNewStepPopup() {
-        // document.getElementById("create-step-popup").style.visibility = "visible" 
-    }
-
-    setCurrentState(stepId: string) {
-        // const currentStepId = this.editorController.reaction.currentStep
-        // console.log("step-indicator-" + currentStepId);
-        // hide the current state indicator
-        // if (this.editorController.reaction.currentStep != null) {
-        //     const currentStepId = this.editorController.reaction.currentStep.id
-        //     document.getElementById("step-indicator-" + currentStepId).style.display = "none"
-        // }
-        // for (const step of this.editorController.reaction.steps) {
-        //     if (step.id == stepId) {
-        //         this.editorController.reaction.currentStep = step
-        //         document.getElementById("step-indicator-" + stepId).style.display = "block"
-        //     } 
-        // }
     }
 
 }
