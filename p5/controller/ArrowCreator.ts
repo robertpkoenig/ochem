@@ -1,24 +1,35 @@
 import { Vector } from "sat"
-import { Atom } from "../model/chemistry/atoms/Atom"
-import { Bond } from "../model/chemistry/bonds/Bond"
+import StudentReactionPage from "../../pages/student/reactions/[reactionId]"
+import TeacherReactionPage from "../../pages/teacher/reactions/[reactionId]"
 import { CurlyArrow } from "../model/chemistry/CurlyArrow"
 import Reaction from "../model/Reaction"
-import { EditorController } from "./editor/EditorController"
-import ReactionSaver from "./editor/ReactionSaver"
+import HoverDetector from "./teacher/HoverDetector"
+import ReactionSaver from "./teacher/ReactionSaver"
+import UndoManager from "./teacher/UndoManager"
 
 class ArrowCreator {
 
     // upstream objects
 	reaction: Reaction
-    editorController: EditorController
+    hoverDetector: HoverDetector
+    undoManager: UndoManager
+    page: TeacherReactionPage | StudentReactionPage
 
     draftArrow: CurlyArrow
 
-    constructor(reaction: Reaction, editorController: EditorController) {
+    constructor(
+        reaction: Reaction,
+        hoverDetecter: HoverDetector,
+        page: TeacherReactionPage | StudentReactionPage) {
+
         this.reaction = reaction
-        this.editorController = editorController
+        this.hoverDetector = hoverDetecter
+        this.page = page
 
         this.draftArrow = null
+
+        // Undo manager is set from the editor controller because
+        // that is where the undo manager is created
     }
 
     startArrowIfObjectClicked(mouseVector: Vector) {
@@ -27,10 +38,10 @@ class ArrowCreator {
 	}
 
     private startArrowIfAtomClicked(mouseVector: Vector) {
-        const hoveredAtom = this.editorController.hoverDetector.atomCurrentlyHovered
+        const hoveredAtom = this.hoverDetector.atomCurrentlyHovered
         if (hoveredAtom != null) {
             const newArrow = new CurlyArrow (
-                this.editorController.panelController.curlyArrowType
+                this.page.state.arrowType
             )
             newArrow.setStartObject(hoveredAtom)
             this.draftArrow = newArrow
@@ -38,17 +49,17 @@ class ArrowCreator {
     }
 
     private startArrowIfBondClicked(mouseVector: Vector) {
-        const hoveredBond = this.editorController.hoverDetector.bondCurrentlyHovered
+        const hoveredBond = this.hoverDetector.bondCurrentlyHovered
         if (hoveredBond != null) {
             const newArrow = new CurlyArrow (
-                this.editorController.panelController.curlyArrowType
+                this.page.state.arrowType
             )
             newArrow.setStartObject(hoveredBond)
             this.draftArrow = newArrow
         }
     }
 
-    completeArrowIfReleasedOverObject() {
+    completeTeacherArrowIfReleasedOverObject() {
         this.completeArrowIfReleasedOverAtom()
         this.completeArrowIfReleasedOverBond()
         this.draftArrow = null
@@ -57,19 +68,19 @@ class ArrowCreator {
     private completeArrowIfReleasedOverAtom() {
 
         const atomCurrentlyHovered = 
-            this.editorController.hoverDetector.atomCurrentlyHovered
+            this.hoverDetector.atomCurrentlyHovered
 
 		if (atomCurrentlyHovered != null &&
             this.draftArrow.startObject != atomCurrentlyHovered) {
 
-            this.editorController.undoManager.addUndoPoint()
+            this.undoManager.addUndoPoint()
 
             this.draftArrow.setEndObject(atomCurrentlyHovered)
 
-            this.editorController.reaction.currentStep.curlyArrow =
+            this.reaction.currentStep.curlyArrow =
                 this.draftArrow
 
-            ReactionSaver.saveReaction(this.editorController.reaction)
+            ReactionSaver.saveReaction(this.reaction)
 
 		}
 
@@ -78,19 +89,51 @@ class ArrowCreator {
     private completeArrowIfReleasedOverBond() {
 
         const bondCurrentlyHovered = 
-            this.editorController.hoverDetector.bondCurrentlyHovered
+            this.hoverDetector.bondCurrentlyHovered
 
 		if (bondCurrentlyHovered != null &&
             this.draftArrow.startObject != bondCurrentlyHovered) {
 
-            this.editorController.undoManager.addUndoPoint()
+            this.undoManager.addUndoPoint()
 
             this.draftArrow.setEndObject(bondCurrentlyHovered)
 
-            this.editorController.reaction.currentStep.curlyArrow =
+            this.reaction.currentStep.curlyArrow =
                 this.draftArrow
 
-            ReactionSaver.saveReaction(this.editorController.reaction)
+            ReactionSaver.saveReaction(this.reaction)
+		}
+
+    }
+
+    completeStudentArrowIfReleasedOverObject() {
+        this.completeStudentArrowIfReleasedOverAtom()
+        this.completeStudentArrowIfReleasedOverBond()
+	}
+
+    private completeStudentArrowIfReleasedOverAtom() {
+
+        const atomCurrentlyHovered = 
+            this.hoverDetector.atomCurrentlyHovered
+
+		if (atomCurrentlyHovered != null &&
+            this.draftArrow.startObject != atomCurrentlyHovered) {
+
+            this.draftArrow.setEndObject(atomCurrentlyHovered)
+
+		}
+
+    }
+
+    private completeStudentArrowIfReleasedOverBond() {
+
+        const bondCurrentlyHovered = 
+            this.hoverDetector.bondCurrentlyHovered
+
+		if (bondCurrentlyHovered != null &&
+            this.draftArrow.startObject != bondCurrentlyHovered) {
+
+            this.draftArrow.setEndObject(bondCurrentlyHovered)
 
 		}
 

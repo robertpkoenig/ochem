@@ -1,15 +1,22 @@
+import p5 from "p5";
 import { CurlyArrow } from "../model/chemistry/CurlyArrow";
 
 class ArrowViewer {
 
-    public static renderArrow(arrow: CurlyArrow) {
+    p5: p5
+
+    constructor(p5: p5) {
+        this.p5 = p5
+    }
+
+    renderArrow(arrow: CurlyArrow) {
         
-        window.p5.push()
+        this.p5.push()
 
             // Draw the curved line
-            window.p5.strokeWeight(2)
-            window.p5.noFill()
-            window.p5.bezier(
+            this.p5.strokeWeight(2)
+            this.p5.noFill()
+            this.p5.bezier(
                 arrow.startVector.x, arrow.startVector.y,
                 arrow.anchorOne.x, arrow.anchorOne.y,
                 arrow.anchorTwo.x, arrow.anchorTwo.y,
@@ -17,8 +24,8 @@ class ArrowViewer {
             )
 
             // Draw the arrow point
-            window.p5.fill(0)
-            window.p5.triangle(
+            this.p5.fill(0)
+            this.p5.triangle(
                 arrow.endVector.x,
                 arrow.endVector.y,
                 arrow.trianglePointOne.x,
@@ -27,7 +34,7 @@ class ArrowViewer {
                 arrow.trianglePointTwo.y,
             )
 
-        window.p5.pop()
+        this.p5.pop()
 
     }
 

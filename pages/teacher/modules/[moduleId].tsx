@@ -1,6 +1,5 @@
 import React from "react";
 import Section from "../../../model/SectionListing";
-import { withRouter, NextRouter } from 'next/router'
 import Module from "../../../model/Module";
 import SectionCard from "../../../components/editor/SectionCard";
 import Layout from "../../../components/Layout";
@@ -9,17 +8,32 @@ import PopupBackground from "../../../components/PopupBackground";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
 import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
+import { GetServerSideProps } from 'next'
 
-interface WithRouterProps {
-    router: NextRouter
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    if (!context.params.moduleId) {
+        return {
+        redirect: {
+            destination: '/teacher/modules',
+            permanent: false,
+        },
+        }
+    }
+    
+    return {
+        props: {
+            moduleId: context.params.moduleId
+        },
+    }
+
 }
 
-interface IProps extends WithRouterProps {
-
+interface IProps {
+    moduleId: string
 }
 
 interface IState {
-    uuid: string,
     sectionCreationPopupVis: boolean,
     module: Module
 }
@@ -30,8 +44,6 @@ class ModulePage extends React.Component<IProps, IState> {
         
         super(props)
 
-        const moduleId = this.props.router.query.moduleId
-
         const dummyModule: Module = {
             name: "dummy",
             creationDate: "dummy",
@@ -41,7 +53,6 @@ class ModulePage extends React.Component<IProps, IState> {
         }
 
         this.state = {
-            uuid: moduleId as string,
             sectionCreationPopupVis: false,
             module: dummyModule
         }
@@ -52,12 +63,7 @@ class ModulePage extends React.Component<IProps, IState> {
 
     componentDidMount() {
 
-        if (!uuid) {
-            this.props.router.push('/editor/modules')
-            return
-        }
-
-        const moduleFromLocalStorageString: string | null = localStorage.getItem(this.state.uuid)
+        const moduleFromLocalStorageString: string | null = localStorage.getItem(this.props.moduleId)
         if (moduleFromLocalStorageString) {
             const module: Module = JSON.parse(moduleFromLocalStorageString)
 
@@ -204,4 +210,4 @@ class ModulePage extends React.Component<IProps, IState> {
 
 }
 
-export default withRouter(ModulePage)
+export default ModulePage

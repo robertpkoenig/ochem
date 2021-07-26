@@ -1,14 +1,14 @@
 import DeleteManager from "./DeleteManager";
-import { EditorController } from "./EditorController";
+import { TeacherController } from "./EditorController";
 import Reaction from "../../model/Reaction";
 import ReactionSaver from "./ReactionSaver";
 
 class Eraser {
 
     reaction: Reaction
-    editorController: EditorController
+    editorController: TeacherController
 
-    constructor(reaction: Reaction, editorController: EditorController) {
+    constructor(reaction: Reaction, editorController: TeacherController) {
         this.reaction = reaction
         this.editorController = editorController
     }

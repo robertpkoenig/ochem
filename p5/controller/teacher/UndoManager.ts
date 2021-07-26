@@ -1,18 +1,18 @@
 import Reaction from "../../model/Reaction"
 import ReactionLoader from "../../utilities/ReactionLoader"
 import Utilities from "../../utilities/Utilities"
-import { EditorController } from "./EditorController"
+import { TeacherController } from "./EditorController"
 
 class UndoManager {
 
     // upstream objects
-    editorController: EditorController
+    editorController: TeacherController
 
     // properties
     undoStack: string[]
     redoStack: string[]
 
-    constructor(editorController: EditorController) {
+    constructor(editorController: TeacherController) {
         this.editorController = editorController
         this.undoStack = []
         this.redoStack = []
@@ -44,22 +44,12 @@ class UndoManager {
         }
     }
 
-    getUndoStackHead(): Reaction | null {
-        const previousModelJSON = this.undoStack.pop()
-        if (previousModelJSON) {
-            this.addRedoPoint()
-            const previousModel: Reaction = ReactionLoader.loadReactionFromJSON(previousModelJSON)
-            return previousModel
-        }
-        return null
-    }
-
     redo() {
 
         const reactionStateToRestore = this.redoStack.pop()
 
         if (reactionStateToRestore) {
-            const currentModel = this.editorController.reaction.currentStep
+            const currentModel = this.editorController.reaction
             const currentModelJSON = JSON.stringify(currentModel)
             this.undoStack.push(currentModelJSON)
             const previousModel: Reaction = ReactionLoader.loadReactionFromJSON(reactionStateToRestore)

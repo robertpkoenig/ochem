@@ -67,7 +67,7 @@ class ReactionStepLoader {
                 }
             }
 
-            restoredCurlyArrow.update()
+            // restoredCurlyArrow.update()
 
             restoredReactionStep.curlyArrow = restoredCurlyArrow
 

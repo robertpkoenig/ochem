@@ -2,16 +2,16 @@ import p5 from "p5";
 import { AtomFactory } from "../../model/chemistry/atoms/AtomFactory";
 import Molecule from "../../model/chemistry/Molecule";
 import Reaction from "../../model/Reaction";
-import { EditorController } from "./EditorController";
 import ReactionSaver from "./ReactionSaver";
+import TeacherController from "./TeacherController";
 
 class SingleAtomMoleculeCreator {
 
 	p5: p5
 	reaction: Reaction
-    editorController: EditorController
+    editorController: TeacherController
 
-	constructor(p5: p5, model: Reaction, editorController: EditorController) {
+	constructor(p5: p5, model: Reaction, editorController: TeacherController) {
         this.p5 = p5
 		this.reaction = model
         this.editorController = editorController

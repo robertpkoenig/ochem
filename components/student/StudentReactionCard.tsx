@@ -26,7 +26,7 @@ export default function StudentReactionCard (props: IReactionCardProps) {
     const isChecked = props.modulesChecked.has(props.module.uuid)
 
     const link =<div className="flex flex-row gap-2">
-                    <Link href={"/editor/reactions/" + props.reactionListing.uuid}>
+                    <Link href={"/student/reactions/" + props.reactionListing.uuid}>
                         <button disabled={isChecked} className={ primaryButtonMd }>Practice</button>
                     </Link>
                 </div>

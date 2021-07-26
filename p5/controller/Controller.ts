@@ -1,11 +1,17 @@
 import p5 from "p5"
 import Reaction from "../model/Reaction"
 import BodyMover from "./BodyMover"
-import { EditorController } from "./editor/EditorController"
+
 import { Vector } from "sat"
-import { IAtomicElement } from "../model/chemistry/atoms/elements"
 import CollisionDetector from "../model/physics/CollisinDetector"
-import ReactionEditor from "../../pages/editor/reactions/test"
+import TeacherReactionPage from "../../pages/teacher/reactions/[reactionId]"
+import StudentReactionPage from "../../pages/student/reactions/[reactionId]"
+import UserType from "../model/UserType"
+import ArrowCreator from "./ArrowCreator"
+import HoverDetector from "./teacher/HoverDetector"
+import StudentController from "./teacher/StudentController"
+import TeacherController from "./teacher/TeacherController"
+
 
 class Controller {
 
@@ -14,46 +20,104 @@ class Controller {
     reaction: Reaction
     collisionDetector: CollisionDetector
 
+    // properties
+    userType: UserType
+
     // downstream collaborating objects
     bodyMover: BodyMover
-    editorController: EditorController
+    hoverDetector: HoverDetector
+    arrowCreator: ArrowCreator
+    teacherController: TeacherController
+    studentController: StudentController
 
-    constructor(p5: p5,
-                reaction: Reaction,
-                collisionDetector: CollisionDetector,
-                reactionEditor: ReactionEditor) {
+    page: StudentReactionPage | TeacherReactionPage
+
+    constructor(
+        p5: p5,
+        reaction: Reaction,
+        collisionDetector: CollisionDetector,
+        page: TeacherReactionPage | StudentReactionPage,
+        userType: UserType) {
 
         this.p5 = p5
         this.reaction = reaction
         this.collisionDetector = collisionDetector
-        
+        this.page = page
+        this.userType = userType
+
+        this.hoverDetector = new HoverDetector(reaction, collisionDetector)
+        this.arrowCreator = new ArrowCreator(reaction, this.hoverDetector, page)
+
         this.bodyMover = new BodyMover(p5, reaction)
-        this.editorController =
-            new EditorController(
-                p5,
-                reaction,
-                collisionDetector,
-                reactionEditor
-            )
+
+        if (userType == UserType.TEACHER) {
+            this.teacherController =
+                new TeacherController(
+                    p5,
+                    reaction,
+                    collisionDetector,
+                    this.hoverDetector,
+                    this.arrowCreator,
+                    this.bodyMover,
+                    page as TeacherReactionPage,
+                    userType
+                )
+            
+            this.arrowCreator.undoManager = this.teacherController.undoManager
+        }
+
+        if (userType == UserType.STUDENT) {
+            this.studentController = 
+                new StudentController(
+                    p5,
+                    reaction,
+                    collisionDetector,
+                    page as StudentReactionPage,
+                    this.hoverDetector,
+                    this.arrowCreator,
+                    this.bodyMover)
+        }
 
     }
 
     process() {
-        this.editorController.process()
+        if (this.reaction.currentStep.curlyArrow) {
+            this.reaction.currentStep.curlyArrow.update(this.p5)
+        }
+        if (this.arrowCreator.draftArrow != null) {
+            this.arrowCreator.draftArrow.update(this.p5)
+        }
+        if (this.userType == UserType.TEACHER) {
+            this.teacherController.process()
+        }
+        if (this.userType == UserType.STUDENT) {
+            this.studentController.process()
+        }
         this.bodyMover.dragBodyIfPressed()
+        this.hoverDetector.detectHovering()
     }
 
     routeMousePressed(mouseVector: Vector) {
-        this.editorController.routeMousePressed(mouseVector)
-        if (this.editorController.reactionEditor.state.bondType == null &&
-            this.editorController.reactionEditor.state.arrowType == null) {
-            this.bodyMover.startDraggingBodyIfPressed(mouseVector)
+        if (this.teacherController) {
+            this.teacherController.routeMousePressed(mouseVector)
+        }
+        if (this.studentController) {
+            this.studentController.routeMousePressed(mouseVector)
+        }
+        if (this.page.state.arrowType != null) {
+            this.arrowCreator.startArrowIfObjectClicked(mouseVector)
         }
     }
 
     routeMouseReleased(mouseVector: Vector) {
-        this.editorController.routeMouseReleased(mouseVector)
+        if (this.teacherController) {
+            this.teacherController.routeMouseReleased(mouseVector)
+        }
+        if (this.studentController) {
+            this.studentController.routeMouseReleased(mouseVector)
+        }
         this.bodyMover.stopDraggingBody()
+
     }
 
 }

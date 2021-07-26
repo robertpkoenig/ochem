@@ -21,9 +21,9 @@ class ReactionStep {
     }
 
     update() {
-        if (this.curlyArrow != null) {
-            this.curlyArrow.update()
-        }
+        // if (this.curlyArrow != null) {
+        //     this.curlyArrow.update()
+        // }
     }
 
     getAllAtoms(): Atom[] {

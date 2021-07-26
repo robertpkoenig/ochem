@@ -67,11 +67,11 @@ function ModuleCard(props: IProps) {
                         Delete
                     </button>
 
-                    <Link href={"/viewer/modules/" + props.moduleListing.uuid}>
+                    <Link href={"/student/modules/" + props.moduleListing.uuid}>
                         <a className={ secondaryButtonSm }>Preview</a>
                     </Link>
 
-                    <Link href={"/editor/modules/" + props.moduleListing.uuid}>
+                    <Link href={"/teacher/modules/" + props.moduleListing.uuid}>
                         <a className={ primaryButtonSm }>Edit</a>
                     </Link>
                 </div>

@@ -4,9 +4,6 @@ class ReactionSaver {
 
     public static saveReaction(reaction: Reaction) {
         localStorage.setItem(reaction.uuid, JSON.stringify(reaction))
-        console.log("saved");
-        console.log(JSON.stringify(reaction));
-        
     }
 
 }

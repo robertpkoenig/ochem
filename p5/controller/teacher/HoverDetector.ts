@@ -2,7 +2,6 @@ import { Atom } from "../../model/chemistry/atoms/Atom";
 import { Bond } from "../../model/chemistry/bonds/Bond";
 import Reaction from "../../model/Reaction";
 import CollisionDetector from "../../model/physics/CollisinDetector";
-import { EditorController } from "./EditorController";
 import { CurlyArrow } from "../../model/chemistry/CurlyArrow";
 
 class HoverDetector {
@@ -10,16 +9,13 @@ class HoverDetector {
     atomCurrentlyHovered: Atom
     bondCurrentlyHovered: Bond
     reaction: Reaction
-    editorController: EditorController
     collisionDetector: CollisionDetector
     arrowCurrentlyHovered: CurlyArrow;
 
     constructor(reaction: Reaction,
-                editorController: EditorController,
                 collisionDetector: CollisionDetector) {
 
         this.reaction = reaction
-        this.editorController = editorController
         this.collisionDetector = collisionDetector
 
         this.atomCurrentlyHovered = null
@@ -51,7 +47,7 @@ class HoverDetector {
 
     }
 
-    detectAtomHover() {
+    private detectAtomHover() {
         for (const atom of this.reaction.currentStep.getAllAtoms()) {
             if (this.collisionDetector.mouseHoveredOverBody(atom)) {
                 this.atomCurrentlyHovered = atom
@@ -61,7 +57,7 @@ class HoverDetector {
         this.atomCurrentlyHovered = null
     }
 
-    detectBondHover() {
+    private detectBondHover() {
         for (const bond of this.reaction.currentStep.getAllBonds()) {
             if (this.collisionDetector.mouseHoveredOverBond(bond)) {
                 this.bondCurrentlyHovered = bond
@@ -71,7 +67,7 @@ class HoverDetector {
         this.bondCurrentlyHovered = null
     }
 
-    detectArrowHover() {        
+    private detectArrowHover() {        
         const arrow = this.reaction.currentStep.curlyArrow
         if (arrow != null && this.collisionDetector.mouseHoveredOverArrow(arrow)) {
             this.arrowCurrentlyHovered = arrow   

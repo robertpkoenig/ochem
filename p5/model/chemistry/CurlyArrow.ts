@@ -1,6 +1,7 @@
 import { Polygon, Vector } from "sat"
 import { Atom } from "./atoms/Atom"
 import { Bond } from "./bonds/Bond"
+import p5 from 'p5'
 
 enum ArrowType {
     SINGLE = "SINGLE",
@@ -22,6 +23,8 @@ class CurlyArrow {
 
     constructor(type: ArrowType) {
         this.type = type
+        this.startObject = null
+        this.endObject = null
     }
 
     toJSON() {
@@ -43,21 +46,21 @@ class CurlyArrow {
     // Updates the arrows properties on each draw loop iteration,
     // so that the curly arrow is always lined up with the atoms/bonds
     // it goes between
-    update() {
-        this.setEndPoints()
+    update(p5: p5) {
+        this.setEndPoints(p5)
         this.setAnchorPoints()
-        this.setTrianglePoints()
-        this.setCollisionPoints()
+        this.setTrianglePoints(p5)
+        this.setCollisionPoints(p5)
     }
 
-    setEndPoints() {
+    setEndPoints(p5: p5) {
         this.startVector = this.startObject.getPosVector()
         if (this.endObject != null) {
             this.endVector = this.endObject.getPosVector()
         }
         else {
-            this.endVector = new Vector(window.p5.mouseX,
-                                        window.p5.mouseY)
+            this.endVector = new Vector(p5.mouseX,
+                                        p5.mouseY)
         }
     }
 
@@ -74,43 +77,43 @@ class CurlyArrow {
 
     }
 
-    setTrianglePoints() {
+    setTrianglePoints(p5: p5) {
 
         // Find the coordinates of the triangle tip
-        let tx = window.p5.bezierTangent(
+        let tx = p5.bezierTangent(
             this.startVector.x,
             this.anchorOne.x,
             this.anchorTwo.x,
             this.endVector.x,
             1
         )
-        let ty = window.p5.bezierTangent(
+        let ty = p5.bezierTangent(
             this.startVector.y,
             this.anchorOne.y,
             this.anchorTwo.y,
             this.endVector.y,
             1
         )
-        let a = window.p5.atan2(ty, tx)
+        let a = p5.atan2(ty, tx)
         a += Math.PI
 
         const angleScale = Math.PI / 10
         const angleAdjust = 0.04
         const triangleLength = 20
 
-        const trianglePointOneX = window.p5.cos(a + angleScale + angleAdjust) * triangleLength + this.endVector.x
-        const trianglePointOneY = window.p5.sin(a + angleScale + angleAdjust) * triangleLength + this.endVector.y
+        const trianglePointOneX = p5.cos(a + angleScale + angleAdjust) * triangleLength + this.endVector.x
+        const trianglePointOneY = p5.sin(a + angleScale + angleAdjust) * triangleLength + this.endVector.y
 
         this.trianglePointOne = new Vector(trianglePointOneX, trianglePointOneY)
 
-        const trianglePointTwoX = window.p5.cos(a - angleScale + angleAdjust) * triangleLength + this.endVector.x
-        const trianglePointTwoY = window.p5.sin(a - angleScale + angleAdjust) * triangleLength + this.endVector.y
+        const trianglePointTwoX = p5.cos(a - angleScale + angleAdjust) * triangleLength + this.endVector.x
+        const trianglePointTwoY = p5.sin(a - angleScale + angleAdjust) * triangleLength + this.endVector.y
 
         this.trianglePointTwo = new Vector(trianglePointTwoX, trianglePointTwoY)
 
     }
 
-    setCollisionPoints() {
+    setCollisionPoints(p5: p5) {
 
         this.points = []
 
@@ -120,7 +123,7 @@ class CurlyArrow {
 
             let t = i / steps;
 
-            let x = window.p5.bezierPoint(
+            let x = p5.bezierPoint(
                 this.startVector.x,
                 this.anchorOne.x,
                 this.anchorTwo.x,
@@ -128,7 +131,7 @@ class CurlyArrow {
                 t
             )
 
-            let y = window.p5.bezierPoint(
+            let y = p5.bezierPoint(
                 this.startVector.y,
                 this.anchorOne.y,
                 this.anchorTwo.y,

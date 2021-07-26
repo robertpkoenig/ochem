@@ -1,5 +1,5 @@
 import Constants from "../Constants";
-import { EditorController } from "../controller/editor/EditorController";
+import TeacherController from "../controller/teacher/TeacherController";
 import { Atom } from "../model/chemistry/atoms/Atom";
 import { Bond } from "../model/chemistry/bonds/Bond";
 import BondType from "../model/chemistry/bonds/BondType";
@@ -7,13 +7,12 @@ import Reaction from "../model/Reaction";
 import CollisionDetector from "../model/physics/CollisinDetector";
 import p5 from "p5";
 import { CurlyArrow } from "../model/chemistry/CurlyArrow";
-import ArrowViewer from "./ArrowViewer";
 
-class EditorView {
+class TeacherView {
 
     p5: p5
     reaction: Reaction
-    editorController: EditorController
+    editorController: TeacherController
     collisionDetector: CollisionDetector
 
     panelCenterX: number
@@ -23,7 +22,7 @@ class EditorView {
 
     constructor(p5: p5,
                 reaction: Reaction,
-                editorController: EditorController,
+                editorController: TeacherController,
                 collisionDetector: CollisionDetector) 
     {
         this.p5 = p5
@@ -47,7 +46,6 @@ class EditorView {
         this.decorateArrowIfHovered()
 
         this.renderDraftBond()
-        this.renderDraftArrow()
 
     }
 
@@ -57,7 +55,7 @@ class EditorView {
 
         if (hoveredAtom != null) {
 
-            if (this.editorController.reactionEditor.state.eraserOn) {
+            if (this.editorController.teacherReactionPage.state.eraserOn) {
                 this.drawAtomOutline(hoveredAtom, Constants.RED_OUTLINE_COLOR)
                 this.showEraserTip()
             }
@@ -106,12 +104,12 @@ class EditorView {
         const hoveredBond = this.editorController.hoverDetector.bondCurrentlyHovered
 
         if (hoveredBond != null) {
-            if (this.editorController.reactionEditor.state.eraserOn) {
+            if (this.editorController.teacherReactionPage.state.eraserOn) {
                 this.drawBondOutline(hoveredBond, Constants.RED_OUTLINE_COLOR)
                 this.showEraserTip()
                 this.eraserTipVisible = true
             }
-            if (this.editorController.reactionEditor.state.arrowType != null) {
+            if (this.editorController.teacherReactionPage.state.arrowType != null) {
                 this.drawBondOutline(hoveredBond, Constants.BLUE_OUTLINE_COLOR)
             }
         }
@@ -160,7 +158,7 @@ class EditorView {
 
                 this.p5.fill(0)
 
-                if (this.editorController.reactionEditor.state.bondType == BondType.SINGLE) {
+                if (this.editorController.teacherReactionPage.state.bondType == BondType.SINGLE) {
                 this.p5.stroke(0)
                 this.p5.line(this.editorController.bondCreator.startAtom.circle.pos.x,
                     this.editorController.bondCreator.startAtom.circle.pos.y,
@@ -168,7 +166,7 @@ class EditorView {
                     this.p5.mouseY)
                 }
 
-                if (this.editorController.reactionEditor.state.bondType == BondType.DOUBLE) {
+                if (this.editorController.teacherReactionPage.state.bondType == BondType.DOUBLE) {
                     this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3)
                     this.p5.stroke(0)
                     this.p5.line(this.editorController.bondCreator.startAtom.circle.pos.x,
@@ -192,9 +190,8 @@ class EditorView {
     decorateArrowIfHovered() {
 
         const arrow = this.editorController.hoverDetector.arrowCurrentlyHovered
-        // console.log(arrow);
         
-        if (arrow != null && this.editorController.reactionEditor.state.eraserOn) {
+        if (arrow != null && this.editorController.teacherReactionPage.state.eraserOn) {
             this.drawArrowOutline(arrow, Constants.RED_OUTLINE_COLOR)
         }
 
@@ -223,14 +220,6 @@ class EditorView {
 
     }
 
-    renderDraftArrow() {
-        const draftArrow = 
-            this.editorController.arrowCreator.draftArrow
-        if (draftArrow != null) {
-            ArrowViewer.renderArrow(draftArrow)
-        } 
-    }
-
 }
 
-export default EditorView
+export default TeacherView

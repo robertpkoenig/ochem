@@ -1,5 +1,5 @@
 import p5 from "p5";
-import PanelController from "./controller/editor/PanelController";
+import PanelController from "./controller/teacher/PanelController";
 
 declare global {
 	interface Window {

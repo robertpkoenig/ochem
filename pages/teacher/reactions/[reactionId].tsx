@@ -1,16 +1,18 @@
 import { Switch } from "@headlessui/react"
 import { ArrowLeftIcon, PlusIcon, XIcon } from "@heroicons/react/solid"
+import { GetServerSideProps } from "next"
 import Link from "next/link"
-import { NextRouter, withRouter } from "next/router"
 import React from "react"
-import { RotateCcw, RotateCw, ThumbsDown } from "react-feather"
-import ReactionSaver from "../../../p5/controller/editor/ReactionSaver"
-import UndoManager from "../../../p5/controller/editor/UndoManager"
+import { RotateCcw, RotateCw } from "react-feather"
+import Constants from "../../../p5/Constants"
+import TeacherController from "../../../p5/controller/teacher/TeacherController"
+import ReactionSaver from "../../../p5/controller/teacher/ReactionSaver"
 import { AtomicElements } from "../../../p5/model/chemistry/atoms/elements"
 import BondType from "../../../p5/model/chemistry/bonds/BondType"
 import { ArrowType } from "../../../p5/model/chemistry/CurlyArrow"
 import Reaction from "../../../p5/model/Reaction"
 import ReactionStep from "../../../p5/model/ReactionStep"
+import UserType from "../../../p5/model/UserType"
 import ReactionLoader from "../../../p5/utilities/ReactionLoader"
 import ReactionStepLoader from "../../../p5/utilities/ReactionStepLoader"
 import Utilities from "../../../p5/utilities/Utilities"
@@ -21,41 +23,41 @@ const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex j
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
 const buttonImage = "w-4 h-4"
 
-interface WithRouterProps {
-    router: NextRouter
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    return {
+        props: {
+            reactionId: context.params.reactionId
+        }, // will be passed to the page component as props
+    }
 }
 
-interface IProps extends WithRouterProps {
-
+interface IProps {
+    reactionId: string
 }
 
 interface IState {
-    reaction: Reaction | null
-    reactionId: string
+    reaction: Reaction
     physicsOn: boolean
     eraserOn: boolean
-    bondType: BondType | null
-    arrowType: ArrowType | null
-    undoManager: UndoManager | null
-    selectedElement: HTMLElement | null
+    bondType: BondType
+    arrowType: ArrowType
+    editorController: TeacherController
+    selectedElement: HTMLElement
 }
 
-class ReactionEditor extends React.Component<IProps, IState> {
+class TeacherReactionPage extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
 
         super(props)
 
-        const reactionId = this.props.router.query.reactionId
-
         this.state = {
             reaction: null,
-            reactionId: reactionId as string,
             physicsOn: false,
             eraserOn: false,
             bondType: null,
             arrowType: null,
-            undoManager: null,
+            editorController: null,
             selectedElement: null,
         }
 
@@ -66,13 +68,10 @@ class ReactionEditor extends React.Component<IProps, IState> {
 
         // Add logic to redirect if uuid of reaction is missing
 
-        const reactionRawJSON: string | null = localStorage.getItem(this.state.reactionId)
+        const reactionRawJSON: string | null = localStorage.getItem(this.props.reactionId)
         let reaction: Reaction | null = null
         if (reactionRawJSON) {
             reaction = ReactionLoader.loadReactionFromJSON(reactionRawJSON)
-
-            console.log(reaction);
-            
 
             this.setState({
                 ...this.state,
@@ -82,17 +81,19 @@ class ReactionEditor extends React.Component<IProps, IState> {
 
         // Create the p5 element
         if (window) {
-            const createP5Sketch = (await import("../../../p5/Sketch")).default
+            
+            const createP5Context = (await import("../../../p5/Sketch")).default
             
             if (!reaction) throw new Error("reaction not loaded")
-            createP5Sketch(this, reaction)
+            createP5Context(this, UserType.TEACHER, reaction)
+
         }
 
     }
 
     togglePublication() {
 
-        this.state.undoManager.addUndoPoint()
+        this.state.editorController.undoManager.addUndoPoint()
         
         this.state.reaction.published = !this.state.reaction.published
 
@@ -180,6 +181,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
         }
         this.state.reaction.currentStep = selectedStep
         ReactionSaver.saveReaction(this.state.reaction)
+        this.forceUpdate()
     }
 
     createNewStep() {
@@ -187,6 +189,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
         const lastStep = steps[steps.length - 1]
         const lastStepJSON = JSON.stringify(lastStep)
         const newStep = ReactionStepLoader.loadReactionStepFromJSON(lastStepJSON)
+        newStep.curlyArrow = null
         newStep.uuid = Utilities.generateUid()
         newStep.order += 1
 
@@ -199,7 +202,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
 
     deleteStep(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, stepId: string) {
 
-        this.state.undoManager.addUndoPoint()
+        this.state.editorController.undoManager.addUndoPoint()
 
         let stepToDelete: ReactionStep | null = null
 
@@ -240,39 +243,21 @@ class ReactionEditor extends React.Component<IProps, IState> {
 
     }
 
-    setUndoManager(undoManager: UndoManager) {
+    setController(editorController: TeacherController) {
         this.setState({
             ...this.state,
-            undoManager: undoManager
+            editorController: editorController
         })
     }
 
     undo() {
-
-        this.state.undoManager.undo()
+        this.state.editorController.undoManager.undo()
         this.forceUpdate()
-
-        // if (this.state.undoManager == null) {
-        //     throw new Error("Undo manager has not been assigned")
-        // }
-
-        // const undoStackHead = this.state.undoManager.getUndoStackHead()
-        // if (undoStackHead != null) {
-        //     this.setState({
-        //         ...this.state,
-        //         reaction: undoStackHead
-        //     })
-        // }
-
-        // this.state.undoManager.editorController.reaction.replaceWithNewModel(undoStackHead)
-
     }
 
     redo() {
-        if (this.state.undoManager == null) {
-            throw new Error("Undo manager has not been assigned")
-        }
-        this.state.undoManager.redo()
+        this.state.editorController.undoManager.redo()
+        this.forceUpdate()
     }
 
     render() {
@@ -305,8 +290,8 @@ class ReactionEditor extends React.Component<IProps, IState> {
 
                     <button
                         id={element.name}
-                        onMouseDown={() => window.panelController.selectElement(element.name)}
-                        onMouseUp={() => window.panelController.dropElement()}
+                        onMouseDown={() => this.state.editorController.panelController.selectElement(element.name)}
+                        onMouseUp={() => this.state.editorController.panelController.dropElement()}
                         style={{backgroundColor: element.color, cursor: "grab"}}
                         className="rounded-full w-40 h-40 text-white font-semibold text-md flex items-center justify-center z-10"
                     >
@@ -325,7 +310,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
                                             onClick={() => this.setCurrentStep(step.uuid)}
                                             key={step.uuid}
                                             className={"group relative px-2 flex gap-1 items-center rounded-md  hover:bg-indigo-700 hover:text-white cursor-pointer " +
-                                            (step.uuid === this.state.reaction.currentStep.uuid
+                                            (step === this.state.reaction.currentStep
                                                 ? " text-white bg-indigo-700" : null)}
                                         >
                                             <span className="text-sm font-medium my-1">
@@ -337,7 +322,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
                                                     ((this.state.reaction.steps.length > 1) ? " group-hover:visible" : null)}
                                                 style={{transform: "translate(40%, -40%)"}}
                                             >
-                                                    <XIcon className="w-3 h-3" />
+                                                    <XIcon className="w-2 h-2" />
                                             </button>
                                         </li>
                                     ))
@@ -354,7 +339,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
                 <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 ">
                     <div className="flex flex-col justify-left border-b border-indigo-400">
 
-                        <Link href={"/editor/modules/" + this.state.reaction?.moduleId}>
+                        <Link href={"/teacher/modules/" + this.state.reaction?.moduleId}>
                             <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
                             <ArrowLeftIcon className="w-3 h-3" />
                             Module name goes here | Section name
@@ -449,7 +434,6 @@ class ReactionEditor extends React.Component<IProps, IState> {
                                 <button
                                     className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
                                     onClick={() => this.setArrowType(ArrowType.SINGLE)}
-
                                 >
                                     <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
                                 </button>
@@ -483,7 +467,7 @@ class ReactionEditor extends React.Component<IProps, IState> {
                             </div>
 
                         {/* p5 canvas */}
-                        <div id="p5-canvas" className="bg-white rounded-lg shadow flex-grow">
+                        <div id={Constants.CANVAS_PARENT_NAME} className="bg-white rounded-lg shadow flex-grow">
                             <div className=" p-5 absolute flex flex-row items-center gap-2 text-sm text-gray-500">
                                 Physics
                                 <Switch
@@ -525,5 +509,4 @@ class ReactionEditor extends React.Component<IProps, IState> {
 
 }
 
-export default withRouter(ReactionEditor)
-export { ReactionEditor }
+export default TeacherReactionPage

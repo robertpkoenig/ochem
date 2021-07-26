@@ -6,19 +6,19 @@ import { Bond } from "../../model/chemistry/bonds/Bond";
 import Molecule from "../../model/chemistry/Molecule";
 import Reaction from "../../model/Reaction";
 import Utilities from "../../utilities/Utilities";
-import { EditorController } from "./EditorController";
+import { TeacherController } from "./EditorController";
 import ReactionSaver from "./ReactionSaver";
 
 class BondCreator {
 
     // upstream objects
 	reaction: Reaction
-    editorController: EditorController
+    editorController: TeacherController
 
     // properties
 	startAtom: Atom
 
-	constructor(model: Reaction, editorController: EditorController) {
+	constructor(model: Reaction, editorController: TeacherController) {
 
 		this.reaction = model
         this.editorController = editorController

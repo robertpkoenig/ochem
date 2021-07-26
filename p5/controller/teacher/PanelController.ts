@@ -9,14 +9,14 @@ import ReactionStep from "../../model/ReactionStep";
 import ReactionStepLoader from "../../utilities/ReactionStepLoader";
 import Utilities from "../../utilities/Utilities";
 import DomElementCreator from "../../view/DomElementCreator";
-import { EditorController } from "./EditorController";
+import { TeacherController } from "./EditorController";
 
 class PanelController {
 
 	// upstream objects
     p5: p5
 	reaction: Reaction
-	editorController: EditorController
+	editorController: TeacherController
 
     // properties
     leftX: number | undefined
@@ -24,24 +24,14 @@ class PanelController {
     topY: number | undefined
     bottomY: number | undefined
 
-    physicsOn: boolean
-    eraserOn: boolean
-    bondType: BondType | null
-    curlyArrowType: ArrowType | null
-
     selectedElement: Element | null
     selectedElementId: string | null
 	
-	constructor(p5: p5, reaction: Reaction, editorController: EditorController) {
+	constructor(p5: p5, reaction: Reaction, editorController: TeacherController) {
 
         this.p5 = p5
 		this.reaction = reaction
 		this.editorController = editorController
-
-        this.physicsOn = false
-        this.eraserOn = false
-        this.bondType = null
-        this.curlyArrowType = null
         
         this.selectedElement = null
         this.selectedElementId = null

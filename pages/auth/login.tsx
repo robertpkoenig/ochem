@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import React from 'react'
-import NavBar from '../../components/NavBar'
 import LogInCard from '../../components/LogInCard'
 
 export default function Login() {

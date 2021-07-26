@@ -1,5 +1,7 @@
 class Constants  {
 
+    public static CANVAS_PARENT_NAME = "p5-canvas"
+
     public static ATOM_RADIUS = 20
     public static ELECTRON_BOND_DIST = 10
     public static ELECTRON_ORBIT_RADIUS = Constants.ATOM_RADIUS + 10
