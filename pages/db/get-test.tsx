@@ -5,10 +5,10 @@ export default function GetTest() {
 
     async function getData() {
 
-        firebaseClient()
+        // firebaseClient()
         const db = getFirestore()
 
-        const docRef = doc(db, "cities", "LA");
+        const docRef = doc(db, "module_listings", "66dbeb59-c83e-496b-8d16-fa4574517611");
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {

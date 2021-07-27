@@ -1,8 +1,6 @@
 
-import BlueNavBar from '../../../components/BlueNavBar'
 import Layout from '../../../components/Layout'
-import { Plus } from 'react-feather'
-import React from 'react'
+import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import { PlusIcon } from '@heroicons/react/solid'
 import ModulePopup from '../../../components/editor/ModulePopup'
 import PopupBackground from '../../../components/PopupBackground'
@@ -11,143 +9,139 @@ import ModuleCard from '../../../components/editor/ModuleCard'
 import ModuleListing from '../../../model/ModuleListing'
 import Module from '../../../model/Module'
 import { emptyState } from '../../../styles/common-styles'
+import { collection, query, where, doc, getDocs, getFirestore, setDoc } from "firebase/firestore";
+import { AuthContext } from '../../../context/provider'
+import LoadingScreen from '../../../components/LoadingScreen'
+import FirebaseConstants from '../../../model/FirebaseConstants'
 
 interface IProps {
 }
 
-interface IState {
-    createModulePopupVisible: boolean
-    deleteModulePopupVisible: boolean
-    moduleListings: ModuleListing[]
-}
+export default function Modules(props: IProps) {
 
-export default class Modules extends React.Component<IProps, IState> {
-
-    constructor(props: any) {
-        super(props)
-        this.state = {
-            createModulePopupVisible: false,
-            deleteModulePopupVisible: false,
-            moduleListings: []
-        }
-        this.createModule = this.createModule.bind(this)
-        this.toggleDeleteModulePopup = this.toggleDeleteModulePopup.bind(this)
-        this.updateListOfModules = this.updateListOfModules.bind(this)
-    }
+    const [doneLoading, setDoneLoading] = useState<boolean>(false)
+    const [createModulePopupVisible, setCreateModulePopupVisible] = useState<boolean>(false)
+    const [deleteModulePopupVisible, setDeleteModulePopupVisible] = useState<boolean>(false)
+    const [moduleListings, setModuleListings] = useState<ModuleListing[]>([])
 
     // Get modules from local storage
     // Replace this with firebase soon
-    componentDidMount() {
-        const listingsFromLocalStorageString: string | null = localStorage.getItem('moduleListings')
-        if (listingsFromLocalStorageString) {
-            const moduleListings = JSON.parse(listingsFromLocalStorageString)
-            console.log(moduleListings);
-            
-            this.setState({
-                ...this.state,
-                moduleListings: moduleListings
-            })
+
+    const { user } = useContext(AuthContext)
+    const db = getFirestore()
+
+    async function getData() {
+
+        // console.log("within the use effect of index", user.uid)
+
+        const q = query(
+            collection(db, FirebaseConstants.MODULE_LISTINGS),
+            where(FirebaseConstants.AUTHOR_ID, "==", user.uid)
+        )
+        // console.log(q)
+    
+        const querySnapshot = await getDocs(q)
+        
+        const fetchedModuleListings: ModuleListing[] = []
+
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data())
+            fetchedModuleListings.push(doc.data() as ModuleListing)
+        })
+
+        setModuleListings(fetchedModuleListings)
+
+        setDoneLoading(true)
+
+    }
+
+    useEffect(() => {
+        console.log("useEffect triggered");
+        
+        if (user) {
+            getData()
         }
+    }, [user])
+
+    function toggleCreateModulePopup() {
+        setCreateModulePopupVisible(!createModulePopupVisible)
     }
 
-    toggleCreateModulePopup() {
-        this.setState((prevState) => {
-            return {
-                ...prevState,
-                createModulePopupVisible: !prevState.createModulePopupVisible
-            }
-        })
+    function toggleDeleteModulePopup() {
+        setDeleteModulePopupVisible(!deleteModulePopupVisible)
     }
 
-    toggleDeleteModulePopup() {
-        this.setState((prevState) => {
-            return {
-                ...prevState,
-                deleteModulePopupVisible: !prevState.deleteModulePopupVisible
-            }
-        })
-    }
-
-    createModule(name: string) {
+    function createModule(name: string) {
         const moduleId = uuid()
         const creationDate = Date.now().toString()
         const newModule: Module = {
             name: name,
             creationDate: creationDate,
-            authorId: "dummy",
+            authorId: user.uid,
             sections: [],
             uuid: moduleId
         }
-        localStorage.setItem(
-            moduleId,
-            JSON.stringify(newModule)
-        )
-        this.createModuleListing(name, moduleId, creationDate)
+        setDoc(doc(db, "modules", moduleId), newModule);
+        createModuleListing(name, moduleId, creationDate)
     }
 
-    createModuleListing(name: string, moduleId: string, creationDate: string) {
+    function createModuleListing(name: string, moduleId: string, creationDate: string) {
         const newModuleListing: ModuleListing = {
             name: name,
             creationDate: creationDate,
             authorId: "dummy",
             uuid: moduleId
         }
-        const augmentedModuleListings = Object.assign(this.state.moduleListings)
-        augmentedModuleListings.push(newModuleListing)
-        this.setState({
-            ...this.state,
-            moduleListings: augmentedModuleListings
-        })
-        localStorage.setItem(
-            "moduleListings",
-            JSON.stringify(augmentedModuleListings)
+        setDoc(doc(db, "module_listings", moduleId), {
+            name: name,
+            creationDate: creationDate,
+            authorId: user.uid,
+            uuid: moduleId
+        });
+        setModuleListings([newModuleListing, ...moduleListings])
+    }
+
+    const moduleListEmptyState = <div className={emptyState}
+                                    >
+                                    You don't have any modules yet
+                                    </div>
+                                    
+    const moduleList: ReactNode = (
+    
+        <div className="bg-white border border-gray-300 overflow-hidden rounded-md">
+            <ul className="divide-y divide-gray-300">
+                {moduleListings.map((moduleListing: ModuleListing) => 
+                    <li key={moduleListing.uuid} className="px-6 py-4">
+                        <ModuleCard
+                            moduleListing={moduleListing}
+                            moduleListings={moduleListings}
+                            updateModuleListings={setModuleListings}
+                        />
+                    </li>
+                )}
+            </ul>
+        </div>
+
+    )
+
+    if (!doneLoading) {
+        return (
+            <LoadingScreen />
         )
     }
 
-    updateListOfModules(moduleListCopy: ModuleListing[]) {
-
-        // Reset the state with the filter list
-        this.setState({
-            ...this.state,
-            moduleListings: moduleListCopy
-        })
-
-    }
-
-    render() {
-
-        const moduleListEmptyState = <div className={emptyState}
-                                      >
-                                      You don't have any modules yet
-                                      </div>
-                                      
-        const moduleList: any = (
-        
-            <div className="bg-white border border-gray-300 overflow-hidden rounded-md">
-                <ul className="divide-y divide-gray-300">
-                    {this.state.moduleListings.map((moduleListing: ModuleListing) => 
-                        <li key={moduleListing.uuid} className="px-6 py-4">
-                            <ModuleCard
-                                moduleListing={moduleListing}
-                                moduleListings={this.state.moduleListings}
-                                updateModuleListings={this.updateListOfModules}
-                            />
-                        </li>
-                    )}
-                </ul>
-            </div>
-
-        )
-
+    if (doneLoading) {
         return (
 
             <Layout
                 title="Modules"
                 subtitle="Create collections for modules you teach"
             >
-                    <div className="flex flex-col gap-2">
+
+                <div className="flex flex-col gap-2">
                     {
-                    this.state.moduleListings.length > 0
+                    moduleListings.length > 0
                     ?
                     moduleList
                     :
@@ -158,18 +152,18 @@ export default class Modules extends React.Component<IProps, IState> {
                 <button
                     type="button"
                     className="mt-6 inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                    onClick={this.toggleCreateModulePopup.bind(this)}
+                    onClick={toggleCreateModulePopup}
                 >
                     <PlusIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
                     New module
                 </button>
 
-                {this.state.createModulePopupVisible 
+                {createModulePopupVisible 
                     ?
-                    <PopupBackground popupCloseFunction={this.toggleCreateModulePopup.bind(this)}>
+                    <PopupBackground popupCloseFunction={toggleCreateModulePopup}>
                         <ModulePopup
-                            popupCloseFunction={this.toggleCreateModulePopup.bind(this)} 
-                            moduleAdditionFunction={this.createModule} 
+                            popupCloseFunction={toggleCreateModulePopup} 
+                            moduleAdditionFunction={createModule} 
                         />
                     </PopupBackground>
                     :
@@ -179,7 +173,6 @@ export default class Modules extends React.Component<IProps, IState> {
             </Layout>
 
         )
-
     }
 
 }

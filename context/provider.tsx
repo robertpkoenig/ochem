@@ -1,56 +1,60 @@
-import { getAuth, User } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 import firebaseClient from "../firebaseClient";
 import nookies from "nookies"
+import router, { useRouter } from "next/router";
 
 type authContextType = {
     user: User
-};
+}
 
 const authContextDefaultValues: authContextType = {
     user: null
-};
+}
 
-const AuthContext = createContext<authContextType>(authContextDefaultValues);
+export const AuthContext = createContext<authContextType>(authContextDefaultValues);
 
 export function useAuth() {
-    return useContext(AuthContext);
+    return useContext(AuthContext)
 }
 
 type Props = {
     children: ReactNode;
-};
+}
 
 export function AuthProvider({ children }: Props) {
     const [user, setUser] = useState<User | null>(null);
 
     firebaseClient()
-    const auth = getAuth();
+
+    const router = useRouter()
 
     useEffect(() => {
-        return auth.onIdTokenChanged(async (oldUser) => {
-            if (!oldUser) {
-                setUser(null)
-                nookies.set(undefined, "token", "", {})
-            }
-            else {
-                const token = await oldUser.getIdToken()
-                setUser(oldUser)
-                nookies.set(undefined, "token", token, {})
-            }
-        })
-    }, [])
 
-    console.log("user within the provider", user);
+        const auth = getAuth();
     
+        if (!user) {
+            onAuthStateChanged(auth, (loggedInUser) => {
+                setUser(loggedInUser)
 
-    const value = {
+                if (!loggedInUser) {            
+                    if (router.pathname != "/") {
+                        router.push('/')
+                    }
+                }
+
+           })
+        }
+
+    })
+
+    const authContext = {
         user
-    };
+    }
 
     return (
         <>
-            <AuthContext.Provider value={value}>
+            <AuthContext.Provider value={authContext}>
                 {children}
             </AuthContext.Provider>
         </>

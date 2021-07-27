@@ -5,6 +5,9 @@ import { primaryButtonMd, primaryButtonSm, redButtonMd, redButtonSm, secondaryBu
 import PopupBackground from "../PopupBackground"
 import DeletionPopup from "./DeletionPopup"
 
+import { getFirestore, doc, deleteDoc } from "firebase/firestore";
+import firebaseClient from "../../firebaseClient";
+
 const cardStyling = `flex flex-row space-between`
 
 interface IProps {
@@ -24,6 +27,8 @@ function ModuleCard(props: IProps) {
 
     function deleteModule() {
 
+        const db = getFirestore()
+
         // Get copy of list of modules 
         let moduleListCopy: ModuleListing[] = Object.assign(props.moduleListings)
 
@@ -35,14 +40,12 @@ function ModuleCard(props: IProps) {
         // Update the state on the parent list of modules
         props.updateModuleListings(moduleListCopy)
         
-        // Reset the local storage list of moduleListings
-        localStorage.setItem(
-            "moduleListings",
-            JSON.stringify(moduleListCopy)
-        )
+        // Remove module listing from the "module_listings" collection
+        deleteDoc(doc(db, "module_listings", props.moduleListing.uuid))
 
-        // Remove the module from local storage
-        localStorage.removeItem(props.moduleListing.uuid)
+        // TODO Remove the module from the modules collection
+        deleteDoc(doc(db, "modules", props.moduleListing.uuid))
+
         
     }
 
