@@ -1,160 +1,108 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Section from "../../../model/SectionListing";
-import { withRouter, NextRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import Module from "../../../model/Module";
 import Layout from "../../../components/Layout";
-import { PlusIcon } from "@heroicons/react/solid";
-import PopupBackground from "../../../components/PopupBackground";
-import SectionPopup from "../../../components/editor/SectionPopup";
-import { v4 as uuid } from 'uuid'
 import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
 import StudentSectionCard from "../../../components/student/StudentSectionCard";
+import { AuthContext } from "../../../context/provider";
+import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import FirebaseConstants from "../../../model/FirebaseConstants";
+import ScreenWithLoading from "../../../components/ScreenWithLoading";
 
-interface WithRouterProps {
-    router: NextRouter
+interface IProps {
+
 }
 
-interface IProps extends WithRouterProps {
+export default function ModulePage(props: IProps) {
 
-}
+    const [moduleId, setModuleId] = useState<string>(null)
+    const [module, setModule] = useState<Module>(null)
+    const [loading, setLoading] = useState<boolean>(true)
+    const [reactionsChecked, setReactionsChecked] = useState<Set<string>>(null)
 
-interface IState {
-    uuid: string,
-    sectionCreationPopupVis: boolean,
-    module: Module
-    modulesChecked: Set<string>
-}
+    const { user } = useContext(AuthContext)
+    const db = getFirestore()
+    const router = useRouter()
 
-class ModulePage extends React.Component<IProps, IState> {
+    async function getData() {
+        const moduleId = router.query.moduleId as string
 
-    constructor(props: IProps) {
+        const moduleDocRef = doc(db, FirebaseConstants.MODULES, moduleId);
+        const docSnap = await getDoc(moduleDocRef);
+        setModule(docSnap.data() as Module)
         
-        super(props)
+        setReactionsChecked(new Set<string>(user.completedReactionIds))
 
-        const moduleId = this.props.router.query.moduleId
-
-        const dummyModule: Module = {
-            name: "dummy",
-            creationDate: "dummy",
-            authorId: "dummy",
-            sections: [],
-            uuid: "dummy"
-        }
-
-        this.state = {
-            uuid: moduleId as string,
-            sectionCreationPopupVis: false,
-            module: dummyModule,
-            modulesChecked: new Set()
-        }
-
-        this.toggleReactionInCheckedReactions = this.toggleReactionInCheckedReactions.bind(this)
-
+        setLoading(false)
     }
 
-    componentDidMount() {
-
-        if (!uuid) {
-            this.props.router.push('/editor/modules')
-            return
+    useEffect(() => {
+        if (user) {
+            getData()
         }
+    }, [user, moduleId])
 
-        const moduleFromLocalStorageString: string | null = localStorage.getItem(this.state.uuid)
+    function toggleReactionInCheckedReactions(reactionId: string) {
 
-        if (!moduleFromLocalStorageString)
-            throw new Error("module not found in localStorage")
+        const copyOfCheckedReactions = new Set<string>()
 
-        if (moduleFromLocalStorageString) {
-            const module: Module = JSON.parse(moduleFromLocalStorageString)
-
-            this.setState(prevState => {
-                return {
-                    ...prevState,
-                    module: module
-                }
-            })
-        }
-
-        // get the records of what reactions have been checked
-        const modulesCheckedRawArray = JSON.parse(localStorage.getItem("modulesChecked"))
-        const modulesCheckedSet = new Set<string>()
-
-        console.log("modulesCheckedRawArray from storage", modulesCheckedRawArray);
-
-        if (modulesCheckedRawArray) {
-
-            for (const item of modulesCheckedRawArray) {
-                modulesCheckedSet.add(item)
-            }
-
-            this.setState(prevState => {
-                return {
-                    ...prevState,
-                    modulesChecked: modulesCheckedSet
-                }
-            })
-
-        }
-
-    }
-
-    toggleReactionInCheckedReactions(reactionId: string) {
-
-        const copyOfCheckedModules = new Set<string>()
-
-        this.state.modulesChecked.forEach(value => {
-            copyOfCheckedModules.add(value)
+        reactionsChecked.forEach(value => {
+            copyOfCheckedReactions.add(value)
         })
 
-        if (this.state.modulesChecked.has(reactionId)) {
-            copyOfCheckedModules.delete(reactionId)
+        if (reactionsChecked.has(reactionId)) {
+            copyOfCheckedReactions.delete(reactionId)
         }
         else {
-            copyOfCheckedModules.add(reactionId)
+            copyOfCheckedReactions.add(reactionId)
         }
-
-        this.setState({
-            ...this.state,
-            modulesChecked: copyOfCheckedModules
-        })
-
-        localStorage.setItem("modulesChecked", JSON.stringify(Array.from(copyOfCheckedModules)))
-
-        console.log(JSON.stringify(Array.from(copyOfCheckedModules)));
         
+        setReactionsChecked(copyOfCheckedReactions)
+
+        const db = getFirestore()
+        const docRef = doc(db, "users", user.userId);
+        updateDoc(docRef, {
+            completedReactionIds: [...copyOfCheckedReactions]
+        })
 
     }
 
-    render() {
+    const sectionListEmptyState =   <div className={emptyState}>
+                                        This module has no sections
+                                    </div>
 
-        const sectionList = (
+    let sectionList: React.ReactNode = null
+
+    if (module && module.sections) {
+        sectionList = (
             <div className="flex flex-col gap-5 ">
-                {this.state.module.sections.map((sectionListing: Section) => 
+                {module.sections.map((sectionListing: Section) => 
                     <div key={sectionListing.order}>
                         <StudentSectionCard
                             section={sectionListing}
-                            module={this.state.module}
-                            modulesChecked={this.state.modulesChecked}
-                            checkAdditionFunction={this.toggleReactionInCheckedReactions}
+                            module={module}
+                            reactionsChecked={reactionsChecked}
+                            checkAdditionFunction={toggleReactionInCheckedReactions}
                         />
                     </div>
                 )}
             </div>
         )
+    }
 
-        return (
+    return (
 
+        <ScreenWithLoading loading={loading} >
             <Layout
-                title={this.state.module.name}
+                title={module ? module.name : null}
                 subtitle="Subtitle or explenation for this module"
             >
-                {sectionList}
+                {module && module.sections ? sectionList : sectionListEmptyState}
             </Layout>
+        </ScreenWithLoading>
 
-        )
-
-    }
+    )
 
 }
 
-export default withRouter(ModulePage)

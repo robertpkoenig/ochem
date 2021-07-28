@@ -12,6 +12,24 @@ class Molecule {
         this.bonds = []
     }
 
+    toJSON() {
+
+        const atomsAsPlainObjectArray = []
+        for (const atom of this.atoms) {
+            atomsAsPlainObjectArray.push(atom.toJSON())
+        }
+
+        const bondsAsPlainObjectArray = []
+        for (const bond of this.bonds) {
+            bondsAsPlainObjectArray.push(bond.toJSON())
+        }
+
+        return {
+            atoms: atomsAsPlainObjectArray,
+            bonds: bondsAsPlainObjectArray,
+        }
+    }
+
     // Push everything from molecule two to molecule one
     public static mergeTwoMolecules(reaction: Reaction, molOne: Molecule, molTwo: Molecule) {
         

@@ -11,9 +11,11 @@ import { v4 as uuid } from 'uuid'
 import DeletionPopup from './DeletionPopup';
 import Reaction from '../../p5/model/Reaction';
 import ReactionStep from '../../p5/model/ReactionStep';
-import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import { AuthContext } from '../../context/provider';
 
 interface IProps {
+    userId: string
     section: Section
     module: Module
     setModuleFunction: (moduleCopy: Module) => void
@@ -145,13 +147,15 @@ export default function SectionCard(props: IProps) {
             published: false,
             uuid: reactionId,
             creationDate: creationDate,
-            authorId: "dummy"
+            authorId: props.userId
         }
 
         props.section.reactionListings.push(newReactionListing)
 
         // Update the module model on the parent element
         props.setModuleFunction(props.module)
+        // Store this in local storage
+        updateSectionsInFirebase()
 
         // Create a new full reaction object
         const newReaction = new Reaction(
@@ -159,7 +163,7 @@ export default function SectionCard(props: IProps) {
             reactionId,
             props.module.uuid,
             props.section.uuid,
-            "dummuy author id",
+            props.userId,
             false,
             [],
             null
@@ -169,14 +173,12 @@ export default function SectionCard(props: IProps) {
         newReaction.steps.push(firstReactionStep)
         newReaction.currentStep = firstReactionStep
 
-        // Store this in local storage
-        updateSectionsInFirebase()
+        setDoc(doc(db, "reactions", reactionId), newReaction.toJSON());
 
     }
 
-    const sectionListEmptyState =   <div className={emptyState}
-                                    >
-                                    This section has no reactions yet
+    const sectionListEmptyState =   <div className={emptyState}>
+                                        This section has no reactions yet
                                     </div>
 
     let sectionList: React.ReactNode

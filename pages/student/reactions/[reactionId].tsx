@@ -8,6 +8,9 @@ import ReactionLoader from "../../../p5/utilities/ReactionLoader"
 import { GetServerSideProps } from 'next'
 import Constants from "../../../p5/Constants"
 import UserType from "../../../p5/model/UserType"
+import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore"
+import FirebaseConstants from "../../../model/FirebaseConstants"
+import ScreenWithLoading from "../../../components/ScreenWithLoading"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -30,17 +33,23 @@ interface IProps {
 interface IState {
     reaction: Reaction | null
     arrowType: ArrowType | null
+    loading: boolean
 }
 
 class StudentReactionPage extends React.Component<IProps, IState> {
+
+    db: FirebaseFirestore
 
     constructor(props: IProps) {
 
         super(props)
 
+        this.db = getFirestore()
+
         this.state = {
             reaction: null,
             arrowType: null,
+            loading: true
         }
 
     }
@@ -48,28 +57,32 @@ class StudentReactionPage extends React.Component<IProps, IState> {
    
     async componentDidMount() {
 
-        const reactionRawJSON: string | null = localStorage.getItem(this.props.reactionId)
-        let reaction: Reaction | null = null
-        if (reactionRawJSON) {
-            reaction = ReactionLoader.loadReactionFromJSON(reactionRawJSON)
+        const docRef = doc(this.db, FirebaseConstants.REACTIONS, this.props.reactionId);
+        const docSnap = await getDoc(docRef);
 
-            reaction.currentStep = reaction.steps[0]
-            
-            this.setState({
-                ...this.state,
-                reaction: reaction
-            })
-        }
+        const rawReactionObject = docSnap.data()
+
+        const reaction = ReactionLoader.loadReactionFromObject(rawReactionObject)
+
+        this.setState({
+            ...this.state,
+            reaction: reaction
+        })
 
         // Create the p5 element
         let createP5StudentContext
         if (window) {
             const createP5Context = (await import("../../../p5/Sketch")).default
             createP5Context(this, UserType.STUDENT, reaction)
-        }
 
-        if (!reaction)
+            if (!reaction)
             throw new Error("reaction not loaded")
+
+            this.setState({
+                ...this.state,
+                loading: false
+            })
+        }
 
     }
 
@@ -166,84 +179,86 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
         return (
 
-            <>
-            <header className="bg-indigo-600">
-                <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 ">
-                    <div className="flex flex-col justify-left border-b border-indigo-400">
+            <ScreenWithLoading loading={this.state.loading}>
+                <>
+                <header className="bg-indigo-600">
+                    <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 ">
+                        <div className="flex flex-col justify-left border-b border-indigo-400">
 
-                        <Link href={"/editor/modules/" + this.state.reaction?.moduleId}>
-                            <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
-                            <ArrowLeftIcon className="w-3 h-3" />
-                            Module name goes here | Section name
-                            </a>
-                        </Link>
+                            <Link href={"/editor/modules/" + this.state.reaction?.moduleId}>
+                                <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
+                                <ArrowLeftIcon className="w-3 h-3" />
+                                Module name goes here | Section name
+                                </a>
+                            </Link>
 
 
-                        <div className="w-full flex flex-row justify-between mb-3">
-                            <div>
-                                <h1 className="text-2xl font-semibold text-white">
-                                    Reaction name goes here
-                                </h1>
-                            </div>
-
-                            <div className="flex flex-row gap-6 items-center">
-
-                                <button className="text-sm text-white">
-                                    Something
-                                </button>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </header>
-
-            <div className="min-h-screen bg-gray-100">
-                <div className="bg-indigo-600 pb-32">
-
-                    <div className="py-5">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-row gap-4 items-center text-white font-light">
-                            Step prompt goes here giving student the context for the reaction
-                        </div>
-                    </div>
-                </div>
-            
-                <main className="-mt-32">
-                    <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8 flex flex-row gap-5">
-
-                        {/* p5 canvas */}
-                        <div id={Constants.CANVAS_PARENT_NAME} className="bg-white rounded-lg shadow flex-grow">
-                            <div className="p-5 relative flex flex-row justify-between">
-                                <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
-                                    {listOfStepButtons}
+                            <div className="w-full flex flex-row justify-between mb-3">
+                                <div>
+                                    <h1 className="text-2xl font-semibold text-white">
+                                        Reaction name goes here
+                                    </h1>
                                 </div>
-                                <div className=" flex flex-row items-center gap-2 text-sm text-gray-500">
-                                    {/* Double curly arrow */}
-                                    <button
-                                        className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
-                                        onClick={() => this.setArrowType(ArrowType.DOUBLE)}
-                                    >
-                                        <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
+
+                                <div className="flex flex-row gap-6 items-center">
+
+                                    <button className="text-sm text-white">
+                                        Something
                                     </button>
 
-                                    {/* Single curly arrow */}
-                                    <button
-                                        className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
-                                        onClick={() => this.setArrowType(ArrowType.SINGLE)}
-
-                                    >
-                                        <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
-                                    </button>
                                 </div>
                             </div>
-                        </div>
-                    
-                    </div>
 
-                </main>
-            </div>
-            </>
+                        </div>
+                    </div>
+                </header>
+
+                <div className="min-h-screen bg-gray-100">
+                    <div className="bg-indigo-600 pb-32">
+
+                        <div className="py-5">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-row gap-4 items-center text-white font-light">
+                                Step prompt goes here giving student the context for the reaction
+                            </div>
+                        </div>
+                    </div>
+                
+                    <main className="-mt-32">
+                        <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8 flex flex-row gap-5">
+
+                            {/* p5 canvas */}
+                            <div id={Constants.CANVAS_PARENT_NAME} className="bg-white rounded-lg shadow flex-grow">
+                                <div className="p-5 relative flex flex-row justify-between">
+                                    <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
+                                        {listOfStepButtons}
+                                    </div>
+                                    <div className=" flex flex-row items-center gap-2 text-sm text-gray-500">
+                                        {/* Double curly arrow */}
+                                        <button
+                                            className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
+                                            onClick={() => this.setArrowType(ArrowType.DOUBLE)}
+                                        >
+                                            <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
+                                        </button>
+
+                                        {/* Single curly arrow */}
+                                        <button
+                                            className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
+                                            onClick={() => this.setArrowType(ArrowType.SINGLE)}
+
+                                        >
+                                            <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        </div>
+
+                    </main>
+                </div>
+                </>
+            </ScreenWithLoading>
         )
     }
 

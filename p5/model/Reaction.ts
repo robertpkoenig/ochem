@@ -40,8 +40,14 @@ class Reaction {
         if (!this.currentStep)
             throw new Error("current step not defined")
 
+        const stepsAsPlainObjectArray = []
+
+        for (const step of this.steps) {
+            stepsAsPlainObjectArray.push(step.toJSON())
+        }
+
         return {
-            steps: this.steps,
+            steps: stepsAsPlainObjectArray,
             currentStepId: this.currentStep.uuid,
             name: this.name,
             uuid: this.uuid,

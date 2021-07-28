@@ -46,6 +46,25 @@ class ReactionStep {
         Object.assign(this, newModel)
     }
 
+    toJSON() {
+
+        const moleculesAsPlainObjects = []
+        for (const molecule of this.molecules) {
+            moleculesAsPlainObjects.push(molecule.toJSON())
+        }
+
+        const curlyArrowAsPlainObject =
+            this.curlyArrow ? this.curlyArrow.toJSON() : null
+
+        return {
+            name: this.name,
+            order: this.order,
+            molecules: moleculesAsPlainObjects,
+            curlyArrow: curlyArrowAsPlainObject,
+            uuid: this.uuid,
+        }
+    }
+
 }
 
 export default ReactionStep

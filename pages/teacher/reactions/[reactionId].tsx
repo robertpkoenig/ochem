@@ -16,6 +16,9 @@ import UserType from "../../../p5/model/UserType"
 import ReactionLoader from "../../../p5/utilities/ReactionLoader"
 import ReactionStepLoader from "../../../p5/utilities/ReactionStepLoader"
 import Utilities from "../../../p5/utilities/Utilities"
+import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore"
+import FirebaseConstants from "../../../model/FirebaseConstants"
+import Module from "../../../model/Module"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -47,9 +50,13 @@ interface IState {
 
 class TeacherReactionPage extends React.Component<IProps, IState> {
 
+    db: FirebaseFirestore
+
     constructor(props: IProps) {
 
         super(props)
+
+        this.db = getFirestore()
 
         this.state = {
             reaction: null,
@@ -63,21 +70,32 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     }
 
-   
     async componentDidMount() {
 
         // Add logic to redirect if uuid of reaction is missing
 
-        const reactionRawJSON: string | null = localStorage.getItem(this.props.reactionId)
-        let reaction: Reaction | null = null
-        if (reactionRawJSON) {
-            reaction = ReactionLoader.loadReactionFromJSON(reactionRawJSON)
+        // const reactionRawJSON: string | null = localStorage.getItem(this.props.reactionId)
+        // let reaction: Reaction | null = null
+        // if (reactionRawJSON) {
+        //     reaction = ReactionLoader.loadReactionFromJSON(reactionRawJSON)
 
-            this.setState({
-                ...this.state,
-                reaction: reaction
-            })
-        }
+        //     this.setState({
+        //         ...this.state,
+        //         reaction: reaction
+        //     })
+        // }
+
+        const docRef = doc(this.db, FirebaseConstants.REACTIONS, this.props.reactionId);
+        const docSnap = await getDoc(docRef);
+
+        const rawReactionObject = docSnap.data()
+
+        const reaction = ReactionLoader.loadReactionFromObject(rawReactionObject)
+
+        this.setState({
+            ...this.state,
+            reaction: reaction
+        })
 
         // Create the p5 element
         if (window) {
@@ -188,7 +206,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         const steps = this.state.reaction.steps
         const lastStep = steps[steps.length - 1]
         const lastStepJSON = JSON.stringify(lastStep)
-        const newStep = ReactionStepLoader.loadReactionStepFromJSON(lastStepJSON)
+        const newStep = ReactionStepLoader.loadReactionStepFromPlainObject(lastStepJSON)
         newStep.curlyArrow = null
         newStep.uuid = Utilities.generateUid()
         newStep.order += 1
@@ -510,3 +528,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 }
 
 export default TeacherReactionPage
+
+function setModule(arg0: any) {
+    throw new Error("Function not implemented.")
+}

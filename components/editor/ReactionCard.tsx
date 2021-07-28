@@ -41,6 +41,7 @@ export default function ReactionCard (props: IReactionCardProps) {
 
     const [deleteReactionPopupVisible, setReactionDeletionVisibility] =
         useState(false)
+        
     const db = getFirestore()
 
     function updateSectionsInFirebase() {

@@ -13,6 +13,7 @@ import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import FirebaseConstants from "../../../model/FirebaseConstants";
 import { AuthContext } from "../../../context/provider";
 import LoadingScreen from "../../../components/LoadingScreen";
+import ScreenWithLoading from "../../../components/ScreenWithLoading";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -44,7 +45,7 @@ export default function ModulePage(props: IProps) {
     const [sectionCreationPopupVis, setSectionCreationPopupVis]
         = useState<boolean>(false)
     const [module, setModule] = useState<Module>(null)
-    const [doneLoading, setDoneLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
 
     const { user } = useContext(AuthContext)
     const db = getFirestore()
@@ -53,7 +54,7 @@ export default function ModulePage(props: IProps) {
         const docRef = doc(db, FirebaseConstants.MODULES, props.moduleId);
         const docSnap = await getDoc(docRef);
         setModule(docSnap.data() as Module)
-        setDoneLoading(true)
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -78,7 +79,7 @@ export default function ModulePage(props: IProps) {
             name: name,
             order: order,
             creationDate: creationDate,
-            authorId: user.uid,
+            authorId: user.userId,
             uuid: sectionId,
             reactionListings: []
         }
@@ -113,6 +114,7 @@ export default function ModulePage(props: IProps) {
                 {module.sections.map((sectionListing: Section) => 
                     <div key={sectionListing.order}>
                         <SectionCard
+                            userId={user.userId}
                             section={sectionListing}
                             module={module}
                             setModuleFunction={resetModule}
@@ -123,13 +125,8 @@ export default function ModulePage(props: IProps) {
         )
     }
 
-    if (!module) {
-        return <LoadingScreen />
-    }
-
-    else {
-        return (
-
+    return (
+        <ScreenWithLoading loading={loading} >
             <Layout
                 title={module.name}
                 subtitle="Subtitle or explenation for this module"
@@ -137,7 +134,7 @@ export default function ModulePage(props: IProps) {
 
                 <div className="flex flex-col gap-2">
                     {
-                    module.sections && module.sections.length > 0
+                    module.sections && module.sections
                     ?
                     sectionList
                     :
@@ -169,8 +166,8 @@ export default function ModulePage(props: IProps) {
                 }
 
             </Layout>
+        </ScreenWithLoading>
 
-        )
-    }
+    )
 
 }

@@ -1,87 +1,88 @@
 
-import BlueNavBar from '../../../components/BlueNavBar'
 import Layout from '../../../components/Layout'
-import React from 'react'
-import ModulePopup from '../../../components/editor/ModulePopup'
-import PopupBackground from '../../../components/PopupBackground'
-import { v4 as uuid } from 'uuid'
-import ModuleCard from '../../../components/editor/ModuleCard'
-import Module from '../../../model/Module'
+import React, { useContext, useEffect, useState } from 'react'
 import ModuleListing from '../../../model/ModuleListing'
 import Link from 'next/link'
-import { primaryButtonMd, primaryButtonSm } from '../../../styles/common-styles'
+import { primaryButtonMd } from '../../../styles/common-styles'
+import { AuthContext } from '../../../context/provider'
+import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
+import FirebaseConstants from '../../../model/FirebaseConstants'
+import ScreenWithLoading from '../../../components/ScreenWithLoading'
 
 interface IProps {
 }
 
-interface IState {
-    moduleListings: ModuleListing[]
-}
+export default function StudentModules(props: IProps) {
 
-export default class StudentModules extends React.Component<IProps, IState> {
+    const [loading, setLoading] = useState<boolean>(true)
+    const [moduleListings, setModuleListings] = useState<ModuleListing[]>([])
 
-    constructor(props: any) {
-        super(props)
-        this.state = {
-            moduleListings: []
-        }
-    }
+    const { user } = useContext(AuthContext)
+    const db = getFirestore()
 
-    // Get modules from local storage
-    // Replace this with firebase soon
-    componentDidMount() {
-        const listingsFromLocalStorageString: string | null = localStorage.getItem('moduleListings')
-        if (listingsFromLocalStorageString) {
-            const moduleListings = JSON.parse(listingsFromLocalStorageString)
-            
-            this.setState({
-                ...this.state,
-                moduleListings: moduleListings
-            })
-        }
-    }
+    async function getData() {
 
-    render() {
-        
-        const moduleList: React.ReactNode = (
-        
-            <div className="bg-white border border-gray-300 overflow-hidden rounded-md">
-                <ul className="divide-y divide-gray-300">
-                    {this.state.moduleListings.map((moduleListing: ModuleListing) => 
-                        <li key={moduleListing.uuid} className="px-6 py-6">
-                            <div className="flex flex-row justify-between ">
-
-                                <div className="flex flex-col justify-center font-semibold">
-                                    {moduleListing.name}
-                                </div>
-
-                                <div className="flex flex-row gap-2">
-                                    <Link href={"/student/modules/" + moduleListing.uuid}>
-                                        <a className={ primaryButtonMd }>View</a>
-                                    </Link>
-                                </div>
-
-                            </div>
-                        </li>
-                    )}
-                </ul>
-            </div>
-
+        const q = query(
+            collection(db, FirebaseConstants.MODULE_LISTINGS),
+            where(FirebaseConstants.UUID, "in", user.moduleIds)
         )
 
-        return (
+        const querySnapshot = await getDocs(q)
+        
+        const fetchedModuleListings: ModuleListing[] = []
 
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            fetchedModuleListings.push(doc.data() as ModuleListing)
+        })
+
+        setModuleListings(fetchedModuleListings)
+
+        setLoading(false)
+
+    }
+
+    useEffect(() => {
+        if (user) {
+            getData()
+        }
+    }, [user])
+        
+    const moduleList: React.ReactNode = (
+    
+        <div className="bg-white border border-gray-300 overflow-hidden rounded-md">
+            <ul className="divide-y divide-gray-300">
+                {moduleListings.map((moduleListing: ModuleListing) => 
+                    <li key={moduleListing.uuid} className="px-6 py-6">
+                        <div className="flex flex-row justify-between ">
+
+                            <div className="flex flex-col justify-center font-semibold">
+                                {moduleListing.name}
+                            </div>
+
+                            <div className="flex flex-row gap-2">
+                                <Link href={"/student/modules/" + moduleListing.uuid}>
+                                    <a className={ primaryButtonMd }>View</a>
+                                </Link>
+                            </div>
+
+                        </div>
+                    </li>
+                )}
+            </ul>
+        </div>
+
+    )
+
+    return (
+        <ScreenWithLoading loading={loading}>
             <Layout
                 title="My modules"
                 subtitle=""
             >
-
                 {moduleList}
-
             </Layout>
-
-        )
-
-    }
+        </ScreenWithLoading>
+    )
 
 }

@@ -24,7 +24,7 @@ class Bond {
         return {
             atomOne: this.atoms[0].id,
             atomTwo: this.atoms[1].id,
-            type: this.type
+            type: this.type as string
         }
     }
 

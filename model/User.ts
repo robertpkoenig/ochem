@@ -1,4 +1,3 @@
-import ModuleCompletionRecord from "./ModuleCompletionRecord";
 
 enum UserType {
     student = "student",
@@ -12,7 +11,8 @@ interface User {
     lastName: string,
     email: string,
     moduleIds: string[],
-    moduleCompletionRecord: ModuleCompletionRecord[]
+    completedReactionIds: string[],
+    userId: string
 
 }
 

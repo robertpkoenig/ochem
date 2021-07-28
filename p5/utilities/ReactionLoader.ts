@@ -5,17 +5,17 @@ import ReactionStepLoader from "./ReactionStepLoader"
 class ReactionLoader {
 
     public static loadReactionFromJSON(reactionJSON: string): Reaction {
-
         const reactionRawObject = JSON.parse(reactionJSON)
+        return this.loadReactionFromObject(reactionRawObject)
+    }
+
+    public static loadReactionFromObject(reactionRawObject: any): Reaction {
 
         const restoredSteps: ReactionStep[] = []
 
         for (const rawStepObject of reactionRawObject["steps"]) {
-            // Convert back to string to be compatible with the 
-            // previous logic, but change this to be an object
-            const rawStepJSON = JSON.stringify(rawStepObject)
             const restoredStepClassInstance = 
-                ReactionStepLoader.loadReactionStepFromJSON(rawStepJSON)
+                ReactionStepLoader.loadReactionStepFromPlainObject(rawStepObject)
             restoredSteps.push(restoredStepClassInstance)
         }
 
@@ -53,7 +53,9 @@ class ReactionLoader {
             moduleId,
             sectionId,
             authorId,
-            published
+            published,
+            restoredSteps,
+            currentStep
         )
         
         restoredReaction.steps = restoredSteps

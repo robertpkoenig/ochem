@@ -13,7 +13,7 @@ import ReactionStep from '../../p5/model/ReactionStep';
 interface ISectionCardProps {
     section: Section
     module: Module
-    modulesChecked: Set<string>
+    reactionsChecked: Set<string>
     checkAdditionFunction: (reactionId: string) => void
 }
 
@@ -36,7 +36,7 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
                                 reactionListing={reactionListing}
                                 section={this.props.section}
                                 module={this.props.module}
-                                modulesChecked={this.props.modulesChecked}
+                                modulesChecked={this.props.reactionsChecked}
                                 checkAdditionFunction={this.props.checkAdditionFunction}
                             />
                         </li>

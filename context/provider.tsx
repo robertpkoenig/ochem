@@ -1,8 +1,11 @@
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 import firebaseClient from "../firebaseClient";
 import nookies from "nookies"
 import router, { useRouter } from "next/router";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import FirebaseNames from "../model/FirebaseConstants";
+import User from "../model/User";
 
 type authContextType = {
     user: User
@@ -23,25 +26,32 @@ type Props = {
 }
 
 export function AuthProvider({ children }: Props) {
+
     const [user, setUser] = useState<User | null>(null);
 
     firebaseClient()
+    const db = getFirestore()
 
     const router = useRouter()
 
     useEffect(() => {
 
         const auth = getAuth();
-    
+
         if (!user) {
             onAuthStateChanged(auth, (loggedInUser) => {
-                setUser(loggedInUser)
-
+                
                 if (!loggedInUser) {            
                     if (router.pathname != "/") {
-                        router.push('/')
+                        router.push("/")
                     }
                 }
+
+                const docRef = doc(db, FirebaseNames.USERS, loggedInUser.uid);
+                getDoc(docRef).then(docSnap => {
+                    const dbUser = docSnap.data()
+                    setUser(dbUser as User)
+                });
 
            })
         }
@@ -59,4 +69,5 @@ export function AuthProvider({ children }: Props) {
             </AuthContext.Provider>
         </>
     )
+
 }

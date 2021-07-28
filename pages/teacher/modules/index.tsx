@@ -13,13 +13,14 @@ import { collection, query, where, doc, getDocs, getFirestore, setDoc } from "fi
 import { AuthContext } from '../../../context/provider'
 import LoadingScreen from '../../../components/LoadingScreen'
 import FirebaseConstants from '../../../model/FirebaseConstants'
+import ScreenWithLoading from '../../../components/ScreenWithLoading'
 
 interface IProps {
 }
 
 export default function Modules(props: IProps) {
 
-    const [doneLoading, setDoneLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
     const [createModulePopupVisible, setCreateModulePopupVisible] = useState<boolean>(false)
     const [deleteModulePopupVisible, setDeleteModulePopupVisible] = useState<boolean>(false)
     const [moduleListings, setModuleListings] = useState<ModuleListing[]>([])
@@ -32,13 +33,10 @@ export default function Modules(props: IProps) {
 
     async function getData() {
 
-        // console.log("within the use effect of index", user.uid)
-
         const q = query(
             collection(db, FirebaseConstants.MODULE_LISTINGS),
-            where(FirebaseConstants.AUTHOR_ID, "==", user.uid)
+            where(FirebaseConstants.AUTHOR_ID, "==", user.userId)
         )
-        // console.log(q)
     
         const querySnapshot = await getDocs(q)
         
@@ -52,7 +50,7 @@ export default function Modules(props: IProps) {
 
         setModuleListings(fetchedModuleListings)
 
-        setDoneLoading(true)
+        setLoading(false)
 
     }
 
@@ -78,7 +76,7 @@ export default function Modules(props: IProps) {
         const newModule: Module = {
             name: name,
             creationDate: creationDate,
-            authorId: user.uid,
+            authorId: user.userId,
             sections: [],
             uuid: moduleId
         }
@@ -90,15 +88,10 @@ export default function Modules(props: IProps) {
         const newModuleListing: ModuleListing = {
             name: name,
             creationDate: creationDate,
-            authorId: "dummy",
+            authorId: user.userId,
             uuid: moduleId
         }
-        setDoc(doc(db, "module_listings", moduleId), {
-            name: name,
-            creationDate: creationDate,
-            authorId: user.uid,
-            uuid: moduleId
-        });
+        setDoc(doc(db, "module_listings", moduleId), newModuleListing);
         setModuleListings([newModuleListing, ...moduleListings])
     }
 
@@ -125,15 +118,9 @@ export default function Modules(props: IProps) {
 
     )
 
-    if (!doneLoading) {
-        return (
-            <LoadingScreen />
-        )
-    }
+    return (
 
-    if (doneLoading) {
-        return (
-
+        <ScreenWithLoading loading={loading} >
             <Layout
                 title="Modules"
                 subtitle="Create collections for modules you teach"
@@ -171,8 +158,8 @@ export default function Modules(props: IProps) {
                 }
 
             </Layout>
+        </ScreenWithLoading>
 
-        )
-    }
+    )
 
 }
