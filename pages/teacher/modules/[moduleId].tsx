@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Section from "../../../model/SectionListing";
 import Module from "../../../model/Module";
 import SectionCard from "../../../components/editor/SectionCard";
@@ -9,15 +9,19 @@ import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
 import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
 import { GetServerSideProps } from 'next'
+import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
+import FirebaseConstants from "../../../model/FirebaseConstants";
+import { AuthContext } from "../../../context/provider";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (!context.params.moduleId) {
         return {
-        redirect: {
-            destination: '/teacher/modules',
-            permanent: false,
-        },
+            redirect: {
+                destination: '/teacher/modules',
+                permanent: false,
+            },
         }
     }
     
@@ -33,77 +37,39 @@ interface IProps {
     moduleId: string
 }
 
-interface IState {
-    sectionCreationPopupVis: boolean,
-    module: Module
-}
+export default function ModulePage(props: IProps) {
 
-class ModulePage extends React.Component<IProps, IState> {
+    const [dummyBoolean, forceUpdate] = React.useState<boolean>(false);
 
-    constructor(props: IProps) {
-        
-        super(props)
+    const [sectionCreationPopupVis, setSectionCreationPopupVis]
+        = useState<boolean>(false)
+    const [module, setModule] = useState<Module>(null)
+    const [doneLoading, setDoneLoading] = useState<boolean>(false)
 
-        const dummyModule: Module = {
-            name: "dummy",
-            creationDate: "dummy",
-            authorId: "dummy",
-            sections: [],
-            uuid: "dummy"
+    const { user } = useContext(AuthContext)
+    const db = getFirestore()
+
+    async function getData() {
+        const docRef = doc(db, FirebaseConstants.MODULES, props.moduleId);
+        const docSnap = await getDoc(docRef);
+        setModule(docSnap.data() as Module)
+        setDoneLoading(true)
+    }
+
+    useEffect(() => {
+        if (user) {
+            getData()
         }
+    }, [user])
 
-        this.state = {
-            sectionCreationPopupVis: false,
-            module: dummyModule
-        }
-
-        this.updateModule = this.updateModule.bind(this)
-
+    function toggleSectionCreationPopup() {
+        setSectionCreationPopupVis(!sectionCreationPopupVis)
     }
 
-    componentDidMount() {
-
-        const moduleFromLocalStorageString: string | null = localStorage.getItem(this.props.moduleId)
-        if (moduleFromLocalStorageString) {
-            const module: Module = JSON.parse(moduleFromLocalStorageString)
-
-            this.setState({
-                ...this.state,
-                module: module
-            })
-        }
-
-    }
-
-    updateModule(moduleCopy: Module) {
-        // Reset the module in the working memory
-        this.setState((prevState: IState) => {
-            return {
-                ...prevState,
-                module: moduleCopy
-            }
-        })
-
-        // Mirror this change in the local storage copy of the module
-        localStorage.setItem(
-            moduleCopy.uuid,
-            JSON.stringify(moduleCopy)
-        )
-    }
-
-    toggleSectionCreationPopup() {
-        this.setState((prevState: IState) => {
-            return {
-                ...prevState,
-                sectionCreationPopupVis: !prevState.sectionCreationPopupVis
-            }
-        })
-    }
-
-    createSection(name: string) {
+    function createSection(name: string) {
 
         // Set the display order of the new section
-        const order = this.state.module.sections ? this.state.module.sections.length : 0
+        const order = module.sections ? module.sections.length : 0
         const sectionId = uuid()
         const creationDate = Date.now().toString()
 
@@ -112,66 +78,66 @@ class ModulePage extends React.Component<IProps, IState> {
             name: name,
             order: order,
             creationDate: creationDate,
-            authorId: "dummy",
+            authorId: user.uid,
             uuid: sectionId,
             reactionListings: []
         }
 
-        // Create copy of the module with the new section
-        const moduleCopy: Module = Object.assign(this.state.module)
-        moduleCopy.sections.push(newSectionListing)
+        // Update module in working memory
+        module.sections.push(newSectionListing)
+        setModule(module)
 
-        // Reset the module in the working memory
-        this.setState((prevState: IState) => {
-            return {
-                ...prevState,
-                module: moduleCopy
-            }
-        })
-
-        // Mirror this change in the local storage copy of the module
-        localStorage.setItem(
-            moduleCopy.uuid,
-            JSON.stringify(moduleCopy)
-        )
+        // update module in firebase
+        const moduleDocRef = doc(db, "modules", props.moduleId);
+        updateDoc(moduleDocRef, {
+            sections: module.sections
+        });
 
     }
 
-    render() {
+    function resetModule(module: Module) {
+        const moduleCopy: Module = Object.assign(module) 
+        setModule(moduleCopy)
+        forceUpdate(!dummyBoolean)
+    }
 
-        const sectionListEmptyState = <div className={emptyState}
-                                      >
-                                      This module has no sections
-                                      </div>
+    const sectionListEmptyState =   <div className={emptyState}>
+                                        This module has no sections
+                                    </div>
 
-        let sectionList: React.ReactNode
+    let sectionList: React.ReactNode
 
-        if (this.state.module.sections) {
-            sectionList = (
-                <div className="flex flex-col gap-5 ">
-                    {this.state.module.sections.map((sectionListing: Section) => 
-                        <div key={sectionListing.order}>
-                            <SectionCard
-                                section={sectionListing}
-                                module={this.state.module}
-                                updateModule={this.updateModule}
-                            />
-                        </div>
-                    )}
-                </div>
-            )
-        }
+    if (module && module.sections) {
+        sectionList = (
+            <div className="flex flex-col gap-5 ">
+                {module.sections.map((sectionListing: Section) => 
+                    <div key={sectionListing.order}>
+                        <SectionCard
+                            section={sectionListing}
+                            module={module}
+                            setModuleFunction={resetModule}
+                        />
+                    </div>
+                )}
+            </div>
+        )
+    }
 
+    if (!module) {
+        return <LoadingScreen />
+    }
+
+    else {
         return (
 
             <Layout
-                title={this.state.module.name}
+                title={module.name}
                 subtitle="Subtitle or explenation for this module"
             >
 
                 <div className="flex flex-col gap-2">
                     {
-                    this.state.module.sections && this.state.module.sections.length > 0
+                    module.sections && module.sections.length > 0
                     ?
                     sectionList
                     :
@@ -182,7 +148,7 @@ class ModulePage extends React.Component<IProps, IState> {
                 <button
                     type="button"
                     className={primaryButtonMd + "mt-5"}
-                    onClick={() => this.toggleSectionCreationPopup()}
+                    onClick={() => toggleSectionCreationPopup()}
                 >
                     <PlusIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
                     New section
@@ -190,12 +156,12 @@ class ModulePage extends React.Component<IProps, IState> {
 
                 {/* Toggle the section popup */}
                 {
-                this.state.sectionCreationPopupVis 
+                sectionCreationPopupVis 
                 ?
-                <PopupBackground popupCloseFunction={this.toggleSectionCreationPopup.bind(this)}>
+                <PopupBackground popupCloseFunction={toggleSectionCreationPopup}>
                     <SectionPopup
-                        popupCloseFunction={this.toggleSectionCreationPopup.bind(this)} 
-                        sectionAdditionFunction={this.createSection.bind(this)} 
+                        popupCloseFunction={toggleSectionCreationPopup} 
+                        sectionAdditionFunction={createSection} 
                     />
                 </PopupBackground>
                 :
@@ -205,9 +171,6 @@ class ModulePage extends React.Component<IProps, IState> {
             </Layout>
 
         )
-
     }
 
 }
-
-export default ModulePage

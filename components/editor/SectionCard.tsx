@@ -9,56 +9,38 @@ import ReactionCard from './ReactionCard';
 import ReactionCreationPopup from './ReactionPopup';
 import { v4 as uuid } from 'uuid'
 import DeletionPopup from './DeletionPopup';
-import LocalStorageReaction from '../../model/LocalStorageReaction';
 import Reaction from '../../p5/model/Reaction';
 import ReactionStep from '../../p5/model/ReactionStep';
+import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 
-interface ISectionCardProps {
+interface IProps {
     section: Section
     module: Module
-    updateModule: (moduleCopy: Module) => void
+    setModuleFunction: (moduleCopy: Module) => void
 }
 
-interface ISectionCardState {
+interface IState {
     sectionDeletePopupVisible: boolean
     reactionCreationPopupVisible: boolean
 }
 
-class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> {
+export default function SectionCard(props: IProps) {
 
-    constructor(props: ISectionCardProps) {
-        super(props)
-        this.state = {
-            sectionDeletePopupVisible: false,
-            reactionCreationPopupVisible: false
-        }
-        this.deleteThisSection = this.deleteThisSection.bind(this)
-        this.toggleSectionDeletePopup = this.toggleSectionDeletePopup.bind(this)
-        this.toggleReactionCreationPopup = this.toggleReactionCreationPopup.bind(this)
-        this.createReaction = this.createReaction.bind(this)
-    }
+    const [sectionDeletePopupVis, setSectionDeletePopupVis]
+        = React.useState<boolean>(false)
+    const [reactionCreationPopupVis, setReactionCreationPopupVis]
+        = React.useState<boolean>(false)
 
-    decrementSectionOrder() {
+    const db = getFirestore()
 
-        // Create copy of the module
-        const moduleCopy: Module = Object.assign(this.props.module)
+    function decrementSectionOrder() {
 
-        let sectionToDecrementOrder: Section | null = null
+        let sectionToDecrementOrder: Section = props.section
         let sectionToIncrementOrder: Section | null =   null
-
-        for (const section of moduleCopy.sections) {
-            if (this.props.section.uuid === section.uuid) {
-                sectionToDecrementOrder = section
-            }
-        }
-
-        if (sectionToDecrementOrder == null) {
-            throw new Error("tried to retrieve section that does not exist")
-        }
 
         // Get the section above
         const orderAboveSectionToIncrementOrder = sectionToDecrementOrder.order - 1
-        for (const section of moduleCopy.sections) {
+        for (const section of props.module.sections) {
             if (section.order === orderAboveSectionToIncrementOrder) {
                 sectionToIncrementOrder = section
             }
@@ -71,36 +53,25 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
             sectionToIncrementOrder.order++
 
             // Sort the moduleCopy's sections
-            moduleCopy.sections.sort((a, b) => {
+            props.module.sections.sort((a, b) => {
                 return a.order - b.order
             })
 
-            this.props.updateModule(moduleCopy)
+            props.setModuleFunction(props.module)
+            updateSectionsInFirebase()
 
         }
 
     }
 
-    incrementSectionOrder() {
-        // Create copy of the module
-        const moduleCopy: Module = Object.assign(this.props.module)
+    function incrementSectionOrder() {
 
         let sectionToDecrementOrder: Section | null = null
-        let sectionToIncrementOrder: Section | null = null
-
-        for (const section of moduleCopy.sections) {
-            if (this.props.section.uuid === section.uuid) {
-                sectionToIncrementOrder = section
-            }
-        }
-
-        if (sectionToIncrementOrder == null) {
-            throw new Error("tried to retrieve section that does not exist")
-        }
+        let sectionToIncrementOrder: Section = props.section
 
         // Get the section above
         const orderAboveSectionToDecrementOrder = sectionToIncrementOrder.order + 1
-        for (const section of moduleCopy.sections) {
+        for (const section of props.module.sections) {
             if (section.order === orderAboveSectionToDecrementOrder) {
                 sectionToDecrementOrder = section
             }
@@ -113,70 +84,61 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
             sectionToIncrementOrder.order++
 
             // Sort the moduleCopy's sections
-            moduleCopy.sections.sort((a, b) => {
+            props.module.sections.sort((a, b) => {
                 return a.order - b.order
             })
 
-            this.props.updateModule(moduleCopy)
+            props.setModuleFunction(props.module)
+            updateSectionsInFirebase()
 
         }
     }
 
-    deleteThisSection() {
-       
-        // Create copy of the module
-        const moduleCopy: Module = Object.assign(this.props.module)
+    function deleteThisSection() {
 
         // Get the section to delete
-        let sectionToDelete: Section | null = null
-        for (const section of moduleCopy.sections) {
-            if (this.props.section.uuid === section.uuid) {
-                sectionToDelete = section
-            }
-        }
-
-        // Throw error if section not found
-        if (sectionToDelete === null) {
-            throw new Error("tried to delete section that does not exist")
-        }
+        let sectionToDelete: Section  = props.section
 
         // Decrement the order of all sections above this section
-        for (const section of moduleCopy.sections) {
+        for (const section of props.module.sections) {
             if (section.order > sectionToDelete.order) {
                 section.order--
             }
         }
 
         // Filter out the section to delete
-        moduleCopy.sections = moduleCopy.sections.filter(section => {
-            return section.uuid != this.props.section.uuid
+        props.module.sections = props.module.sections.filter(section => {
+            return section.uuid != props.section.uuid
         })
 
         // Reset the model on the parent page
-        this.props.updateModule(moduleCopy)
+        props.setModuleFunction(props.module)
+        updateSectionsInFirebase()
  
     }
 
-    toggleSectionDeletePopup() {
-        this.setState({
-            ...this.state,
-            sectionDeletePopupVisible: !this.state.sectionDeletePopupVisible
-        })
+    function updateSectionsInFirebase() {
+        // update module in firebase
+        const moduleDocRef = doc(db, "modules", props.module.uuid);
+        updateDoc(moduleDocRef, {
+            sections: props.module.sections
+        });
     }
 
-    toggleReactionCreationPopup() {
-        this.setState({
-            ...this.state,
-            reactionCreationPopupVisible: !this.state.reactionCreationPopupVisible
-        })
+    function toggleSectionDeletePopup() {
+        setSectionDeletePopupVis(!sectionDeletePopupVis)
     }
 
-    createReaction(reactionName: string) {
-        const order = this.props.section.reactionListings.length
+    function toggleReactionCreationPopup() {
+        setReactionCreationPopupVis(!reactionCreationPopupVis)
+    }
+
+    function createReaction(reactionName: string) {
+        const order = props.section.reactionListings.length
         const reactionId = uuid()
         const creationDate = Date.now().toString()
 
-        // create the abbreviated reaction listing object
+        // Create the abbreviated reaction listing object
         const newReactionListing: ReactionListing = {
             name: reactionName,
             order: order,
@@ -186,26 +148,17 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
             authorId: "dummy"
         }
 
-        // Create copy of the module
-        const moduleCopy: Module = Object.assign(this.props.module)
-
-        // Update this section within the module copy
-        for (const section of moduleCopy.sections) {
-            if (section.uuid == this.props.section.uuid) {
-                section.reactionListings.push(newReactionListing)
-                break
-            }
-        }
+        props.section.reactionListings.push(newReactionListing)
 
         // Update the module model on the parent element
-        this.props.updateModule(moduleCopy)
+        props.setModuleFunction(props.module)
 
         // Create a new full reaction object
         const newReaction = new Reaction(
             reactionName,
             reactionId,
-            this.props.module.uuid,
-            this.props.section.uuid,
+            props.module.uuid,
+            props.section.uuid,
             "dummuy author id",
             false,
             [],
@@ -217,61 +170,60 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
         newReaction.currentStep = firstReactionStep
 
         // Store this in local storage
-        localStorage.setItem(reactionId, JSON.stringify(newReaction))
+        updateSectionsInFirebase()
 
     }
 
-    render() {
-        const sectionListEmptyState =   <div className={emptyState}
-                                        >
-                                        This section has no reactions yet
-                                        </div>
+    const sectionListEmptyState =   <div className={emptyState}
+                                    >
+                                    This section has no reactions yet
+                                    </div>
 
-        let sectionList: React.ReactNode
+    let sectionList: React.ReactNode
 
-        if (this.props.section.reactionListings
-             && this.props.section.reactionListings.length > 0) {
-                sectionList = 
-                    <div className=" border border-gray-300 overflow-hidden rounded-md ">
-                    <ul className="divide-y divide-gray-300">
-                    {this.props.section.reactionListings.map((reactionListing: ReactionListing) => 
-                    <li key={reactionListing.uuid} className="px-6 py-4">
-                        <ReactionCard
-                            reactionListing={reactionListing}
-                            section={this.props.section}
-                            module={this.props.module}
-                            updateModule={this.props.updateModule}
-                        />
-                    </li>
-                    )}
-                    </ul>
-                    </div>
-        }
+    if (props.section.reactionListings
+            && props.section.reactionListings.length > 0) {
+            sectionList = 
+                <div className=" border border-gray-300 overflow-hidden rounded-md ">
+                <ul className="divide-y divide-gray-300">
+                {props.section.reactionListings.map((reactionListing: ReactionListing) => 
+                <li key={reactionListing.uuid} className="px-6 py-4">
+                    <ReactionCard
+                        reactionListing={reactionListing}
+                        section={props.section}
+                        module={props.module}
+                        updateModule={props.setModuleFunction}
+                    />
+                </li>
+                )}
+                </ul>
+                </div>
+    }
         
         return (
             <div className=" px-6 py-4 flex flex-col gap-4 bg-gray-100 overflow-hidden rounded-md">
 
                     <div className="flex flex-row justify-between items-center">
                         <div className="font-semibold text-md bg-gray-100">
-                            {this.props.section.name}
+                            {props.section.name}
                         </div>
 
                         <div className="flex flex-row content-center gap-1">
                             <button
                                 className={roundEditButtonContainer}
-                                onClick={() => this.incrementSectionOrder()}
+                                onClick={incrementSectionOrder}
                             >
                                 <ChevronDownIcon className="stroke-2 w-4 h-4 hover:text-gray-600" />
                             </button>
                             <button
                                 className={roundEditButtonContainer}
-                                onClick={() => this.decrementSectionOrder()}
+                                onClick={decrementSectionOrder}
                             >
                                 <ChevronUpIcon className="stroke-2 w-4 h-4 hover:text-gray-600" />
                             </button>
                             <button
                                 className={roundEditButtonContainer}
-                                onClick={() => this.toggleSectionDeletePopup()}
+                                onClick={toggleSectionDeletePopup}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M6 18L18 6M6 6l12 12" />
@@ -295,7 +247,7 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
 
                     <div>
                         <button
-                            onClick={this.toggleReactionCreationPopup}
+                            onClick={toggleReactionCreationPopup}
                             type="button"
                             className={ secondaryButtonSm }
                         >
@@ -306,14 +258,14 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
 
                     {/* Toggle the delete section popup */}
                     {           
-                    this.state.sectionDeletePopupVisible
+                    sectionDeletePopupVis
                     ?
-                    <PopupBackground popupCloseFunction={this.toggleSectionDeletePopup}>
+                    <PopupBackground popupCloseFunction={toggleSectionDeletePopup}>
                         <DeletionPopup
-                            thing={this.props.section}
+                            thing={props.section}
                             thingType="section"
-                            deletionFunction={this.deleteThisSection}
-                            togglePopupFunction = {this.toggleSectionDeletePopup}
+                            deletionFunction={deleteThisSection}
+                            togglePopupFunction = {toggleSectionDeletePopup}
                         />
                     </PopupBackground>
                     :
@@ -322,12 +274,12 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
 
                     {/* Toggle the reaction popup */}
                     {           
-                    this.state.reactionCreationPopupVisible 
+                    reactionCreationPopupVis 
                     ?
-                    <PopupBackground popupCloseFunction={this.toggleReactionCreationPopup}>
+                    <PopupBackground popupCloseFunction={toggleReactionCreationPopup}>
                         <ReactionCreationPopup
-                            popupCloseFunction={this.toggleReactionCreationPopup} 
-                            createReactionFunction={this.createReaction} 
+                            popupCloseFunction={toggleReactionCreationPopup} 
+                            createReactionFunction={createReaction} 
                         />
                     </PopupBackground>
                     :
@@ -336,7 +288,4 @@ class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> 
 
             </div>
         )
-    }
 }
-
-export default SectionCard

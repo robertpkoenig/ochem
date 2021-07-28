@@ -8,6 +8,7 @@ import { primaryButtonSm, roundEditButtonContainer, secondaryButtonSm } from '..
 import PopupBackground from '../PopupBackground';
 import DeletionPopup from './DeletionPopup';
 import DeleteReactionPopup from './DeleteReactionPopup';
+import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 
 export interface IReactionCardProps {
     reactionListing: ReactionListing
@@ -40,6 +41,15 @@ export default function ReactionCard (props: IReactionCardProps) {
 
     const [deleteReactionPopupVisible, setReactionDeletionVisibility] =
         useState(false)
+    const db = getFirestore()
+
+    function updateSectionsInFirebase() {
+        // update module in firebase
+        const moduleDocRef = doc(db, "modules", props.module.uuid);
+        updateDoc(moduleDocRef, {
+            sections: props.module.sections
+        });
+    }
 
     function decrementReactionOrder() {
 
@@ -67,6 +77,7 @@ export default function ReactionCard (props: IReactionCardProps) {
             })
 
             props.updateModule(moduleCopy)
+            updateSectionsInFirebase()
 
         }
         
@@ -98,6 +109,7 @@ export default function ReactionCard (props: IReactionCardProps) {
             })
 
             props.updateModule(moduleCopy)
+            updateSectionsInFirebase()
 
         }
         
@@ -154,7 +166,7 @@ export default function ReactionCard (props: IReactionCardProps) {
 
                     {/* Up button */}
                     <button
-                        onClick={() => incrementReactionOrder()}
+                        onClick={incrementReactionOrder}
                         className={roundEditButtonContainer}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -164,7 +176,7 @@ export default function ReactionCard (props: IReactionCardProps) {
 
                     {/* Down button */}
                     <button
-                        onClick={() => decrementReactionOrder()}
+                        onClick={decrementReactionOrder}
                         className={roundEditButtonContainer}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
