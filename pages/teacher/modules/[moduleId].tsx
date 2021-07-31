@@ -4,16 +4,18 @@ import Module from "../../../model/Module";
 import SectionCard from "../../../components/editor/SectionCard";
 import Layout from "../../../components/Layout";
 import { PlusIcon } from "@heroicons/react/solid";
+import { EyeIcon, PaperAirplaneIcon, PencilAltIcon } from "@heroicons/react/outline";
 import PopupBackground from "../../../components/PopupBackground";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
-import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
+import { emptyState, primaryButtonMd, secondaryButtonMd, secondaryButtonSm } from "../../../styles/common-styles";
 import { GetServerSideProps } from 'next'
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import FirebaseConstants from "../../../model/FirebaseConstants";
 import { AuthContext } from "../../../context/provider";
 import LoadingScreen from "../../../components/LoadingScreen";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
+import SharePopup from "../../../components/editor/SharePopup";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -44,6 +46,8 @@ export default function ModulePage(props: IProps) {
 
     const [sectionCreationPopupVis, setSectionCreationPopupVis]
         = useState<boolean>(false)
+    const [sharePopupVis, setSharePopupVis]
+        = useState<boolean>(false)
     const [module, setModule] = useState<Module>(null)
     const [loading, setLoading] = useState<boolean>(true)
 
@@ -65,6 +69,10 @@ export default function ModulePage(props: IProps) {
 
     function toggleSectionCreationPopup() {
         setSectionCreationPopupVis(!sectionCreationPopupVis)
+    }
+
+    function toggleSharePopup() {
+        setSharePopupVis(!sharePopupVis)
     }
 
     function createSection(name: string) {
@@ -125,16 +133,46 @@ export default function ModulePage(props: IProps) {
         )
     }
 
+    const buttons = (
+        <div className="bg-white rounded-lg shadow px-4 py-3 flex flex-row gap-2">
+            <button
+            type="button"
+            className={secondaryButtonSm}
+            onClick={() => toggleSectionCreationPopup()}
+            >
+                <PencilAltIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
+                Rename
+            </button>
+            <button
+            type="button"
+            className={secondaryButtonSm}
+            onClick={() => toggleSectionCreationPopup()}
+            >
+                <EyeIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
+                Preview
+            </button>
+            <button
+            type="button"
+            className={secondaryButtonSm}
+            onClick={() => toggleSharePopup()}
+            >
+                <PaperAirplaneIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
+                Share
+            </button>
+        </div>
+    )
+
     return (
         <ScreenWithLoading loading={loading} >
             <Layout
-                title={module.name}
+                title={module ? module.name : null}
+                headerElement={ buttons }
                 subtitle="Subtitle or explenation for this module"
             >
 
                 <div className="flex flex-col gap-2">
                     {
-                    module.sections && module.sections
+                    module && module.sections.length > 0
                     ?
                     sectionList
                     :
@@ -163,6 +201,18 @@ export default function ModulePage(props: IProps) {
                 </PopupBackground>
                 :
                 ''
+                }
+
+                {/* Toggle the share popup */}
+                {
+                sharePopupVis
+                ?
+                <SharePopup
+                    popupCloseFunction={toggleSharePopup}
+                    moduleId={module.uuid}
+                />
+                :
+                null
                 }
 
             </Layout>

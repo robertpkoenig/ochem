@@ -80,8 +80,13 @@ export default function Modules(props: IProps) {
             sections: [],
             uuid: moduleId
         }
-        setDoc(doc(db, "modules", moduleId), newModule);
+        setDoc(doc(db, FirebaseConstants.MODULES, moduleId), newModule);
         createModuleListing(name, moduleId, creationDate)
+
+        const newModuleAnalyticsRecord = {
+            moduleId: moduleId
+        }
+        setDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), newModuleAnalyticsRecord)
     }
 
     function createModuleListing(name: string, moduleId: string, creationDate: string) {
@@ -91,7 +96,7 @@ export default function Modules(props: IProps) {
             authorId: user.userId,
             uuid: moduleId
         }
-        setDoc(doc(db, "module_listings", moduleId), newModuleListing);
+        setDoc(doc(db, FirebaseConstants.MODULE_LISTINGS, moduleId), newModuleListing);
         setModuleListings([newModuleListing, ...moduleListings])
     }
 
@@ -102,10 +107,10 @@ export default function Modules(props: IProps) {
                                     
     const moduleList: ReactNode = (
     
-        <div className="bg-white border border-gray-300 overflow-hidden rounded-md">
-            <ul className="divide-y divide-gray-300">
+        <div className=" overflow-hidden rounded-md">
+            <ul className="space-y-4">
                 {moduleListings.map((moduleListing: ModuleListing) => 
-                    <li key={moduleListing.uuid} className="px-6 py-4">
+                    <li key={moduleListing.uuid} className="px-6 py-4 bg-gray-100 rounded-md">
                         <ModuleCard
                             moduleListing={moduleListing}
                             moduleListings={moduleListings}

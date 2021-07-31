@@ -1,7 +1,66 @@
 import Link from "next/link";
-import React from "react";
+import { FormEvent, useState } from "react";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
+import User from "../model/User";
+import UserType from "../p5/model/UserType";
+import { useRouter } from "next/router";
 
 export default function SignUpCard() {
+
+    const [firstNameValue, setFirstNameValue] = useState('');
+    const [lastNameValue, setLastNameValue] = useState('');
+    const [universityValue, setUniversityValue] = useState('');
+    const [emailValue, setEmailValue] = useState('');
+    const [passwordValue, setPasswordValue] = useState('');
+    
+    function onFirstNameChange(event: FormEvent<HTMLInputElement>) {
+        setFirstNameValue(event.currentTarget.value)
+    }
+
+    function onLastNameChange(event: FormEvent<HTMLInputElement>) {
+        setLastNameValue(event.currentTarget.value)
+    }
+
+    function onUniversityChange(event: FormEvent<HTMLInputElement>) {
+        setUniversityValue(event.currentTarget.value)
+    }
+
+    function onEmailChange(event: FormEvent<HTMLInputElement>) {
+        setEmailValue(event.currentTarget.value)
+    }
+
+    function onPasswordChange(event: FormEvent<HTMLInputElement>) {
+        setPasswordValue(event.currentTarget.value)
+    }
+
+    async function onSubmit(event: React.FormEvent) {
+        event.preventDefault()
+        const auth = getAuth();
+        await createUserWithEmailAndPassword(auth, emailValue, passwordValue)
+        .then((userCredential) => {
+            // Signed in 
+            const db = getFirestore()
+            const newUser: User = {
+                type: UserType.TEACHER,
+                firstName: firstNameValue,
+                lastName: lastNameValue,
+                email: emailValue,
+                university: universityValue,
+                moduleIds: [],
+                completedReactionIds: [],
+                userId: userCredential.user.uid
+            }
+            setDoc(doc(db, "users", userCredential.user.uid), newUser).then(() => {
+                useRouter().push("/teacher/modules")
+            })
+        })
+        .catch((error) => {
+            alert(error.message)
+        });
+
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -23,7 +82,10 @@ export default function SignUpCard() {
     
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <form className="space-y-4" action="#" method="POST">
+                    <form 
+                        onSubmit={onSubmit}
+                        className="space-y-4"
+                    >
 
                     <div className="flex flex-row gap-4">
 
@@ -33,6 +95,8 @@ export default function SignUpCard() {
                             </label>
                             <div className="mt-1">
                             <input
+                                value={firstNameValue}
+                                onChange={onFirstNameChange}
                                 id="first-name"
                                 name="first-name"
                                 type="text"
@@ -49,6 +113,8 @@ export default function SignUpCard() {
                             </label>
                             <div className="mt-1">
                             <input
+                                value={lastNameValue}
+                                onChange={onLastNameChange}
                                 id="last-name"
                                 name="last-name"
                                 type="text"
@@ -63,10 +129,12 @@ export default function SignUpCard() {
 
                     <div>
                         <label htmlFor="university" className="block text-sm font-medium text-gray-700">
-                        University
+                            University
                         </label>
                         <div className="mt-1">
                         <input
+                            value={universityValue}
+                            onChange={onUniversityChange}
                             id="university"
                             name="university"
                             type="text"
@@ -83,6 +151,8 @@ export default function SignUpCard() {
                         </label>
                         <div className="mt-1">
                         <input
+                            value={emailValue}
+                            onChange={onEmailChange}
                             id="email"
                             name="email"
                             type="email"
@@ -99,6 +169,8 @@ export default function SignUpCard() {
                         </label>
                         <div className="mt-1">
                         <input
+                            value={passwordValue}
+                            onChange={onPasswordChange}
                             id="password"
                             name="password"
                             type="password"
@@ -109,7 +181,7 @@ export default function SignUpCard() {
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    {/* <div className="flex items-center justify-between">
                         <div className="flex items-center">
                         <input
                             id="remember-me"
@@ -121,15 +193,14 @@ export default function SignUpCard() {
                             Remember me
                         </label>
                         </div>
-
-                    </div>
+                    </div> */}
         
                     <div>
                         <button
-                        type="submit"
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                            type="submit"
+                            className="w-full flex justify-center mt-6 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
                         >
-                        Sign in
+                            Sign in
                         </button>
                     </div>
                     </form>

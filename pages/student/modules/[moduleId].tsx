@@ -6,7 +6,7 @@ import Layout from "../../../components/Layout";
 import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
 import StudentSectionCard from "../../../components/student/StudentSectionCard";
 import { AuthContext } from "../../../context/provider";
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { arrayUnion, collection, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import FirebaseConstants from "../../../model/FirebaseConstants";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 
@@ -16,7 +16,6 @@ interface IProps {
 
 export default function ModulePage(props: IProps) {
 
-    const [moduleId, setModuleId] = useState<string>(null)
     const [module, setModule] = useState<Module>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [reactionsChecked, setReactionsChecked] = useState<Set<string>>(null)
@@ -40,8 +39,34 @@ export default function ModulePage(props: IProps) {
     useEffect(() => {
         if (user) {
             getData()
+            sendAnalyticsUpdate()
         }
-    }, [user, moduleId])
+    }, [user])
+
+    function sendAnalyticsUpdate() {
+        
+        const moduleId = router.query.moduleId as string
+
+        const date = new Date()
+        date.setHours(0)
+        date.setMinutes(0)
+        date.setSeconds(0)
+        date.setMilliseconds(0)
+        const dateString = date.toISOString().substring(0, 10)
+
+        const dateRecordDocLocation =
+            doc(db,
+                FirebaseConstants.MODULE_ANALYTICS_RECORDS,
+                moduleId,
+                FirebaseConstants.DATE_RECORDS,
+                dateString
+            )
+        
+        updateDoc(dateRecordDocLocation, {
+            "studentIds": arrayUnion(user.userId)
+        })
+        
+    }
 
     function toggleReactionInCheckedReactions(reactionId: string) {
 

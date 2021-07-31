@@ -1,4 +1,4 @@
-import React from "react";
+import React, { EventHandler, SyntheticEvent } from "react";
 import { primaryButtonMd } from "../../styles/common-styles";
 
 interface IProps {
@@ -40,11 +40,15 @@ class SectionPopup extends React.Component<IProps, State> {
         this.popupCloseFunction()
     }
 
+    handleClick(event: SyntheticEvent) {
+        event.stopPropagation()
+    }
+
     render(): React.ReactNode {
 
         return (
             
-            <form onSubmit={this.onSubmit}>
+            <form onSubmit={this.onSubmit} onClick={this.handleClick}>
               <div className="shadow overflow-hidden sm:rounded-md">
                 <div className="px-4 py-5 bg-white sm:p-6">
                   <div className="flex flex-col gap-6">

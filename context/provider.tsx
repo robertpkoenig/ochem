@@ -8,11 +8,15 @@ import FirebaseNames from "../model/FirebaseConstants";
 import User from "../model/User";
 
 type authContextType = {
-    user: User
+    user: User,
+    setUser: (user: User) => void,
+    loginAttempted: boolean,
 }
 
 const authContextDefaultValues: authContextType = {
-    user: null
+    user: null,
+    setUser: null,
+    loginAttempted: false,
 }
 
 export const AuthContext = createContext<authContextType>(authContextDefaultValues);
@@ -27,7 +31,16 @@ type Props = {
 
 export function AuthProvider({ children }: Props) {
 
+    const pagesNotRequiringAuth =
+    [
+        "/",
+        "/auth/login",
+        "/auth/signup",
+        "/student/invitation/[moduleId]"
+    ]
+
     const [user, setUser] = useState<User | null>(null);
+    const [loginAttempted, setLoginAttempted] = useState<boolean>(false)
 
     firebaseClient()
     const db = getFirestore()
@@ -41,17 +54,23 @@ export function AuthProvider({ children }: Props) {
         if (!user) {
             onAuthStateChanged(auth, (loggedInUser) => {
                 
-                if (!loggedInUser) {            
-                    if (router.pathname != "/") {
+                if (!loggedInUser &&
+                    !pagesNotRequiringAuth.includes(router.pathname)) {            
+                    {
                         router.push("/")
                     }
                 }
 
-                const docRef = doc(db, FirebaseNames.USERS, loggedInUser.uid);
-                getDoc(docRef).then(docSnap => {
-                    const dbUser = docSnap.data()
-                    setUser(dbUser as User)
-                });
+                if (loggedInUser) {
+                    const docRef = doc(db, FirebaseNames.USERS, loggedInUser.uid);
+                    getDoc(docRef).then(docSnap => {
+                        const dbUser = docSnap.data()
+                        setUser(dbUser as User)
+                        setLoginAttempted(true)
+                    })
+                }
+
+                // setProviderFinished(true)
 
            })
         }
@@ -59,7 +78,9 @@ export function AuthProvider({ children }: Props) {
     })
 
     const authContext = {
-        user
+        user,
+        setUser,
+        loginAttempted
     }
 
     return (

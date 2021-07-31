@@ -176,7 +176,6 @@ class StudentReactionPage extends React.Component<IProps, IState> {
             listOfStepButtons = "Loading"
         }
                                 
-
         return (
 
             <ScreenWithLoading loading={this.state.loading}>

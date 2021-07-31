@@ -1,8 +1,4 @@
-
-enum UserType {
-    student = "student",
-    teacher = "teacher"
-}
+import UserType from "../p5/model/UserType";
 
 interface User {
 
@@ -10,6 +6,7 @@ interface User {
     firstName: string,
     lastName: string,
     email: string,
+    university: string,
     moduleIds: string[],
     completedReactionIds: string[],
     userId: string

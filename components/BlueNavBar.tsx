@@ -1,3 +1,5 @@
+import React, { useContext } from "react"
+import { AuthContext } from "../context/provider"
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 
@@ -8,6 +10,8 @@ function classNames(...classes: string[]) {
 const profile = ['Your Profile', 'Settings', 'Sign out']
 
 export default function BlueNavBar() {
+
+    const { user } = useContext(AuthContext)
 
     return (
 
@@ -34,8 +38,9 @@ export default function BlueNavBar() {
                     {({ open }) => (
                         <>
                         <div>
-                            <Menu.Button className="bg-indigo-600 rounded-full flex text-sm text-white">
+                            <Menu.Button className="bg-indigo-600 rounded-full flex text-sm text-indigo-100 font-light items-center gap-2">
                             <span className="sr-only">Open user menu</span>
+                            { user ? (user.firstName + " " + user.lastName) :  null }
                             <img
                                 className="rounded-full h-8 w-8"
                                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
@@ -54,8 +59,8 @@ export default function BlueNavBar() {
                             leaveTo="transform opacity-0 scale-95"
                         >
                             <Menu.Items
-                            static
-                            className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                static
+                                className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                             >
                             {profile.map((item) => (
                                 <Menu.Item key={item}>

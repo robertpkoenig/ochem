@@ -7,6 +7,7 @@ import DeletionPopup from "./DeletionPopup"
 
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 import firebaseClient from "../../firebaseClient";
+import FirebaseConstants from "../../model/FirebaseConstants"
 
 const cardStyling = `flex flex-row space-between`
 
@@ -41,7 +42,7 @@ function ModuleCard(props: IProps) {
         props.updateModuleListings(moduleListCopy)
         
         // Remove module listing from the "module_listings" collection
-        deleteDoc(doc(db, "module_listings", props.moduleListing.uuid))
+        deleteDoc(doc(db, FirebaseConstants.MODULE_LISTINGS, props.moduleListing.uuid))
 
         // TODO Remove the module from the modules collection
         deleteDoc(doc(db, "modules", props.moduleListing.uuid))
@@ -55,7 +56,7 @@ function ModuleCard(props: IProps) {
 
     return (
         <>
-            <div className="flex flex-row justify-between ">
+            <div className="flex flex-row justify-between bg-gray-100 rounded-md">
 
                 <div className="flex flex-col justify-center">
                     {props.moduleListing.name}

@@ -1,5 +1,6 @@
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import firebaseClient from "../../firebaseClient";
+import FirebaseConstants from "../../model/FirebaseConstants";
 
 export default function GetTest() {
 
@@ -8,7 +9,7 @@ export default function GetTest() {
         // firebaseClient()
         const db = getFirestore()
 
-        const docRef = doc(db, "module_listings", "66dbeb59-c83e-496b-8d16-fa4574517611");
+        const docRef = doc(db, FirebaseConstants.MODULE_LISTINGS, "66dbeb59-c83e-496b-8d16-fa4574517611");
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
