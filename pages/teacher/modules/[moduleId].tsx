@@ -8,7 +8,7 @@ import { EyeIcon, PaperAirplaneIcon, PencilAltIcon } from "@heroicons/react/outl
 import PopupBackground from "../../../components/PopupBackground";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
-import { emptyState, primaryButtonMd, secondaryButtonMd, secondaryButtonSm } from "../../../styles/common-styles";
+import { emptyState, primaryButtonMd, primaryButtonSm, secondaryButtonMd, secondaryButtonSm } from "../../../styles/common-styles";
 import { GetServerSideProps } from 'next'
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import FirebaseConstants from "../../../model/FirebaseConstants";
@@ -140,24 +140,16 @@ export default function ModulePage(props: IProps) {
             className={secondaryButtonSm}
             onClick={() => toggleSectionCreationPopup()}
             >
-                <PencilAltIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-                Rename
-            </button>
-            <button
-            type="button"
-            className={secondaryButtonSm}
-            onClick={() => toggleSectionCreationPopup()}
-            >
-                <EyeIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
+                <EyeIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
                 Preview
             </button>
             <button
             type="button"
-            className={secondaryButtonSm}
+            className={primaryButtonSm}
             onClick={() => toggleSharePopup()}
             >
-                <PaperAirplaneIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-                Share
+                <PaperAirplaneIcon className="-ml-0.5 mr-1.5 h-4 w-4" aria-hidden="true" />
+                Invite Students
             </button>
         </div>
     )

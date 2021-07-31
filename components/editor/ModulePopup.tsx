@@ -1,87 +1,69 @@
-import React, { FormEventHandler, MouseEventHandler } from "react";
+import React, { FormEvent, FormEventHandler, MouseEventHandler, SyntheticEvent, useState } from "react";
 import { primaryButtonMd } from "../../styles/common-styles";
+import PopupBackground from "../PopupBackground";
 
 interface IProps {
     popupCloseFunction: () => void
     moduleAdditionFunction: (string: string) => void
 }
 
-interface State {
-    moduleNameInput: string
-}
+export default function ModulePopup(props: IProps) {
 
-class ModulePopup extends React.Component<IProps, State> {
+    const [moduleName, setModuleName] = useState('')
 
-    popupCloseFunction: () => void
-    moduleAdditionFunction: (string: string) => void
-
-    constructor(props: IProps) {
-
-        super(props)
-        this.popupCloseFunction = props.popupCloseFunction
-        this.moduleAdditionFunction = props.moduleAdditionFunction
-
-        this.state = {
-            moduleNameInput: ""
-        }
-
-        this.onChange = this.onChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-
+    function onModuleNameChange(event: FormEvent<HTMLInputElement>) {
+        setModuleName(event.currentTarget.value)
     }
 
-    onChange(event: React.FormEvent<HTMLInputElement>) {
-        this.setState({ moduleNameInput: event.currentTarget.value });
-    }
-
-    onSubmit(event: React.FormEvent) {
+    function onSubmit(event: React.FormEvent) {
         event.preventDefault();
-        this.moduleAdditionFunction(this.state.moduleNameInput)
-        this.popupCloseFunction()
+        props.moduleAdditionFunction(moduleName)
+        props.popupCloseFunction()
     }
 
-    render(): React.ReactNode {
+    function stopPropogation(event: SyntheticEvent) {
+        event.stopPropagation()
+    }
 
-        return (
-            
-            <form onSubmit={this.onSubmit}>
-              <div className="shadow overflow-hidden sm:rounded-md">
+    return (
+        <PopupBackground popupCloseFunction={props.popupCloseFunction}>
+            <form onSubmit={onSubmit}>
+            <div 
+                onClick={stopPropogation}
+                className="shadow overflow-hidden sm:rounded-md"
+            >
                 <div className="px-4 py-5 bg-white sm:p-6">
-                  <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6">
 
                     <div className="w-96">
-                      <label htmlFor="module-name" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="module-name" className="block text-sm font-medium text-gray-700">
                         Module name
-                      </label>
-                      <input
+                    </label>
+                    <input
                         type="text"
                         name="module-name"
                         placeholder="Type module name here"
-                        value={this.state.moduleNameInput}
-                        onChange={this.onChange}
+                        value={moduleName}
+                        onChange={onModuleNameChange}
                         id="module-name"
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
+                    />
                     </div>
 
-                  </div>
+                </div>
                 </div>
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
-                  <input
+                <input
                     type="submit"
                     name="submit"
                     value="Create Module"
                     placeholder="Type module name here"
                     className={primaryButtonMd + "cursor-pointer"}
-                  />
+                />
                 </div>
-              </div>
+            </div>
             </form>
-
-        )
-
-    }
+        </PopupBackground>
+    )
 
 }
-
-export default ModulePopup

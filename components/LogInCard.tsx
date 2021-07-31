@@ -3,6 +3,7 @@ import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { FormEvent, useContext, useState } from "react";
 import { AuthContext } from "../context/provider";
+import redirectUserHome from "../helper/redirectUserToHome";
 import User from "../model/User";
 import UserType from "../p5/model/UserType";
 import { primaryButtonMd } from "../styles/common-styles";
@@ -35,29 +36,8 @@ export default function LogInCard() {
             const db = getFirestore()
             getDoc(doc(db, "users", userCredential.user.uid)).then((docSnap) => {
                 const user: User = docSnap.data() as User
-
                 setUser(user)
-
-                // Redirect based on if the user is a student or a teacher
-                if (user.type == UserType.TEACHER) {
-                    router.push("/teacher/modules")
-                }
-
-                if (user.type == UserType.STUDENT) {
-
-                    if (user.moduleIds.length < 1) {
-                        alert("You have not been invited to any modules yet")
-                    }
-
-                    if (user.moduleIds.length == 1) {
-                        router.push("/student/modules/" + user.moduleIds[0])
-                    }
-
-                    else {
-                        router.push("/student/modules/")
-                    }
-                    
-                }
+                redirectUserHome(router, user)
             })
         })
         .catch((error) => {

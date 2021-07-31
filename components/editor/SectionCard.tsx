@@ -21,11 +21,6 @@ interface IProps {
     setModuleFunction: (moduleCopy: Module) => void
 }
 
-interface IState {
-    sectionDeletePopupVisible: boolean
-    reactionCreationPopupVisible: boolean
-}
-
 export default function SectionCard(props: IProps) {
 
     const [sectionDeletePopupVis, setSectionDeletePopupVis]
@@ -187,18 +182,18 @@ export default function SectionCard(props: IProps) {
             && props.section.reactionListings.length > 0) {
             sectionList = 
                 <div className=" border border-gray-300 overflow-hidden rounded-md ">
-                <ul className="divide-y divide-gray-300">
-                {props.section.reactionListings.map((reactionListing: ReactionListing) => 
-                <li key={reactionListing.uuid} className="px-6 py-4">
-                    <ReactionCard
-                        reactionListing={reactionListing}
-                        section={props.section}
-                        module={props.module}
-                        updateModule={props.setModuleFunction}
-                    />
-                </li>
-                )}
-                </ul>
+                    <ul className="divide-y divide-gray-300">
+                        {props.section.reactionListings.map((reactionListing: ReactionListing) => 
+                            <li key={reactionListing.uuid} className="px-6 py-4">
+                                <ReactionCard
+                                    reactionListing={reactionListing}
+                                    section={props.section}
+                                    module={props.module}
+                                    updateModule={props.setModuleFunction}
+                                />
+                            </li>
+                        )}
+                    </ul>
                 </div>
     }
         

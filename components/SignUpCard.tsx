@@ -34,6 +34,8 @@ export default function SignUpCard() {
         setPasswordValue(event.currentTarget.value)
     }
 
+    const router = useRouter()
+
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault()
         const auth = getAuth();
@@ -52,7 +54,7 @@ export default function SignUpCard() {
                 userId: userCredential.user.uid
             }
             setDoc(doc(db, "users", userCredential.user.uid), newUser).then(() => {
-                useRouter().push("/teacher/modules")
+                router.push("/teacher/modules")
             })
         })
         .catch((error) => {
@@ -69,7 +71,7 @@ export default function SignUpCard() {
                 src="/assets/logo.svg"
                 alt="Workflow"
             />
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create teacher account</h2>
             <p className="mt-2 text-center text-sm text-gray-600">
                 Already have an account?{' '}
                 <Link href="/auth/login">
@@ -200,13 +202,16 @@ export default function SignUpCard() {
                             type="submit"
                             className="w-full flex justify-center mt-6 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
                         >
-                            Sign in
+                            Create account
                         </button>
                     </div>
                     </form>
-        
 
                 </div>
+                <p className="mt-6 font-light text-gray-500 text-center text-sm">
+                    This sign up form is only for <em><strong>teachers</strong></em>. If you are a student,<br></br>
+                    wait for your teacher to send you an invitation link.
+                </p>
             </div>
         </div>
     )

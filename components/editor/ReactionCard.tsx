@@ -23,18 +23,18 @@ export interface IReactionCardState {
 
 const publishedIndicator = 
     <div className="flex flex-row gap-1">
-        <div className="bg-green-500 rounded-full w-2 h-2"></div>
-        <div className="text-xs font-light text-gray-500">
-        published
-        </div>
+        <div className="bg-green-500 rounded-full w-3 h-3"></div>
+        {/* <div className="text-xs font-light text-gray-500">
+            visible
+        </div> */}
     </div>
 
 const notPublishedIndicator = 
     <div className="flex flex-row gap-1 items-center">
-        <div className=" bg-yellow-500 rounded-full w-2 h-2"></div>
-        <div className="text-xs font-light text-gray-500">
+        <div className=" bg-yellow-500 rounded-full w-3 h-3"></div>
+        {/* <div className="text-xs font-light text-gray-500">
             draft
-        </div>
+        </div> */}
     </div>
 
 export default function ReactionCard (props: IReactionCardProps) {
@@ -197,10 +197,6 @@ export default function ReactionCard (props: IReactionCardProps) {
                 </div>
 
                 <div className="flex flex-row gap-2">
-                    <Link href={"/student/modules/" + props.reactionListing.uuid}>
-                        <a className={ secondaryButtonSm }>Preview</a>
-                    </Link>
-
                     <Link href={"/teacher/reactions/" + props.reactionListing.uuid}>
                         <a className={ primaryButtonSm }>Edit</a>
                     </Link>
