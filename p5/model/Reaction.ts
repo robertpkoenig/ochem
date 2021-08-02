@@ -7,26 +7,35 @@ class Reaction {
     public name: string
     public uuid: string
     public moduleId: string
+    public moduleName: string
     public sectionId: string
+    public sectionName: string
     public authorId: string
-    public published: boolean
+    public visible: boolean
+    public prompt: string
 
     constructor(name: string,
                 uuid: string,
                 moduleId: string,
+                moduleName: string,
                 sectionId: string,
+                sectionName: string,
                 authorId: string,
-                published: boolean,
+                visible: boolean,
                 steps: ReactionStep[],
-                currentStep: ReactionStep) {
+                currentStep: ReactionStep,
+                prompt: string) {
         this.name = name
         this.uuid = uuid
         this.moduleId = moduleId
+        this.moduleName = moduleName
         this.sectionId = sectionId
+        this.sectionName = sectionName
         this.authorId = authorId 
-        this.published = published
+        this.visible = visible
         this.steps = steps
         this.currentStep = currentStep
+        this.prompt = prompt
     }
 
     update() {
@@ -52,9 +61,12 @@ class Reaction {
             name: this.name,
             uuid: this.uuid,
             moduleId: this.moduleId,
+            moduleName: this.moduleName,
             sectionId: this.sectionId,
+            sectionName: this.sectionName,
             authorId: this.authorId,
-            published: this.published
+            published: this.visible,
+            prompt: this.prompt,
         }
 
     }
@@ -68,11 +80,14 @@ class Reaction {
             this.name,
             this.uuid,
             this.moduleId,
+            this.moduleName,
             this.sectionId,
+            this.sectionName,
             this.authorId,
-            this.published,
+            this.visible,
             this.steps,
-            this.currentStep
+            this.currentStep,
+            this.prompt,
         )
     }
 

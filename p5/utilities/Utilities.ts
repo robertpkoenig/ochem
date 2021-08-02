@@ -29,7 +29,7 @@ class Utilities {
 
     public static getAtomWithinMoleculeByID(molecule: Molecule, targetAtomId: string): Atom {
         for (const atom of molecule.atoms) {
-            if (atom.id === targetAtomId) return atom
+            if (atom.uuid === targetAtomId) return atom
         }
         
         throw new Error("no atom with this ID exists")

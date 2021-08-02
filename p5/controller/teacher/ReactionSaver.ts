@@ -4,6 +4,9 @@ import Reaction from "../../model/Reaction";
 class ReactionSaver {
 
     public static saveReaction(reaction: Reaction) {
+
+        console.log(reaction.toJSON());
+
         const db = getFirestore()
         // localStorage.setItem(reaction.uuid, JSON.stringify(reaction))
         setDoc(doc(db, "reactions", reaction.uuid), reaction.toJSON());

@@ -11,8 +11,9 @@ import { v4 as uuid } from 'uuid'
 import DeletionPopup from './DeletionPopup';
 import Reaction from '../../p5/model/Reaction';
 import ReactionStep from '../../p5/model/ReactionStep';
-import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 import { AuthContext } from '../../context/provider';
+import FirebaseConstants from '../../model/FirebaseConstants';
 
 interface IProps {
     userId: string
@@ -37,7 +38,7 @@ export default function SectionCard(props: IProps) {
 
         // Get the section above
         const orderAboveSectionToIncrementOrder = sectionToDecrementOrder.order - 1
-        for (const section of props.module.sections) {
+        for (const section of Object.values(props.module.sections)) {
             if (section.order === orderAboveSectionToIncrementOrder) {
                 sectionToIncrementOrder = section
             }
@@ -48,11 +49,6 @@ export default function SectionCard(props: IProps) {
 
             sectionToDecrementOrder.order--
             sectionToIncrementOrder.order++
-
-            // Sort the moduleCopy's sections
-            props.module.sections.sort((a, b) => {
-                return a.order - b.order
-            })
 
             props.setModuleFunction(props.module)
             updateSectionsInFirebase()
@@ -68,7 +64,7 @@ export default function SectionCard(props: IProps) {
 
         // Get the section above
         const orderAboveSectionToDecrementOrder = sectionToIncrementOrder.order + 1
-        for (const section of props.module.sections) {
+        for (const section of Object.values(props.module.sections)) {
             if (section.order === orderAboveSectionToDecrementOrder) {
                 sectionToDecrementOrder = section
             }
@@ -79,11 +75,6 @@ export default function SectionCard(props: IProps) {
 
             sectionToDecrementOrder.order--
             sectionToIncrementOrder.order++
-
-            // Sort the moduleCopy's sections
-            props.module.sections.sort((a, b) => {
-                return a.order - b.order
-            })
 
             props.setModuleFunction(props.module)
             updateSectionsInFirebase()
@@ -97,16 +88,17 @@ export default function SectionCard(props: IProps) {
         let sectionToDelete: Section  = props.section
 
         // Decrement the order of all sections above this section
-        for (const section of props.module.sections) {
+        for (const section of Object.values(props.module.sections)) {
             if (section.order > sectionToDelete.order) {
                 section.order--
             }
         }
 
         // Filter out the section to delete
-        props.module.sections = props.module.sections.filter(section => {
-            return section.uuid != props.section.uuid
-        })
+        delete props.module.sections[props.section.uuid]
+        // props.module.sections = props.module.sections.filter(section => {
+        //     return section.uuid != props.section.uuid
+        // })
 
         // Reset the model on the parent page
         props.setModuleFunction(props.module)
@@ -131,7 +123,7 @@ export default function SectionCard(props: IProps) {
     }
 
     function createReaction(reactionName: string) {
-        const order = props.section.reactionListings.length
+        const order = Object.keys(props.section.reactionListings).length
         const reactionId = uuid()
         const creationDate = Date.now().toString()
 
@@ -139,51 +131,71 @@ export default function SectionCard(props: IProps) {
         const newReactionListing: ReactionListing = {
             name: reactionName,
             order: order,
-            published: false,
+            visible: false,
             uuid: reactionId,
             creationDate: creationDate,
             authorId: props.userId
         }
 
-        props.section.reactionListings.push(newReactionListing)
+        props.section.reactionListings[reactionId] = newReactionListing
 
         // Update the module model on the parent element
         props.setModuleFunction(props.module)
-        // Store this in local storage
-        updateSectionsInFirebase()
+
+        const reactionRefWithinSection =
+            FirebaseConstants.SECTIONS + "."+ props.section.uuid + "."+
+            FirebaseConstants.REACTION_LISTINGS + "." + reactionId
+
+        const newSectionUpdateObject: any = {}
+        newSectionUpdateObject[reactionRefWithinSection] = newReactionListing
+
+        // Create the new nested reaction listing document
+        // in the module's section document's reaction listings collection
+        const sectionRecordDocLocation =
+            doc(db, FirebaseConstants.MODULES, props.module.uuid)
+        updateDoc(sectionRecordDocLocation, newSectionUpdateObject)
 
         // Create a new full reaction object
         const newReaction = new Reaction(
             reactionName,
             reactionId,
             props.module.uuid,
+            props.module.title,
             props.section.uuid,
+            props.section.name,
             props.userId,
             false,
             [],
-            null
+            null,
+            ''
         )
 
+        // Add the first reaction step
         const firstReactionStep = new ReactionStep(0)
         newReaction.steps.push(firstReactionStep)
         newReaction.currentStep = firstReactionStep
 
+        // Set the full reaction document in the firebase reactions collection
         setDoc(doc(db, "reactions", reactionId), newReaction.toJSON());
 
     }
 
-    const sectionListEmptyState =   <div className={emptyState}>
+    const reactionListEmptyState =   <div className={emptyState}>
                                         This section has no reactions yet
                                     </div>
 
-    let sectionList: React.ReactNode
+    let reactionList: React.ReactNode
 
     if (props.section.reactionListings
-            && props.section.reactionListings.length > 0) {
-            sectionList = 
+            && Object.keys(props.section.reactionListings).length > 0) {
+            const sortedReactionObjects = Object.values(props.section.reactionListings)
+            sortedReactionObjects.sort((a, b) => {
+                return a.order - b.order
+            })
+            reactionList = 
                 <div className=" border border-gray-300 overflow-hidden rounded-md ">
                     <ul className="divide-y divide-gray-300">
-                        {props.section.reactionListings.map((reactionListing: ReactionListing) => 
+                        {sortedReactionObjects.map((reactionListing: ReactionListing) => 
                             <li key={reactionListing.uuid} className="px-6 py-4">
                                 <ReactionCard
                                     reactionListing={reactionListing}
@@ -233,11 +245,11 @@ export default function SectionCard(props: IProps) {
                     <div>
 
                         {
-                        sectionList
+                        reactionList
                         ?
-                        sectionList
+                        reactionList
                         :
-                        sectionListEmptyState
+                        reactionListEmptyState
                         }
 
                     </div>
@@ -257,14 +269,12 @@ export default function SectionCard(props: IProps) {
                     {           
                     sectionDeletePopupVis
                     ?
-                    <PopupBackground popupCloseFunction={toggleSectionDeletePopup}>
-                        <DeletionPopup
-                            thing={props.section}
-                            thingType="section"
-                            deletionFunction={deleteThisSection}
-                            togglePopupFunction = {toggleSectionDeletePopup}
-                        />
-                    </PopupBackground>
+                    <DeletionPopup
+                        thing={props.section}
+                        thingType="section"
+                        deletionFunction={deleteThisSection}
+                        togglePopupFunction = {toggleSectionDeletePopup}
+                    />
                     :
                     ''
                     }
@@ -273,12 +283,10 @@ export default function SectionCard(props: IProps) {
                     {           
                     reactionCreationPopupVis 
                     ?
-                    <PopupBackground popupCloseFunction={toggleReactionCreationPopup}>
-                        <ReactionCreationPopup
-                            popupCloseFunction={toggleReactionCreationPopup} 
-                            createReactionFunction={createReaction} 
-                        />
-                    </PopupBackground>
+                    <ReactionCreationPopup
+                        popupCloseFunction={toggleReactionCreationPopup} 
+                        createReactionFunction={createReaction} 
+                    />
                     :
                     ''
                     }

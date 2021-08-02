@@ -1,11 +1,14 @@
-import Sections from "./SectionListing"
+import SectionListing from "./SectionListing"
 
 interface Module {
 
-    name: string,
+    title: string,
+    subtitle: string,
     creationDate: string,
     authorId: string,
-    sections: Sections[],
+    sections: {
+        [sectionId: string]: SectionListing;
+    },
     uuid: string,
 
 }

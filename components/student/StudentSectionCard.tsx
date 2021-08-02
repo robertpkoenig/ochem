@@ -13,54 +13,53 @@ import ReactionStep from '../../p5/model/ReactionStep';
 interface ISectionCardProps {
     section: Section
     module: Module
-    reactionsChecked: Set<string>
+    completedReactionIds: Set<string>
     checkAdditionFunction: (reactionId: string) => void
 }
 
 interface ISectionCardState {}
 
-class SectionCard extends React.Component<ISectionCardProps, ISectionCardState> {
+export function SectionCard(props: ISectionCardProps){
 
-    constructor(props: ISectionCardProps) {
-        super(props)
-    }
+    const filteredReactionList =
+        Object.values(props.section.reactionListings).filter(reactionListing => {
+            return reactionListing.visible
+        })
 
-    render() {
-
-        const reactionList = 
-                <div className=" border border-gray-300 overflow-hidden rounded-md ">
-                    <ul className="divide-y divide-gray-300">
-                        {this.props.section.reactionListings.map((reactionListing: ReactionListing) => 
-                        <li key={reactionListing.uuid} className="px-6 py-4">
-                            <StudentReactionCard
-                                reactionListing={reactionListing}
-                                section={this.props.section}
-                                module={this.props.module}
-                                modulesChecked={this.props.reactionsChecked}
-                                checkAdditionFunction={this.props.checkAdditionFunction}
-                            />
-                        </li>
-                        )}
-                    </ul>
-                </div>
-        
-        
-        return (
-            <div className=" px-6 py-4 flex flex-col gap-4 bg-gray-100 overflow-hidden rounded-md">
-
-                    <div className="flex flex-row justify-between items-center">
-                        <div className="font-semibold text-md bg-gray-100">
-                            {this.props.section.name}
-                        </div>
-                    </div>
-
-                    <div>
-                        {reactionList}
-                    </div>
-
+    const reactionList = 
+            <div className=" border border-gray-300 overflow-hidden rounded-md ">
+                <ul className="divide-y divide-gray-300">
+                    {filteredReactionList.map((reactionListing: ReactionListing) => 
+                    <li key={reactionListing.uuid} className="px-6 py-4">
+                        <StudentReactionCard
+                            reactionListing={reactionListing}
+                            section={props.section}
+                            module={props.module}
+                            modulesChecked={props.completedReactionIds}
+                            checkAdditionFunction={props.checkAdditionFunction}
+                        />
+                    </li>
+                    )}
+                </ul>
             </div>
-        )
-    }
+    
+    
+    return (
+        <div className=" px-6 py-4 flex flex-col gap-4 bg-gray-100 overflow-hidden rounded-md">
+
+                <div className="flex flex-row justify-between items-center">
+                    <div className="font-semibold text-md bg-gray-100">
+                        {props.section.name}
+                    </div>
+                </div>
+
+                <div>
+                    {reactionList}
+                </div>
+
+        </div>
+    )
+
 }
 
 export default SectionCard

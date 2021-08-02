@@ -42,20 +42,26 @@ class ReactionLoader {
         const name = reactionRawObject["name"]
         const uuid = reactionRawObject["uuid"]
         const moduleId = reactionRawObject["moduleId"]
+        const moduleName = reactionRawObject["moduleName"]
         const sectionId = reactionRawObject["sectionId"]
+        const sectionName = reactionRawObject["sectionName"]
         const authorId = reactionRawObject["authorId"]
         const published = reactionRawObject["published"]
+        const prompt = reactionRawObject["prompt"]
 
 
         const restoredReaction = new Reaction(
             name,
             uuid,
             moduleId,
+            moduleName,
             sectionId,
+            sectionName,
             authorId,
             published,
             restoredSteps,
-            currentStep
+            currentStep,
+            prompt,
         )
         
         restoredReaction.steps = restoredSteps

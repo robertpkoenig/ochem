@@ -6,11 +6,12 @@ import { v4 as uuid } from 'uuid'
 
 class ReactionStep {
 
-    name: string | null
-    order: number
-    molecules: Molecule[]
-    curlyArrow: CurlyArrow | null
-    uuid: string
+    public name: string | null
+    public order: number
+    public molecules: Molecule[]
+    public curlyArrow: CurlyArrow | null
+    public uuid: string
+    public promptText: string
 
     constructor(order: number) {
         this.name = null
@@ -18,6 +19,7 @@ class ReactionStep {
         this.molecules = []
         this.curlyArrow = null
         this.uuid = uuid()
+        this.promptText = ""
     }
 
     update() {

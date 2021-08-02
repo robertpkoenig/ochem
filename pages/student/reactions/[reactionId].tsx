@@ -1,4 +1,4 @@
-import { ArrowLeftIcon } from "@heroicons/react/solid"
+import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid"
 import Link from "next/link"
 import React from "react"
 import { ArrowType } from "../../../p5/model/chemistry/CurlyArrow"
@@ -10,7 +10,10 @@ import Constants from "../../../p5/Constants"
 import UserType from "../../../p5/model/UserType"
 import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore"
 import FirebaseConstants from "../../../model/FirebaseConstants"
-import ScreenWithLoading from "../../../components/ScreenWithLoading"
+import { findConfigFile } from "typescript"
+import { primaryButtonSm, secondaryButtonSm } from "../../../styles/common-styles"
+import { Transition } from "@headlessui/react"
+import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -34,6 +37,8 @@ interface IState {
     reaction: Reaction | null
     arrowType: ArrowType | null
     loading: boolean
+    successToastVis: boolean
+    failureToastVis: boolean
 }
 
 class StudentReactionPage extends React.Component<IProps, IState> {
@@ -49,11 +54,12 @@ class StudentReactionPage extends React.Component<IProps, IState> {
         this.state = {
             reaction: null,
             arrowType: null,
-            loading: true
+            loading: true,
+            successToastVis: false,
+            failureToastVis: false,
         }
 
     }
-
    
     async componentDidMount() {
 
@@ -63,6 +69,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
         const rawReactionObject = docSnap.data()
 
         const reaction = ReactionLoader.loadReactionFromObject(rawReactionObject)
+        reaction.currentStep = reaction.steps[0]
 
         this.setState({
             ...this.state,
@@ -120,10 +127,39 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
     arrowDrawnSuccesfully() {
         this.incrementStep()
+        if (this.state.reaction.currentStep.order == this.state.reaction.steps.length - 1) {
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    arrowType: null
+                }
+            })
+        }
+        this.toggleSuccessToast()
+        setTimeout(this.toggleSuccessToast.bind(this), 1000)
+    }
 
+    toggleSuccessToast() {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                successToastVis: !prevState.successToastVis
+            }
+        }) 
+    }
+
+    toggleFailureToast() {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                failureToastVis: !prevState.failureToastVis
+            }
+        }) 
     }
 
     arrowDrawnWrong() {
+        this.toggleFailureToast()
+        setTimeout(this.toggleFailureToast.bind(this), 1000)
     }
 
     incrementStep() {
@@ -133,11 +169,16 @@ class StudentReactionPage extends React.Component<IProps, IState> {
         this.forceUpdate()
     }
 
+    resetReaction() {
+        this.state.reaction.currentStep = this.state.reaction.steps[0]
+        this.forceUpdate()
+    }
+
     render() {
 
-        let listOfStepButtons: React.ReactNode
+        let stepIndicators: React.ReactNode
         if (this.state.reaction) {
-            listOfStepButtons =   
+            stepIndicators =   
                                     <div className="flex flex-row gap-3 ">
                                     <div className="text-xs font-medium">
                                         Step 
@@ -156,7 +197,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                                 step === this.state.reaction.currentStep
                                                 ?
                                                 <span className="absolute w-5 h-5 p-px flex" aria-hidden="true">
-                                                    <span className="w-full h-full rounded-full bg-indigo-200" />
+                                                    <span className="w-full h-full rounded-full bg-indigo-200 animate-pulse" />
                                                 </span>
                                                 :
                                                 null
@@ -173,21 +214,28 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                     </div>
         }
         else {
-            listOfStepButtons = "Loading"
+            stepIndicators = "Loading"
         }
                                 
         return (
 
-            <ScreenWithLoading loading={this.state.loading}>
+            <ScreenWithLoadingAllRender loading={this.state.loading}>
                 <>
+                {/* Header above thin white line */}
                 <header className="bg-indigo-600">
-                    <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 ">
+                    <div className="w-1200 mx-auto">
                         <div className="flex flex-col justify-left border-b border-indigo-400">
 
-                            <Link href={"/editor/modules/" + this.state.reaction?.moduleId}>
+                            <Link href={"/student/modules/" + this.state.reaction?.moduleId}>
                                 <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
                                 <ArrowLeftIcon className="w-3 h-3" />
-                                Module name goes here | Section name
+                                    {
+                                        this.state.reaction
+                                        ?
+                                        this.state.reaction.moduleName + " | " + this.state.reaction.sectionName
+                                        :
+                                        null
+                                    }
                                 </a>
                             </Link>
 
@@ -195,13 +243,19 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                             <div className="w-full flex flex-row justify-between mb-3">
                                 <div>
                                     <h1 className="text-2xl font-semibold text-white">
-                                        Reaction name goes here
+                                        {
+                                            this.state.reaction
+                                            ?
+                                            this.state.reaction.name
+                                            :
+                                            null
+                                        }
                                     </h1>
                                 </div>
 
                                 <div className="flex flex-row gap-6 items-center">
 
-                                    <button className="text-sm text-white">
+                                    <button onClick={this.arrowDrawnSuccesfully.bind(this)} className="text-sm text-white">
                                         Something
                                     </button>
 
@@ -213,25 +267,61 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                 </header>
 
                 <div className="min-h-screen bg-gray-100">
+                    
                     <div className="bg-indigo-600 pb-32">
 
-                        <div className="py-5">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-row gap-4 items-center text-white font-light">
-                                Step prompt goes here giving student the context for the reaction
+                        {/* Step prompt container */}
+                        {
+                            this.state.reaction && this.state.reaction.prompt
+                            ?
+                            <div className="py-5">
+                                <div className="w-1200 mx-auto flex flex-row gap-4 items-center text-white font-light">
+                                    {this.state.reaction.prompt}
+                                </div>
                             </div>
-                        </div>
+                            :
+                            <div className="h-5"></div>
+                        }
+
                     </div>
                 
                     <main className="-mt-32">
-                        <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8 flex flex-row gap-5">
+                        <div className="w-1200 h-700 mx-auto pb-12 flex flex-row gap-5">
 
                             {/* p5 canvas */}
-                            <div id={Constants.CANVAS_PARENT_NAME} className="bg-white rounded-lg shadow flex-grow">
-                                <div className="p-5 relative flex flex-row justify-between">
+                            <div id={Constants.CANVAS_PARENT_NAME} className="bg-white h-700 rounded-lg shadow flex-grow relative">
+                                {
+                                    this.state.reaction &&
+                                    this.state.reaction.currentStep.order == this.state.reaction.steps.length - 1
+                                    ?
+                                    <div className="z-20 h-96 absolute bg-white bg-opacity-0 w-1200 rounded-md" />
+                                    :
+                                    null
+                                }
+                                    
+                                <div className="w-1200 p-5 absolute flex flex-row justify-between">
                                     <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
-                                        {listOfStepButtons}
+                                        {stepIndicators}
+                                        <Transition
+                                            show={this.state.successToastVis}
+                                            enter="transition-opacity duration-75"
+                                            enterFrom="opacity-0"
+                                            enterTo="opacity-100"
+                                            leave="transition-opacity duration-150"
+                                            leaveFrom="opacity-100"
+                                            leaveTo="opacity-0"
+                                        >
+                                            <div className="ml-2 bg-green-200 py-1.5 pl-3 pr-4 flex flex-row gap-2 justify-center rounded-md">
+                                                <div>
+                                                    <CheckCircleIcon className="h-5 w-5 text-green-600" aria-hidden="true" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-sm font-medium text-green-600">Correct arrow</h3>
+                                                </div>
+                                            </div>
+                                        </Transition>
                                     </div>
-                                    <div className=" flex flex-row items-center gap-2 text-sm text-gray-500">
+                                    <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
                                         {/* Double curly arrow */}
                                         <button
                                             className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
@@ -244,20 +334,70 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                         <button
                                             className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
                                             onClick={() => this.setArrowType(ArrowType.SINGLE)}
-
                                         >
                                             <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
                                         </button>
                                     </div>
                                 </div>
+
+                                {/* Wrong arrow notification on bottom of screen */}
+                                {
+                                    this.state.failureToastVis
+                                    ?
+                                    <div className="absolute bottom-0 bg-pink-200 p-2 flex flex-row justify-center w-full rounded-b-md ">
+                                        <div className="flex">
+                                        <div className="flex-shrink-0">
+                                            <XCircleIcon className="h-5 w-5 text-pink-600" aria-hidden="true" />
+                                        </div>
+                                        <div className="ml-3">
+                                            <h3 className="text-sm font-medium text-pink-600">Incorrect arrow</h3>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    :
+                                    null
+                                }
+
+                                {/* Wrong arrow notification on bottom of screen */}
+                                {
+                                    this.state.reaction &&
+                                    this.state.reaction.currentStep.order == this.state.reaction.steps.length - 1
+                                    ?
+                                    <div className="absolute bottom-0 bg-green-50 p-4 flex flex-row items-center justify-between w-full rounded-b-md ">
+                                        <div className="flex">
+                                            <div className="flex-shrink-0">
+                                                <CheckCircleIcon className="h-5 w-5 text-green-600" aria-hidden="true" />
+                                            </div>
+                                            <div className="ml-3">
+                                                <h3 className="text-sm font-medium text-green-600">Reaction completed!</h3>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-row gap-4">
+                                            <button className={secondaryButtonSm} onClick={this.resetReaction.bind(this)}>
+                                                Retry
+                                            </button>
+
+                                            <Link href={"/student/modules/" + this.state.reaction?.moduleId}>
+                                                <a className={primaryButtonSm}>
+                                                    Back To Module
+                                                </a>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                    :
+                                    null
+                                }
+
                             </div>
                         
                         </div>
 
                     </main>
+                
                 </div>
+
                 </>
-            </ScreenWithLoading>
+            </ScreenWithLoadingAllRender>
         )
     }
 

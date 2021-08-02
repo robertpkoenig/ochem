@@ -1,28 +1,30 @@
 import React, { FormEvent, FormEventHandler, MouseEventHandler, SyntheticEvent, useState } from "react";
+import Module from "../../model/Module";
 import { primaryButtonMd } from "../../styles/common-styles";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
+    module: Module
     popupCloseFunction: () => void
-    moduleAdditionFunction: (moduleName: string, moduleSubtitle: string) => void
+    updateModuleFunction: (moduleName: string, moduleSubtitle: string) => void
 }
 
-export default function ModulePopup(props: IProps) {
+export default function ModuleRenamePopup(props: IProps) {
 
-    const [moduleName, setModuleName] = useState('')
-    const [moduleSubtitle, setModuleSubtitle] = useState('')
+    const [moduleTitle, setModuleTitle] = useState(props.module.title)
+    const [moduleSubtitle, setModuleSubtitle] = useState(props.module.subtitle)
 
     function onModuleNameChange(event: FormEvent<HTMLInputElement>) {
-        setModuleName(event.currentTarget.value)
+        setModuleTitle(event.currentTarget.value)
     }
 
     function onModuleSubtitleChange(event: FormEvent<HTMLInputElement>) {
-        setModuleName(event.currentTarget.value)
+        setModuleSubtitle(event.currentTarget.value)
     }
 
     function onSubmit(event: React.FormEvent) {
         event.preventDefault();
-        props.moduleAdditionFunction(moduleName, moduleSubtitle)
+        props.updateModuleFunction(moduleTitle, moduleSubtitle)
         props.popupCloseFunction()
     }
 
@@ -33,7 +35,10 @@ export default function ModulePopup(props: IProps) {
     return (
         <PopupBackground popupCloseFunction={props.popupCloseFunction}>
             <form onSubmit={onSubmit}>
-            <div className="shadow overflow-hidden sm:rounded-md">
+            <div 
+                onClick={stopPropogation}
+                className="shadow overflow-hidden sm:rounded-md"
+            >
                 <div className="px-4 py-5 bg-white sm:p-6">
                 <div className="flex flex-col gap-6">
 
@@ -48,7 +53,7 @@ export default function ModulePopup(props: IProps) {
                             type="text"
                             name="module-name"
                             placeholder="Title"
-                            value={moduleName}
+                            value={moduleTitle}
                             onChange={onModuleNameChange}
                             id="module-name"
                             className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
@@ -73,7 +78,7 @@ export default function ModulePopup(props: IProps) {
                 <input
                     type="submit"
                     name="submit"
-                    value="Create Module"
+                    value="Save"
                     placeholder="Type module name here"
                     className={primaryButtonMd + "cursor-pointer"}
                 />

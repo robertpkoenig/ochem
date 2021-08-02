@@ -2,20 +2,17 @@ import React, { useContext, useEffect, useState } from "react";
 import Section from "../../../model/SectionListing";
 import Module from "../../../model/Module";
 import SectionCard from "../../../components/editor/SectionCard";
-import Layout from "../../../components/Layout";
 import { PlusIcon } from "@heroicons/react/solid";
-import { EyeIcon, PaperAirplaneIcon, PencilAltIcon } from "@heroicons/react/outline";
 import PopupBackground from "../../../components/PopupBackground";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
-import { emptyState, primaryButtonMd, primaryButtonSm, secondaryButtonMd, secondaryButtonSm } from "../../../styles/common-styles";
+import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
 import { GetServerSideProps } from 'next'
-import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, updateDoc, getFirestore, setDoc } from "firebase/firestore";
 import FirebaseConstants from "../../../model/FirebaseConstants";
 import { AuthContext } from "../../../context/provider";
-import LoadingScreen from "../../../components/LoadingScreen";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
-import SharePopup from "../../../components/editor/SharePopup";
+import ModuleEditorLayout from "../../../components/editor/ModuleEditorLayout";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -46,8 +43,6 @@ export default function ModulePage(props: IProps) {
 
     const [sectionCreationPopupVis, setSectionCreationPopupVis]
         = useState<boolean>(false)
-    const [sharePopupVis, setSharePopupVis]
-        = useState<boolean>(false)
     const [module, setModule] = useState<Module>(null)
     const [loading, setLoading] = useState<boolean>(true)
 
@@ -71,40 +66,46 @@ export default function ModulePage(props: IProps) {
         setSectionCreationPopupVis(!sectionCreationPopupVis)
     }
 
-    function toggleSharePopup() {
-        setSharePopupVis(!sharePopupVis)
-    }
-
     function createSection(name: string) {
 
         // Set the display order of the new section
-        const order = module.sections ? module.sections.length : 0
+        const order = module.sections ? Object.keys(module.sections).length : 0
         const sectionId = uuid()
         const creationDate = Date.now().toString()
 
         // Create the abbreviated section listing object
-        const newSectionListing: Section = {
+        const newSection: Section = {
             name: name,
             order: order,
             creationDate: creationDate,
             authorId: user.userId,
             uuid: sectionId,
-            reactionListings: []
+            reactionListings: {}
         }
 
         // Update module in working memory
-        module.sections.push(newSectionListing)
+        module.sections[sectionId] = newSection
         setModule(module)
 
-        // update module in firebase
-        const moduleDocRef = doc(db, "modules", props.moduleId);
-        updateDoc(moduleDocRef, {
-            sections: module.sections
-        });
+        // Create the section record in the module's nested collection of sections
+        const moduleRecordDocLocation =
+            doc(db,
+                FirebaseConstants.MODULES,
+                props.moduleId,
+            )
+
+        const sectionRefWithinModule = FirebaseConstants.SECTIONS + "." + sectionId
+
+        const newSectionUpdateObject: any = {}
+        newSectionUpdateObject[sectionRefWithinModule] = newSection
+    
+        updateDoc(moduleRecordDocLocation, newSectionUpdateObject)
 
     }
 
     function resetModule(module: Module) {
+        console.log("hello");
+        
         const moduleCopy: Module = Object.assign(module) 
         setModule(moduleCopy)
         forceUpdate(!dummyBoolean)
@@ -117,9 +118,12 @@ export default function ModulePage(props: IProps) {
     let sectionList: React.ReactNode
 
     if (module && module.sections) {
+        const orderedSectionObjects = Object.values(module.sections).sort((a,b) => {
+            return a.order - b.order
+        })
         sectionList = (
             <div className="flex flex-col gap-5 ">
-                {module.sections.map((sectionListing: Section) => 
+                {orderedSectionObjects.map((sectionListing: Section) => 
                     <div key={sectionListing.order}>
                         <SectionCard
                             userId={user.userId}
@@ -133,38 +137,15 @@ export default function ModulePage(props: IProps) {
         )
     }
 
-    const buttons = (
-        <div className="bg-white rounded-lg shadow px-4 py-3 flex flex-row gap-2">
-            <button
-            type="button"
-            className={secondaryButtonSm}
-            onClick={() => toggleSectionCreationPopup()}
-            >
-                <EyeIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
-                Preview
-            </button>
-            <button
-            type="button"
-            className={primaryButtonSm}
-            onClick={() => toggleSharePopup()}
-            >
-                <PaperAirplaneIcon className="-ml-0.5 mr-1.5 h-4 w-4" aria-hidden="true" />
-                Invite Students
-            </button>
-        </div>
-    )
-
     return (
         <ScreenWithLoading loading={loading} >
-            <Layout
-                title={module ? module.name : null}
-                headerElement={ buttons }
-                subtitle="Subtitle or explenation for this module"
+            <ModuleEditorLayout
+                module={module}
             >
 
                 <div className="flex flex-col gap-2">
                     {
-                    module && module.sections.length > 0
+                    module && Object.keys(module.sections).length > 0
                     ?
                     sectionList
                     :
@@ -183,33 +164,18 @@ export default function ModulePage(props: IProps) {
 
                 {/* Toggle the section popup */}
                 {
-                sectionCreationPopupVis 
-                ?
-                <PopupBackground popupCloseFunction={toggleSectionCreationPopup}>
+                    sectionCreationPopupVis 
+                    ?
                     <SectionPopup
                         popupCloseFunction={toggleSectionCreationPopup} 
                         sectionAdditionFunction={createSection} 
                     />
-                </PopupBackground>
-                :
-                ''
+                    :
+                    ''
                 }
 
-                {/* Toggle the share popup */}
-                {
-                sharePopupVis
-                ?
-                <SharePopup
-                    popupCloseFunction={toggleSharePopup}
-                    moduleId={module.uuid}
-                />
-                :
-                null
-                }
-
-            </Layout>
+            </ModuleEditorLayout>
         </ScreenWithLoading>
-
     )
 
 }

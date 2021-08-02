@@ -70,14 +70,15 @@ export default function Modules(props: IProps) {
         setDeleteModulePopupVisible(!deleteModulePopupVisible)
     }
 
-    function createModule(name: string) {
+    function createModule(name: string, subtitle: string) {
         const moduleId = uuid()
         const creationDate = Date.now().toString()
         const newModule: Module = {
-            name: name,
+            title: name,
+            subtitle: subtitle,
             creationDate: creationDate,
             authorId: user.userId,
-            sections: [],
+            sections: {},
             uuid: moduleId
         }
         setDoc(doc(db, FirebaseConstants.MODULES, moduleId), newModule);

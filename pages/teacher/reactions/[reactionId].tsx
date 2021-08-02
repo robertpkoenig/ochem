@@ -3,7 +3,7 @@ import { ArrowLeftIcon, PlusIcon, XIcon } from "@heroicons/react/solid"
 import { GetServerSideProps } from "next"
 import Link from "next/link"
 import React from "react"
-import { RotateCcw, RotateCw } from "react-feather"
+import { Divide, RotateCcw, RotateCw } from "react-feather"
 import Constants from "../../../p5/Constants"
 import TeacherController from "../../../p5/controller/teacher/TeacherController"
 import ReactionSaver from "../../../p5/controller/teacher/ReactionSaver"
@@ -16,9 +16,11 @@ import UserType from "../../../p5/model/UserType"
 import ReactionLoader from "../../../p5/utilities/ReactionLoader"
 import ReactionStepLoader from "../../../p5/utilities/ReactionStepLoader"
 import Utilities from "../../../p5/utilities/Utilities"
-import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore"
+import { doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore"
 import FirebaseConstants from "../../../model/FirebaseConstants"
 import Module from "../../../model/Module"
+import { PencilAltIcon, PencilIcon } from "@heroicons/react/outline"
+import PromptPopup from "../../../components/editor/PromptPopup"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -46,6 +48,7 @@ interface IState {
     arrowType: ArrowType
     editorController: TeacherController
     selectedElement: HTMLElement
+    promptPopupVisible: boolean
 }
 
 class TeacherReactionPage extends React.Component<IProps, IState> {
@@ -66,24 +69,12 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             arrowType: null,
             editorController: null,
             selectedElement: null,
+            promptPopupVisible: false,
         }
 
     }
 
     async componentDidMount() {
-
-        // Add logic to redirect if uuid of reaction is missing
-
-        // const reactionRawJSON: string | null = localStorage.getItem(this.props.reactionId)
-        // let reaction: Reaction | null = null
-        // if (reactionRawJSON) {
-        //     reaction = ReactionLoader.loadReactionFromJSON(reactionRawJSON)
-
-        //     this.setState({
-        //         ...this.state,
-        //         reaction: reaction
-        //     })
-        // }
 
         const docRef = doc(this.db, FirebaseConstants.REACTIONS, this.props.reactionId);
         const docSnap = await getDoc(docRef);
@@ -109,16 +100,45 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     }
 
-    togglePublication() {
-
+    toggleVisibility() {
         this.state.editorController.undoManager.addUndoPoint()
-        
-        this.state.reaction.published = !this.state.reaction.published
-
+        this.state.reaction.visible = !this.state.reaction.visible
         this.forceUpdate()
-
         ReactionSaver.saveReaction(this.state.reaction)
 
+        // Update the core reaction document in firestore
+        const reactionDocRef = doc(this.db, FirebaseConstants.REACTIONS, this.props.reactionId)
+        updateDoc(reactionDocRef, {
+            visible: this.state.reaction.visible
+        })
+        
+        // Module doc ref to access the nested reaction listing object
+        const moduleDocRef = doc(this.db, FirebaseConstants.MODULES, this.state.reaction.moduleId)
+
+        // Update the reaction listing document in firestore
+        const reactionRefWithinSection =
+            FirebaseConstants.SECTIONS + "."+ this.state.reaction.sectionId + "."+
+            FirebaseConstants.REACTION_LISTINGS + "." + this.state.reaction.uuid + 
+            "." + FirebaseConstants.VISIBLE
+
+        const sectionVisibilityUpdateObject: any = {}
+        sectionVisibilityUpdateObject[reactionRefWithinSection] = this.state.reaction.visible
+        updateDoc(moduleDocRef, sectionVisibilityUpdateObject)
+    }
+
+    togglePromptPopup() {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                promptPopupVisible: !prevState.promptPopupVisible
+            }
+        })
+    }
+
+    setPromptText(promptText: string) {
+        this.state.reaction.prompt = promptText
+        this.forceUpdate()
+        ReactionSaver.saveReaction(this.state.reaction)
     }
 
     togglePhysics() {
@@ -203,9 +223,13 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
     }
 
     createNewStep() {
+        // Copy the last step into a new step
         const steps = this.state.reaction.steps
         const lastStep = steps[steps.length - 1]
-        const lastStepJSON = JSON.stringify(lastStep)
+        
+        const lastStepJSON = lastStep.toJSON()
+        // console.log(lastStepJSON);
+        
         const newStep = ReactionStepLoader.loadReactionStepFromPlainObject(lastStepJSON)
         newStep.curlyArrow = null
         newStep.uuid = Utilities.generateUid()
@@ -351,16 +375,22 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                 
 
         return (
-
             <>
+            {/* Top header above the thin white horizontal rule */}
             <header className="bg-indigo-600">
                 <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 ">
                     <div className="flex flex-col justify-left border-b border-indigo-400">
 
                         <Link href={"/teacher/modules/" + this.state.reaction?.moduleId}>
                             <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
-                            <ArrowLeftIcon className="w-3 h-3" />
-                            Module name goes here | Section name
+                                <ArrowLeftIcon className="w-3 h-3" />
+                                {
+                                    this.state.reaction
+                                    ?
+                                    this.state.reaction.moduleName + " | " + this.state.reaction.sectionName
+                                    :
+                                    null
+                                }
                             </a>
                         </Link>
 
@@ -368,15 +398,17 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                         <div className="w-full flex flex-row justify-between mb-3">
                             <div>
                                 <h1 className="text-2xl font-semibold text-white">
-                                    Reaction name goes here
+                                    {this.state.reaction ? this.state.reaction.name : null}
                                 </h1>
                             </div>
 
                             <div className="flex flex-row gap-6 items-center">
 
-                                <button className="text-sm text-white">
-                                    Preview
-                                </button>
+                                <Link href={"/student/reactions/" + this.props.reactionId}>
+                                    <a className="text-sm text-white">
+                                      Preview
+                                    </a>
+                                </Link>
 
                                 <div className="flex flex-row gap-2 items-center">
                                     <div className="text-white text-sm">
@@ -385,9 +417,9 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
                                     <Switch
                                             checked={this.state.physicsOn}
-                                            onChange={() => this.togglePublication()}
+                                            onChange={() => this.toggleVisibility()}
                                             className={
-                                                (this.state.reaction?.published ? 'bg-green-300 ' : 'bg-gray-200 ') +
+                                                (this.state.reaction?.visible ? 'bg-green-300 ' : 'bg-gray-200 ') +
                                                 'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
                                             }
                                             >
@@ -395,7 +427,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                             <span
                                                 aria-hidden="true"
                                                 className={
-                                                    (this.state.reaction?.published ? 'translate-x-5 ' : 'translate-x-0 ') + 
+                                                    (this.state.reaction?.visible ? 'translate-x-5 ' : 'translate-x-0 ') + 
                                                     'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                                                 }
                                             />
@@ -413,19 +445,70 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                 <div className="bg-indigo-600 pb-32">
 
                     <div className="py-5">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-row gap-4 items-center ">
-                            <nav>
-                                <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                                    {listOfStepButtons}
-                                </ol>
-                            </nav>
-                            <button
-                                onClick={() => this.createNewStep()}
-                                className="text-indigo-100 hover:text-white text-sm flex flex-row"
-                            >
-                                <PlusIcon className="w-5 h-5" />
-                                Add step
-                            </button>
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-3 ">
+
+                            {
+                            this.state.reaction && this.state.reaction.prompt
+                            ?
+                            <div className="flex flex-row items-baseline justify-between">
+                                <div className="flex flox-row items-center gap-1">
+                                    <div className="text-indigo-100 text-md">
+                                        {this.state.reaction.prompt}
+                                    </div>
+                                    <PencilIcon
+                                        className="text-indigo-400 w-4 h-4 hover:text-indigo-200 cursor-pointer"
+                                        onClick={() => this.togglePromptPopup()}
+                                    />
+                                </div>
+                                <div
+                                    onClick={() => this.setPromptText(null)}
+                                    className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
+                                    Remove prompt
+                                </div>
+                            </div>  
+                            :
+                            null
+                            }
+                            
+                            <div className="flex flex-row justify-between">
+                                <div className="flex flex-row gap-4 items-center">
+                                    <nav className="flex flex-row items-center">
+                                        <ol className="rounded-md flex gap-2 text-indigo-400 ">
+                                            {listOfStepButtons}
+                                        </ol>
+                                    </nav>
+                                    <button
+                                        onClick={() => this.createNewStep()}
+                                        className="text-indigo-100 hover:text-white text-sm flex flex-row"
+                                    >
+                                        <PlusIcon className="w-5 h-5" />
+                                        Add step
+                                    </button>
+                                </div>
+                                {
+                                this.state.reaction && !this.state.reaction.prompt
+                                ?
+                                <div
+                                    onClick={() => this.togglePromptPopup()}
+                                    className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
+                                    + Add prompt
+                                </div>
+                                :
+                                null
+                                }
+                            </div>
+                            {/* <div className="flex flex-row gap-2">
+                                <div className="text-indigo-100 text-md">
+                                    Prompt
+                                </div>
+                                <input 
+                                    type="text"
+                                    name="prompt"
+                                    placeholder="Prompt text for this step (optional)"
+                                    value={this.state.reaction ? this.state.reaction.currentStep.uuid : null}
+                                    className="bg-white border"
+                                />
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -521,14 +604,24 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                     </div>
                 </main>
             </div>
+
+            {/* Show prompt popup if visible */}
+            {
+                this.state.promptPopupVisible
+                ?
+                <PromptPopup
+                    popupCloseFunction={this.togglePromptPopup.bind(this)}
+                    setPromptTextFunction={this.setPromptText.bind(this)}
+                    initialText={this.state.reaction.prompt}
+                />
+                :
+                null
+            }
             </>
         )
+
     }
 
 }
 
 export default TeacherReactionPage
-
-function setModule(arg0: any) {
-    throw new Error("Function not implemented.")
-}

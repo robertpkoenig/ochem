@@ -6,13 +6,14 @@ interface IProps {
     children: JSX.Element
 }
 
-export default function ScreenWithLoading(props: IProps) {
+export default function ScreenWithLoadingAllRender(props: IProps) {
 
     const loadingScreen = <LoadingScreen />
 
     return (
         <>
-            {props.loading?loadingScreen:props.children}
+        {props.loading?loadingScreen:null}
+        {props.children}
         </>
     )
 

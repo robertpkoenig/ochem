@@ -6,7 +6,6 @@ export interface LayoutProps {
     children: React.ReactNode
     title: string
     subtitle?: string
-    headerElement?: React.ReactNode
 }
 
 // This wraps each page in the application
@@ -27,9 +26,6 @@ export default function Layout(props: LayoutProps) {
                         <div>
                             <h1 className="text-3xl font-bold text-white">{props.title}</h1>
                             {subtitle}
-                        </div>
-                        <div>
-                            {props.headerElement?props.headerElement:null}
                         </div>
                     </div>
                 </header>

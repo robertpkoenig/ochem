@@ -8,7 +8,8 @@ import { primaryButtonSm, roundEditButtonContainer, secondaryButtonSm } from '..
 import PopupBackground from '../PopupBackground';
 import DeletionPopup from './DeletionPopup';
 import DeleteReactionPopup from './DeleteReactionPopup';
-import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getFirestore, updateDoc } from 'firebase/firestore';
+import FirebaseConstants from '../../model/FirebaseConstants';
 
 export interface IReactionCardProps {
     reactionListing: ReactionListing
@@ -17,30 +18,11 @@ export interface IReactionCardProps {
     updateModule: (moduleCopy: Module) => void
 }
 
-export interface IReactionCardState {
-    deleteReactionPopupVisible: boolean
-}
-
-const publishedIndicator = 
-    <div className="flex flex-row gap-1">
-        <div className="bg-green-500 rounded-full w-3 h-3"></div>
-        {/* <div className="text-xs font-light text-gray-500">
-            visible
-        </div> */}
-    </div>
-
-const notPublishedIndicator = 
-    <div className="flex flex-row gap-1 items-center">
-        <div className=" bg-yellow-500 rounded-full w-3 h-3"></div>
-        {/* <div className="text-xs font-light text-gray-500">
-            draft
-        </div> */}
-    </div>
-
 export default function ReactionCard (props: IReactionCardProps) {
 
     const [deleteReactionPopupVisible, setReactionDeletionVisibility] =
         useState(false)
+    const [reactionListing, setReactionListing] = useState(props.reactionListing)
         
     const db = getFirestore()
 
@@ -62,7 +44,7 @@ export default function ReactionCard (props: IReactionCardProps) {
 
         // Get the reaction copy within the section
         const orderOfReactionToIncrement = reactionToDecrementOrder.order - 1
-        for (const reaction of props.section.reactionListings) {
+        for (const reaction of Object.values(props.section.reactionListings)) {
             if (reaction.order === orderOfReactionToIncrement) {
                 reactionToIncrementOrder = reaction
             }
@@ -72,10 +54,6 @@ export default function ReactionCard (props: IReactionCardProps) {
 
             reactionToDecrementOrder.order--
             reactionToIncrementOrder.order++
-
-            props.section.reactionListings.sort((a, b) => {
-                return a.order - b.order
-            })
 
             props.updateModule(moduleCopy)
             updateSectionsInFirebase()
@@ -94,7 +72,7 @@ export default function ReactionCard (props: IReactionCardProps) {
 
         // Get the reaction copy within the section
         const orderOfReactionToDecrement = reactionToIncrementOrder.order + 1
-        for (const reaction of props.section.reactionListings) {
+        for (const reaction of Object.values(props.section.reactionListings)) {
             if (reaction.order === orderOfReactionToDecrement) {
                 reactionToDecrementOrder = reaction
             }
@@ -104,10 +82,6 @@ export default function ReactionCard (props: IReactionCardProps) {
 
             reactionToDecrementOrder.order--
             reactionToIncrementOrder.order++
-
-            props.section.reactionListings.sort((a, b) => {
-                return a.order - b.order
-            })
 
             props.updateModule(moduleCopy)
             updateSectionsInFirebase()
@@ -125,45 +99,80 @@ export default function ReactionCard (props: IReactionCardProps) {
         // Create copy of the module
         const moduleCopy: Module = Object.assign(props.module)
 
-        // Filter out the current reaction from the section
-        props.section.reactionListings = 
-            props.section.reactionListings.filter(reaction => {
-                return reaction.uuid != props.reactionListing.uuid
-            })
+        // delete the current reaction from the section
+        delete moduleCopy.sections[props.section.uuid].reactionListings[props.reactionListing.uuid]
         
         // Decrement the order of each reaction after this one
-        for (const reaction of props.section.reactionListings) {
+        for (const reaction of Object.values(props.section.reactionListings)) {
             if (reaction.order > props.reactionListing.order) {
                 reaction.order--
             }
         }
 
-        // Remove from local storage
-        localStorage.removeItem(props.reactionListing.uuid)
-
         // Replace the upstream module state with the module
         // without this reaction in this section
         props.updateModule(moduleCopy)
 
+        // Delete ReactionListing in firebase
+        const moduleDocRef = doc(db, "modules", props.module.uuid);
+
+        const sectionUpdateObject: any = {}
+        const reactionListingsRefString = FirebaseConstants.SECTIONS + "." + props.section.uuid +
+        "." + FirebaseConstants.REACTION_LISTINGS
+        sectionUpdateObject[reactionListingsRefString] = props.section.reactionListings
+
+        updateDoc(moduleDocRef, sectionUpdateObject);
+
+        // Delete core Reaction document in firebase
+        const coreReactionRef = doc(db, FirebaseConstants.REACTIONS, props.reactionListing.uuid)
+        deleteDoc(coreReactionRef)
+
     }
+
+    const publishedIndicator = 
+        <div className="flex flex-row gap-1 items-center group">
+            <div className="invisible text-xs font-light text-gray-500 group-hover:visible">
+                visible to students
+            </div>
+            <div
+                onClick={null}
+                className="bg-green-500 rounded-full w-2 h-2"
+            ></div>
+        </div>
+
+    const notPublishedIndicator = 
+        <div className="flex flex-row gap-1 items-center group">
+            <div className="invisible text-xs font-light text-gray-500 group-hover:visible">
+                not visible to students
+            </div>
+            <div
+                onClick={null}
+                className="bg-yellow-500 rounded-full w-2 h-2"
+            >
+            </div>
+        </div>
 
     return (
         <div className="flex flex-row justify-between ">
 
             <div className="flex flex-row gap-4 items-center justify-center text-sm">
                 {props.reactionListing.name}
-                {
-                    props.reactionListing.published
-                    ?
-                    publishedIndicator
-                    :
-                    notPublishedIndicator
-                }
             </div>
 
             <div className="flex flex-row justify-center content-center items-center gap-4">
 
-                <div className="flex flex-row content-center justify-center gap-1">    
+                <div>
+                    {/* Indicator for whether reaction is visible */}
+                    {
+                        props.reactionListing.visible
+                        ?
+                        publishedIndicator
+                        :
+                        notPublishedIndicator
+                    }  
+                </div>
+
+                <div className="flex flex-row content-center justify-center gap-1">  
 
                     {/* Up button */}
                     <button

@@ -6,8 +6,9 @@ import { Bond } from "../../model/chemistry/bonds/Bond";
 import Molecule from "../../model/chemistry/Molecule";
 import Reaction from "../../model/Reaction";
 import Utilities from "../../utilities/Utilities";
-import { TeacherController } from "./EditorController";
+import TeacherController from "./TeacherController";
 import ReactionSaver from "./ReactionSaver";
+import { v4 as uuid } from 'uuid'
 
 class BondCreator {
 
@@ -60,7 +61,7 @@ class BondCreator {
         // Put all atoms into the same molecule object
         Molecule.mergeTwoMolecules(this.reaction, moleculeOne, moleculeTwo)
 
-        if (this.editorController.reactionEditor.state.bondType == null) {
+        if (this.editorController.teacherReactionPage.state.bondType == null) {
             throw new Error("Tried creating bond without bond type selected")
         }
 
@@ -68,7 +69,8 @@ class BondCreator {
             this.startAtom,
             endAtom,
             Constants.BOND_DISTANCE,
-            this.editorController.reactionEditor.state.bondType
+            this.editorController.teacherReactionPage.state.bondType,
+            uuid()
         )
 
         moleculeOne.bonds.push(newBond)

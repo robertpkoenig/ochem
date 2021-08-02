@@ -4,10 +4,12 @@ interface Section {
 
     name: string,
     order: number,
-    reactionListings: ReactionListing[],
     creationDate: string,
     authorId: string,
     uuid: string
+    reactionListings: {
+        [reactionId: string]: ReactionListing
+    }
 
 }
 

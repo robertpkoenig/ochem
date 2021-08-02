@@ -2,6 +2,8 @@ import React, { useContext } from "react"
 import { AuthContext } from "../context/provider"
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
+import UserType from "../p5/model/UserType"
+import { useRouter } from "next/router"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -12,6 +14,19 @@ const profile = ['Your Profile', 'Settings', 'Sign out']
 export default function BlueNavBar() {
 
     const { user } = useContext(AuthContext)
+    const router = useRouter()
+
+    function routeUserHome() {
+        // If it's a student, only go to modules when they have more than one module
+        if (user.type == UserType.STUDENT) {
+            if (user.moduleIds.length > 1) {
+                router.push("/student/modules")
+            }
+        }
+        if (user.type == UserType.TEACHER) {
+            router.push("/teacher/modules")
+        }
+    }
 
     return (
 
@@ -19,19 +34,17 @@ export default function BlueNavBar() {
             <div className="max-w-5xl mx-auto px-2 sm:px-4 lg:px-8">
             <div className="relative h-16 flex items-center justify-between lg:border-b lg:border-indigo-300 lg:border-opacity-25">
                 <div className="px-2 flex items-center lg:px-0">
-                <div className="flex-shrink-0">
-                    <img
-                        className="h-8 w-auto"
-                        src="/assets/logo-with-text-white.svg"
-                        alt="Ochem.io"
-                    />
-                </div>
-                
+                    <div className="flex-shrink-0 cursor-pointer" onClick={routeUserHome}>
+                        <img
+                            className="h-8 w-auto"
+                            src="/assets/logo-with-text-white.svg"
+                            alt="Ochem.io"
+                        />
+                    </div>
                 </div>
                 
                 <div className="lg:ml-4">
                 <div className="flex items-center">
-
 
                     {/* Profile dropdown */}
                     <Menu as="div" className="ml-3 relative flex-shrink-0">

@@ -1,4 +1,5 @@
 import { XIcon } from '@heroicons/react/outline'
+import { SyntheticEvent } from 'react'
 
 interface IProps {
     children: React.ReactNode
@@ -6,7 +7,7 @@ interface IProps {
 }
 
 // TODO make this not scroll with the page
-const popupCSS = ` absolute top-0 left-0 w-screen h-screen bg-gray-400
+const popupCSS = ` fixed z-10 top-0 left-0 w-screen h-screen bg-gray-400
                   bg-opacity-70 flex place-content-center place-items-center`
 
 const closeButtonCSS = `bg-white w-10 h-10 rounded-full shadow flex 
@@ -14,6 +15,10 @@ const closeButtonCSS = `bg-white w-10 h-10 rounded-full shadow flex
                         text-gray-400 hover:text-gray-600`    
 
 export default function PopupBackground(props: IProps) {
+
+    function stopPropogation(event: SyntheticEvent) {
+        event.stopPropagation()
+    }
 
     return (
 
@@ -24,12 +29,14 @@ export default function PopupBackground(props: IProps) {
             <div className="flex flex-col gap-2 ">
 
                 <div className="flex flex-row-reverse ">
-                    <button className={closeButtonCSS} onClick={props.popupCloseFunction}>
+                    <button className={closeButtonCSS}>
                         <XIcon className="h-5 w-5"/>
                     </button>
                 </div>
 
-                {props.children}
+                <div onClick={stopPropogation}>
+                    {props.children}
+                </div>
 
             </div>
         </div>

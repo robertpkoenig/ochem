@@ -10,10 +10,6 @@ interface IProps {
 
 export default function SharePopup(props: IProps) {
 
-    function stopPropogation(event: SyntheticEvent) {
-        event.stopPropagation()
-    }
-
     function copyLinkText() {
         const linkText: HTMLInputElement = document.getElementById("linkText") as HTMLInputElement
         linkText.select()
@@ -26,10 +22,7 @@ export default function SharePopup(props: IProps) {
 
     return (
         <PopupBackground popupCloseFunction={props.popupCloseFunction}>
-            <div
-                onClick={stopPropogation}
-                className="shadow rounded-md flex flex-col gap-3 px-6 py-6 bg-white"
-            >
+            <div className="shadow rounded-md flex flex-col gap-3 px-6 py-6 bg-white">
                 <div className="flex flex-row items-center gap-1 font-bold text-lg text-indigo-600">
                     Share
                 </div>

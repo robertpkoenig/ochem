@@ -10,11 +10,12 @@ module.exports = {
                 'poppins': ['Poppins', 'sans-serif'],
             },
             width: {
-                '700': '700px',
+                '1200': '1200px',
                 '40': '40px',
             },
             height: {
                 '40': '40px',
+                '700': '700px'
             },
             translate: {
                 'n50': "-50%"

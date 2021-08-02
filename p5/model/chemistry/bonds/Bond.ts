@@ -10,21 +10,23 @@ class Bond {
     atoms: Atom[]
     distance: number
     type: BondType
-    id: string
+    uuid: string
 
-    constructor(atomOne: Atom, atomTwo: Atom, distance: number, type: BondType) {
+    constructor(atomOne: Atom, atomTwo: Atom, distance: number, type: BondType, uuid: string) {
 
         this.atoms = [atomOne, atomTwo]
         this.distance = distance
         this.type = type
+        this.uuid = uuid
 
     }
 
     toJSON() {
         return {
-            atomOne: this.atoms[0].id,
-            atomTwo: this.atoms[1].id,
-            type: this.type as string
+            atomOne: this.atoms[0].uuid,
+            atomTwo: this.atoms[1].uuid,
+            type: this.type as string,
+            uuid: this.uuid
         }
     }
 

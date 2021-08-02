@@ -30,8 +30,8 @@ class CurlyArrow {
     toJSON() {
         return {
             type: this.type,
-            startObjectId: this.startObject.id,
-            endObjectId: this.endObject.id
+            startObjectId: this.startObject.uuid,
+            endObjectId: this.endObject.uuid
         }
     }
 

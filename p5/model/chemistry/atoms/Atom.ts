@@ -6,14 +6,14 @@ import { v4 as uuid } from 'uuid'
 class Atom extends Body {
 
     public element: IAtomicElement
-    public id: string
+    public uuid: string
 
     constructor(
         element: IAtomicElement
     ) {
         super(element.mass, element.radius)
         this.element = element
-        this.id = uuid()
+        this.uuid = uuid()
     }
 
     toJSON() {
@@ -21,7 +21,7 @@ class Atom extends Body {
             x: this.circle.pos.x,
             y: this.circle.pos.y,
             name: this.element.name,
-            id: this.id 
+            id: this.uuid 
         }
     }
 

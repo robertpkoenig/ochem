@@ -6,7 +6,7 @@ import Layout from "../../../components/Layout";
 import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
 import StudentSectionCard from "../../../components/student/StudentSectionCard";
 import { AuthContext } from "../../../context/provider";
-import { arrayUnion, collection, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import FirebaseConstants from "../../../model/FirebaseConstants";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 
@@ -18,7 +18,7 @@ export default function ModulePage(props: IProps) {
 
     const [module, setModule] = useState<Module>(null)
     const [loading, setLoading] = useState<boolean>(true)
-    const [reactionsChecked, setReactionsChecked] = useState<Set<string>>(null)
+    const [completedReactionIds, setCompletedReactionids] = useState<Set<string>>(null)
 
     const { user } = useContext(AuthContext)
     const db = getFirestore()
@@ -30,9 +30,7 @@ export default function ModulePage(props: IProps) {
         const moduleDocRef = doc(db, FirebaseConstants.MODULES, moduleId);
         const docSnap = await getDoc(moduleDocRef);
         setModule(docSnap.data() as Module)
-        
-        setReactionsChecked(new Set<string>(user.completedReactionIds))
-
+        setCompletedReactionids(new Set<string>(user.completedReactionIds))
         setLoading(false)
     }
 
@@ -62,9 +60,9 @@ export default function ModulePage(props: IProps) {
                 dateString
             )
         
-        updateDoc(dateRecordDocLocation, {
+        setDoc(dateRecordDocLocation, {
             "studentIds": arrayUnion(user.userId)
-        })
+        }, {merge: true})
         
     }
 
@@ -72,18 +70,18 @@ export default function ModulePage(props: IProps) {
 
         const copyOfCheckedReactions = new Set<string>()
 
-        reactionsChecked.forEach(value => {
+        completedReactionIds.forEach(value => {
             copyOfCheckedReactions.add(value)
         })
 
-        if (reactionsChecked.has(reactionId)) {
+        if (completedReactionIds.has(reactionId)) {
             copyOfCheckedReactions.delete(reactionId)
         }
         else {
             copyOfCheckedReactions.add(reactionId)
         }
         
-        setReactionsChecked(copyOfCheckedReactions)
+        setCompletedReactionids(copyOfCheckedReactions)
 
         const db = getFirestore()
         const docRef = doc(db, "users", user.userId);
@@ -99,15 +97,23 @@ export default function ModulePage(props: IProps) {
 
     let sectionList: React.ReactNode = null
 
-    if (module && module.sections) {
+    if (module && module.sections && completedReactionIds) {
+        const filteredSectionObjects = 
+            Object.values(module.sections).filter(section => {
+                const filteredReactionObjects = Object.values(section.reactionListings)
+                    .filter(reaction => {
+                        return reaction.visible
+                    })
+                return filteredReactionObjects.length > 0
+            })
         sectionList = (
             <div className="flex flex-col gap-5 ">
-                {module.sections.map((sectionListing: Section) => 
+                {filteredSectionObjects.map((sectionListing: Section) => 
                     <div key={sectionListing.order}>
                         <StudentSectionCard
                             section={sectionListing}
                             module={module}
-                            reactionsChecked={reactionsChecked}
+                            completedReactionIds={completedReactionIds}
                             checkAdditionFunction={toggleReactionInCheckedReactions}
                         />
                     </div>
@@ -117,16 +123,14 @@ export default function ModulePage(props: IProps) {
     }
 
     return (
-
         <ScreenWithLoading loading={loading} >
             <Layout
-                title={module ? module.name : null}
+                title={module ? module.title : null}
                 subtitle="Subtitle or explenation for this module"
             >
                 {module && module.sections ? sectionList : sectionListEmptyState}
             </Layout>
         </ScreenWithLoading>
-
     )
 
 }
