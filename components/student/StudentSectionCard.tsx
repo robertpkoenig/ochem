@@ -19,7 +19,7 @@ interface ISectionCardProps {
 
 interface ISectionCardState {}
 
-export function SectionCard(props: ISectionCardProps){
+export default function SectionCard(props: ISectionCardProps){
 
     const filteredReactionList =
         Object.values(props.section.reactionListings).filter(reactionListing => {
@@ -61,5 +61,3 @@ export function SectionCard(props: ISectionCardProps){
     )
 
 }
-
-export default SectionCard

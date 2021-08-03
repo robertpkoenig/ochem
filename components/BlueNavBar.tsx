@@ -4,6 +4,7 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import UserType from "../p5/model/UserType"
 import { useRouter } from "next/router"
+import { getAuth } from "firebase/auth"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -11,10 +12,28 @@ function classNames(...classes: string[]) {
 
 const profile = ['Your Profile', 'Settings', 'Sign out']
 
+interface dropDownOption {
+    optionText: string,
+    optionFunction: () => void
+}
+
 export default function BlueNavBar() {
 
     const { user } = useContext(AuthContext)
     const router = useRouter()
+
+    function signOut() {
+        const auth = getAuth()
+        auth.signOut()
+        router.push("/")
+    }
+
+    const dropDownOptions: dropDownOption[] = [
+        {
+            optionText: "Sign out",
+            optionFunction: signOut
+        }
+    ]
 
     function routeUserHome() {
         // If it's a student, only go to modules when they have more than one module
@@ -54,11 +73,12 @@ export default function BlueNavBar() {
                             <Menu.Button className="bg-indigo-600 rounded-full flex text-sm text-indigo-100 font-light items-center gap-2">
                             <span className="sr-only">Open user menu</span>
                             { user ? (user.firstName + " " + user.lastName) :  null }
-                            <img
+                            {/* Profile image */}
+                            {/* <img
                                 className="rounded-full h-8 w-8"
                                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                                 alt=""
-                            />
+                            /> */}
                             </Menu.Button>
                         </div>
                         <Transition
@@ -73,20 +93,20 @@ export default function BlueNavBar() {
                         >
                             <Menu.Items
                                 static
-                                className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                className="origin-top-right absolute right-0 mt-2 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                             >
-                            {profile.map((item) => (
-                                <Menu.Item key={item}>
+                            {dropDownOptions.map((option) => (
+                                <Menu.Item key={option.optionText}>
                                 {({ active }) => (
-                                    <a
-                                    href="#"
+                                    <button
+                                    onClick={option.optionFunction}
                                     className={classNames(
                                         active ? 'bg-gray-100' : '',
-                                        'block py-2 px-4 text-sm text-gray-700'
+                                        'block py-2 px-4 text-left text-sm text-gray-700 w-full'
                                     )}
                                     >
-                                    {item}
-                                    </a>
+                                    {option.optionText}
+                                    </button>
                                 )}
                                 </Menu.Item>
                             ))}

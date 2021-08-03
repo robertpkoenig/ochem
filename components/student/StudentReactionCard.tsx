@@ -27,7 +27,7 @@ export default function StudentReactionCard (props: IReactionCardProps) {
 
     const link =<div className="flex flex-row gap-2">
                     <Link href={"/student/reactions/" + props.reactionListing.uuid}>
-                        <button disabled={isChecked} className={ primaryButtonMd }>Practice</button>
+                        <button className={ primaryButtonMd }>Practice</button>
                     </Link>
                 </div>
     
@@ -47,15 +47,13 @@ export default function StudentReactionCard (props: IReactionCardProps) {
                         onChange={() => props.checkAdditionFunction(props.module.uuid)}
                     />
                 </div>
-                <span className={isChecked ? "line-through" : null}>
+                <span>
                     {props.reactionListing.name}
                 </span>
             </div>
 
             <div className="flex flex-row justify-center content-center items-center gap-4">
-
                 {link}
-
             </div>
 
         </div>

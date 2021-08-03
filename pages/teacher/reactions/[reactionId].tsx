@@ -3,7 +3,7 @@ import { ArrowLeftIcon, PlusIcon, XIcon } from "@heroicons/react/solid"
 import { GetServerSideProps } from "next"
 import Link from "next/link"
 import React from "react"
-import { Divide, RotateCcw, RotateCw } from "react-feather"
+import { RotateCcw, RotateCw } from "react-feather"
 import Constants from "../../../p5/Constants"
 import TeacherController from "../../../p5/controller/teacher/TeacherController"
 import ReactionSaver from "../../../p5/controller/teacher/ReactionSaver"
@@ -21,6 +21,8 @@ import FirebaseConstants from "../../../model/FirebaseConstants"
 import Module from "../../../model/Module"
 import { PencilAltIcon, PencilIcon } from "@heroicons/react/outline"
 import PromptPopup from "../../../components/editor/PromptPopup"
+import ReactionRenamePopup from "../../../components/editor/ReactionRenamePopup"
+import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -41,14 +43,16 @@ interface IProps {
 }
 
 interface IState {
+    loading: boolean
     reaction: Reaction
     physicsOn: boolean
     eraserOn: boolean
     bondType: BondType
     arrowType: ArrowType
-    editorController: TeacherController
+    teacherController: TeacherController
     selectedElement: HTMLElement
     promptPopupVisible: boolean
+    renamePopupVisible: boolean
 }
 
 class TeacherReactionPage extends React.Component<IProps, IState> {
@@ -62,14 +66,16 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         this.db = getFirestore()
 
         this.state = {
+            loading: true,
             reaction: null,
             physicsOn: false,
             eraserOn: false,
             bondType: null,
             arrowType: null,
-            editorController: null,
+            teacherController: null,
             selectedElement: null,
             promptPopupVisible: false,
+            renamePopupVisible: false,
         }
 
     }
@@ -96,12 +102,18 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             if (!reaction) throw new Error("reaction not loaded")
             createP5Context(this, UserType.TEACHER, reaction)
 
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    loading: false
+                }
+            })
         }
 
     }
 
     toggleVisibility() {
-        this.state.editorController.undoManager.addUndoPoint()
+        this.state.teacherController.undoManager.addUndoPoint()
         this.state.reaction.visible = !this.state.reaction.visible
         this.forceUpdate()
         ReactionSaver.saveReaction(this.state.reaction)
@@ -135,10 +147,37 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         })
     }
 
+    toggleRenamePopup() {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                renamePopupVisible: !prevState.renamePopupVisible
+            }
+        })
+    }
+
+    renameReaction(newName: string) {
+        this.state.reaction.name = newName
+        this.forceUpdate()
+        const reactionRef = doc(this.db, FirebaseConstants.REACTIONS, this.state.reaction.uuid)
+        updateDoc(reactionRef, {
+            name: newName
+        })
+    }
+
     setPromptText(promptText: string) {
+        // if there is no prompt, and therefore prompt is being set
+        // for the first time, then reset the canvas offsets
+
+        const needToResetOffsets = !this.state.reaction.prompt || !promptText
+
         this.state.reaction.prompt = promptText
         this.forceUpdate()
         ReactionSaver.saveReaction(this.state.reaction)
+
+        if (needToResetOffsets) {
+            this.state.teacherController.panelController.setCanvasParent()
+        }
     }
 
     togglePhysics() {
@@ -244,7 +283,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     deleteStep(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, stepId: string) {
 
-        this.state.editorController.undoManager.addUndoPoint()
+        this.state.teacherController.undoManager.addUndoPoint()
 
         let stepToDelete: ReactionStep | null = null
 
@@ -288,17 +327,17 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
     setController(editorController: TeacherController) {
         this.setState({
             ...this.state,
-            editorController: editorController
+            teacherController: editorController
         })
     }
 
     undo() {
-        this.state.editorController.undoManager.undo()
+        this.state.teacherController.undoManager.undo()
         this.forceUpdate()
     }
 
     redo() {
-        this.state.editorController.undoManager.redo()
+        this.state.teacherController.undoManager.redo()
         this.forceUpdate()
     }
 
@@ -332,8 +371,8 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
                     <button
                         id={element.name}
-                        onMouseDown={() => this.state.editorController.panelController.selectElement(element.name)}
-                        onMouseUp={() => this.state.editorController.panelController.dropElement()}
+                        onMouseDown={() => this.state.teacherController.panelController.selectElement(element.name)}
+                        onMouseUp={() => this.state.teacherController.panelController.dropElement()}
                         style={{backgroundColor: element.color, cursor: "grab"}}
                         className="rounded-full w-40 h-40 text-white font-semibold text-md flex items-center justify-center z-10"
                     >
@@ -375,249 +414,255 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                 
 
         return (
-            <>
-            {/* Top header above the thin white horizontal rule */}
-            <header className="bg-indigo-600">
-                <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 ">
-                    <div className="flex flex-col justify-left border-b border-indigo-400">
-
-                        <Link href={"/teacher/modules/" + this.state.reaction?.moduleId}>
-                            <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
-                                <ArrowLeftIcon className="w-3 h-3" />
-                                {
-                                    this.state.reaction
-                                    ?
-                                    this.state.reaction.moduleName + " | " + this.state.reaction.sectionName
-                                    :
-                                    null
-                                }
-                            </a>
-                        </Link>
-
-
-                        <div className="w-full flex flex-row justify-between mb-3">
-                            <div>
-                                <h1 className="text-2xl font-semibold text-white">
-                                    {this.state.reaction ? this.state.reaction.name : null}
-                                </h1>
-                            </div>
-
-                            <div className="flex flex-row gap-6 items-center">
-
-                                <Link href={"/student/reactions/" + this.props.reactionId}>
-                                    <a className="text-sm text-white">
-                                      Preview
-                                    </a>
-                                </Link>
-
-                                <div className="flex flex-row gap-2 items-center">
-                                    <div className="text-white text-sm">
-                                        Publish
-                                    </div>
-
-                                    <Switch
-                                            checked={this.state.physicsOn}
-                                            onChange={() => this.toggleVisibility()}
-                                            className={
-                                                (this.state.reaction?.visible ? 'bg-green-300 ' : 'bg-gray-200 ') +
-                                                'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
-                                            }
-                                            >
-                                            <span className="sr-only">Toggle publication of this reaction</span>
-                                            <span
-                                                aria-hidden="true"
-                                                className={
-                                                    (this.state.reaction?.visible ? 'translate-x-5 ' : 'translate-x-0 ') + 
-                                                    'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                                                }
-                                            />
-                                    </Switch>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </header>
-
-            <div className="min-h-screen bg-gray-100">
-                <div className="bg-indigo-600 pb-32">
-
-                    <div className="py-5">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-3 ">
-
-                            {
-                            this.state.reaction && this.state.reaction.prompt
-                            ?
-                            <div className="flex flex-row items-baseline justify-between">
-                                <div className="flex flox-row items-center gap-1">
-                                    <div className="text-indigo-100 text-md">
-                                        {this.state.reaction.prompt}
-                                    </div>
+            <ScreenWithLoadingAllRender loading={this.state.loading}>
+                <>
+                {/* Top header above the thin white horizontal rule */}
+                <header className="bg-indigo-600">
+                    <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 ">
+                        <div className="flex flex-col justify-left border-b border-indigo-400">
+                            <Link href={"/teacher/modules/" + this.state.reaction?.moduleId}>
+                                <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
+                                    <ArrowLeftIcon className="w-3 h-3" />
+                                    {
+                                        this.state.reaction
+                                        ?
+                                        this.state.reaction.moduleName + " | " + this.state.reaction.sectionName
+                                        :
+                                        null
+                                    }
+                                </a>
+                            </Link>
+                            <div className="w-full flex flex-row justify-between mb-3">
+                                <div className="flex gap-2 items-center">
+                                    <h1 className="text-2xl font-semibold text-white">
+                                        {this.state.reaction ? this.state.reaction.name : null}
+                                    </h1>
                                     <PencilIcon
-                                        className="text-indigo-400 w-4 h-4 hover:text-indigo-200 cursor-pointer"
-                                        onClick={() => this.togglePromptPopup()}
+                                        onClick={this.toggleRenamePopup.bind(this)}
+                                        className="w-4 h-4 text-indigo-400 hover:text-indigo-100 cursor-pointer"
                                     />
                                 </div>
-                                <div
-                                    onClick={() => this.setPromptText(null)}
-                                    className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
-                                    Remove prompt
+                                <div className="flex flex-row gap-6 items-center">
+                                    <Link href={"/student/reactions/" + this.props.reactionId}>
+                                        <a className="text-sm text-white">
+                                          Preview
+                                        </a>
+                                    </Link>
+                                    <div className="flex flex-row gap-2 items-center">
+                                        <div className="text-white text-sm">
+                                            Publish
+                                        </div>
+                                        <Switch
+                                                checked={this.state.physicsOn}
+                                                onChange={() => this.toggleVisibility()}
+                                                className={
+                                                    (this.state.reaction?.visible ? 'bg-green-300 ' : 'bg-gray-200 ') +
+                                                    'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
+                                                }
+                                                >
+                                                <span className="sr-only">Toggle publication of this reaction</span>
+                                                <span
+                                                    aria-hidden="true"
+                                                    className={
+                                                        (this.state.reaction?.visible ? 'translate-x-5 ' : 'translate-x-0 ') +
+                                                        'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
+                                                    }
+                                                />
+                                        </Switch>
+                                    </div>
                                 </div>
-                            </div>  
-                            :
-                            null
-                            }
-                            
-                            <div className="flex flex-row justify-between">
-                                <div className="flex flex-row gap-4 items-center">
-                                    <nav className="flex flex-row items-center">
-                                        <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                                            {listOfStepButtons}
-                                        </ol>
-                                    </nav>
-                                    <button
-                                        onClick={() => this.createNewStep()}
-                                        className="text-indigo-100 hover:text-white text-sm flex flex-row"
-                                    >
-                                        <PlusIcon className="w-5 h-5" />
-                                        Add step
-                                    </button>
-                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <div className="min-h-screen bg-gray-100">
+                    <div className="bg-indigo-600 pb-32">
+                        <div className="py-5">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-3 ">
                                 {
-                                this.state.reaction && !this.state.reaction.prompt
+                                this.state.reaction && this.state.reaction.prompt
                                 ?
-                                <div
-                                    onClick={() => this.togglePromptPopup()}
-                                    className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
-                                    + Add prompt
+                                <div className="flex flex-row items-baseline justify-between">
+                                    <div className="flex flox-row items-center gap-1">
+                                        <div className="text-indigo-100 text-md">
+                                            {this.state.reaction.prompt}
+                                        </div>
+                                        <PencilIcon
+                                            className="text-indigo-400 w-4 h-4 hover:text-indigo-100 cursor-pointer"
+                                            onClick={() => this.togglePromptPopup()}
+                                        />
+                                    </div>
+                                    <div
+                                        onClick={() => this.setPromptText(null)}
+                                        className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
+                                        Remove prompt
+                                    </div>
                                 </div>
                                 :
                                 null
                                 }
-                            </div>
-                            {/* <div className="flex flex-row gap-2">
-                                <div className="text-indigo-100 text-md">
-                                    Prompt
-                                </div>
-                                <input 
-                                    type="text"
-                                    name="prompt"
-                                    placeholder="Prompt text for this step (optional)"
-                                    value={this.state.reaction ? this.state.reaction.currentStep.uuid : null}
-                                    className="bg-white border"
-                                />
-                            </div> */}
-                        </div>
-                    </div>
-                </div>
-            
-                <main className="-mt-32">
-                    <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8 flex flex-row gap-5">
-
-                        {/* Various buttons */}
-                        <div className="bg-white rounded-lg shadow p-5 flex flex-col gap-2 h-full">
-                            
-                                {bondTypeButtons}
-
-                                <hr className="my-2"></hr>
-
-                                {/* Double curly arrow */}
-                                <button
-                                    className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
-                                    onClick={() => this.setArrowType(ArrowType.DOUBLE)}
-                                >
-                                    <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
-                                </button>
-
-                                {/* Single curly arrow */}
-                                <button
-                                    className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
-                                    onClick={() => this.setArrowType(ArrowType.SINGLE)}
-                                >
-                                    <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
-                                </button>
-
-                                <hr className="my-2"></hr>
-
-                                <button
-                                    className={this.state.eraserOn ? selectedButton : squareButton}
-                                    onClick={() => this.toggleEraser()}
-                                >
-                                    <img className={buttonImage} src="/assets/images/eraser.svg" alt="eraser" />
-                                </button>
-
-                                {/* Undo */}
-                                <button
-                                    onClick={() => this.undo()}
-                                    className={squareButton}
-                                    // add in logic to trigger the undo
-                                >
-                                    <RotateCcw className="w-3.5 h-3.5"/>
-                                </button>
-
-                                {/* Redo */}
-                                <button
-                                    onClick={() => this.redo()}
-                                    className={squareButton}
-                                    // add logic to trigger the redo
-                                >
-                                    <RotateCw className="w-3.5 h-3.5" />
-                                </button>
-                            </div>
-
-                        {/* p5 canvas */}
-                        <div id={Constants.CANVAS_PARENT_NAME} className="bg-white rounded-lg shadow flex-grow">
-                            <div className=" p-5 absolute flex flex-row items-center gap-2 text-sm text-gray-500">
-                                Physics
-                                <Switch
-                                    checked={this.state.physicsOn}
-                                    onChange={() => this.togglePhysics()}
-                                    className={
-                                        (this.state.physicsOn ? 'bg-indigo-600 ' : 'bg-gray-200 ') +
-                                        'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
+                
+                                <div className="flex flex-row justify-between">
+                                    <div className="flex flex-row gap-4 items-center">
+                                        <nav className="flex flex-row items-center">
+                                            <ol className="rounded-md flex gap-2 text-indigo-400 ">
+                                                {listOfStepButtons}
+                                            </ol>
+                                        </nav>
+                                        <button
+                                            onClick={() => this.createNewStep()}
+                                            className="text-indigo-100 hover:text-white text-sm flex flex-row"
+                                        >
+                                            <PlusIcon className="w-5 h-5" />
+                                            Add step
+                                        </button>
+                                    </div>
+                                    {
+                                    this.state.reaction && !this.state.reaction.prompt
+                                    ?
+                                    <div
+                                        onClick={() => this.togglePromptPopup()}
+                                        className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
+                                        + Add prompt
+                                    </div>
+                                    :
+                                    null
                                     }
-                                    >
-                                    <span className="sr-only">Toggle physics</span>
-                                    <span
-                                        aria-hidden="true"
-                                        className={
-                                            (this.state.physicsOn ? 'translate-x-5 ' : 'translate-x-0 ') + 
-                                            'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                                        }
-                                />
-                                </Switch>
+                                </div>
+                                {/* <div className="flex flex-row gap-2">
+                                    <div className="text-indigo-100 text-md">
+                                        Prompt
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="prompt"
+                                        placeholder="Prompt text for this step (optional)"
+                                        value={this.state.reaction ? this.state.reaction.currentStep.uuid : null}
+                                        className="bg-white border"
+                                    />
+                                </div> */}
                             </div>
                         </div>
-
-                        {/* atomic elements */}
-                        <div className="bg-white p-5 rounded-lg shadow flex flex-col gap-2 h-full">
-                            {listOfAtomicElements}
+                    </div>
+                
+                    <main className="-mt-32">
+                        <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8 flex flex-row gap-5">
+                            {/* Various buttons */}
+                            <div className="bg-white rounded-lg shadow p-5 flex flex-col gap-2 h-full">
+                
+                                    {bondTypeButtons}
+                                    <hr className="my-2"></hr>
+                                    {/* Double curly arrow */}
+                                    <button
+                                        className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
+                                        onClick={() => this.setArrowType(ArrowType.DOUBLE)}
+                                    >
+                                        <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
+                                    </button>
+                                    {/* Single curly arrow */}
+                                    <button
+                                        className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
+                                        onClick={() => this.setArrowType(ArrowType.SINGLE)}
+                                    >
+                                        <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
+                                    </button>
+                                    <hr className="my-2"></hr>
+                                    <button
+                                        className={this.state.eraserOn ? selectedButton : squareButton}
+                                        onClick={() => this.toggleEraser()}
+                                    >
+                                        <img className={buttonImage} src="/assets/images/eraser.svg" alt="eraser" />
+                                    </button>
+                                    {/* Undo */}
+                                    <button
+                                        onClick={() => this.undo()}
+                                        className={squareButton}
+                                        // add in logic to trigger the undo
+                                    >
+                                        <RotateCcw className="w-3.5 h-3.5"/>
+                                    </button>
+                                    {/* Redo */}
+                                    <button
+                                        onClick={() => this.redo()}
+                                        className={squareButton}
+                                        // add logic to trigger the redo
+                                    >
+                                        <RotateCw className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+                            {/* p5 canvas */}
+                            <div id={Constants.CANVAS_PARENT_NAME} className=" h-700 bg-white rounded-lg shadow flex-grow">
+                                <div className=" p-5 absolute flex flex-row items-center gap-2 text-sm text-gray-500">
+                                    Physics
+                                    <Switch
+                                        checked={this.state.physicsOn}
+                                        onChange={() => this.togglePhysics()}
+                                        className={
+                                            (this.state.physicsOn ? 'bg-indigo-600 ' : 'bg-gray-200 ') +
+                                            'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
+                                        }
+                                        >
+                                        <span className="sr-only">Toggle physics</span>
+                                        <span
+                                            aria-hidden="true"
+                                            className={
+                                                (this.state.physicsOn ? 'translate-x-5 ' : 'translate-x-0 ') +
+                                                'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
+                                            }
+                                    />
+                                    </Switch>
+                                </div>
+                            </div>
+                            {/* atomic elements */}
+                            <div className="bg-white p-5 rounded-lg shadow flex flex-col gap-2 h-full">
+                                {listOfAtomicElements}
+                            </div>
+                
                         </div>
-                    
-                    </div>
-
-                    {/* <!-- Eraser highlight --> */}
-                    <div id="eraser-tip" style={{visibility: "hidden"}} className="text-xs bg-gray-400 text-white rounded-sm shadow px-2 py-1 font-light absolute " >
-                        Delete
-                    </div>
-                </main>
-            </div>
-
-            {/* Show prompt popup if visible */}
-            {
-                this.state.promptPopupVisible
-                ?
-                <PromptPopup
-                    popupCloseFunction={this.togglePromptPopup.bind(this)}
-                    setPromptTextFunction={this.setPromptText.bind(this)}
-                    initialText={this.state.reaction.prompt}
-                />
-                :
-                null
-            }
-            </>
+                        {/* <!-- Eraser highlight --> */}
+                        <div id="eraser-tip" style={{display: "none"}} className="text-xs bg-gray-400 text-white rounded-sm shadow px-2 py-1 font-light absolute " >
+                            Delete
+                        </div>
+                    </main>
+                </div>
+                {/* Show prompt popup if visible */}
+                {
+                    this.state.promptPopupVisible
+                    ?
+                    <PromptPopup
+                        popupCloseFunction={this.togglePromptPopup.bind(this)}
+                        setPromptTextFunction={this.setPromptText.bind(this)}
+                        initialText={this.state.reaction.prompt}
+                    />
+                    :
+                    null
+                }
+                {/* Prompt popup */}
+                {
+                    this.state.promptPopupVisible
+                    ?
+                    <PromptPopup
+                        popupCloseFunction={this.togglePromptPopup.bind(this)}
+                        setPromptTextFunction={this.setPromptText.bind(this)}
+                        initialText={this.state.reaction.prompt}
+                    />
+                    :
+                    null
+                }
+                {/* Rename popup */}
+                {
+                    this.state.renamePopupVisible
+                    ?
+                    <ReactionRenamePopup
+                        reaction={this.state.reaction}
+                        popupCloseFunction={this.toggleRenamePopup.bind(this)}
+                        reameFunction={this.renameReaction.bind(this)}
+                    />
+                    :
+                    null
+                }
+                </>
+            </ScreenWithLoadingAllRender>
         )
 
     }

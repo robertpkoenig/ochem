@@ -10,6 +10,7 @@ import DeletionPopup from './DeletionPopup';
 import DeleteReactionPopup from './DeleteReactionPopup';
 import { deleteDoc, doc, getFirestore, updateDoc } from 'firebase/firestore';
 import FirebaseConstants from '../../model/FirebaseConstants';
+import { PencilAltIcon } from '@heroicons/react/outline';
 
 export interface IReactionCardProps {
     reactionListing: ReactionListing
@@ -207,7 +208,10 @@ export default function ReactionCard (props: IReactionCardProps) {
 
                 <div className="flex flex-row gap-2">
                     <Link href={"/teacher/reactions/" + props.reactionListing.uuid}>
-                        <a className={ primaryButtonSm }>Edit</a>
+                        <a className={ "flex gap-2 " + primaryButtonSm }>
+                            <PencilAltIcon className="w-3 h-3" />
+                            Edit
+                        </a>
                     </Link>
                 </div>
 

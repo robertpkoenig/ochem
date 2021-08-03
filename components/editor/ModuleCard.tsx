@@ -1,13 +1,15 @@
 import Link from "next/link"
 import React, { useState } from "react"
 import ModuleListing from "../../model/ModuleListing"
-import { primaryButtonMd, primaryButtonSm, redButtonMd, redButtonSm, secondaryButtonMd, secondaryButtonSm } from "../../styles/common-styles"
+import { primaryButtonMd, primaryButtonSm, redButtonMd, redButtonSm, roundEditButtonContainer, secondaryButtonMd, secondaryButtonSm } from "../../styles/common-styles"
 import PopupBackground from "../PopupBackground"
 import DeletionPopup from "./DeletionPopup"
 
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 import firebaseClient from "../../firebaseClient";
 import FirebaseConstants from "../../model/FirebaseConstants"
+import { XIcon } from "@heroicons/react/solid"
+import { PencilAltIcon } from "@heroicons/react/outline"
 
 const cardStyling = `flex flex-row space-between`
 
@@ -62,21 +64,24 @@ function ModuleCard(props: IProps) {
                     {props.moduleListing.name}
                 </div>
 
-                <div className="flex flex-row gap-2">
+                <div className="flex flex-row items-center gap-4">
 
                     <button
                         onClick={toggleDeleteModulePopup}
-                        className={redButtonSm} 
+                        className={roundEditButtonContainer} 
                     >
-                        Delete
+                        <XIcon className="w-3 h-3" />
                     </button>
 
-                    <Link href={"/student/modules/" + props.moduleListing.uuid}>
+                    {/* <Link href={"/student/modules/" + props.moduleListing.uuid}>
                         <a className={ secondaryButtonSm }>Preview</a>
-                    </Link>
+                    </Link> */}
 
                     <Link href={"/teacher/modules/" + props.moduleListing.uuid}>
-                        <a className={ primaryButtonSm }>Edit</a>
+                        <a className={ "flex gap-2 " + primaryButtonSm }>
+                            <PencilAltIcon className="w-3 h-3" />
+                            Edit
+                        </a>
                     </Link>
                 </div>
 

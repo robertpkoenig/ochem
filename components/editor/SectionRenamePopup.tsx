@@ -1,15 +1,17 @@
-import React, { EventHandler, SyntheticEvent, useState } from "react";
+import { useState } from "react";
+import Section from "../../model/SectionListing";
 import { primaryButtonMd } from "../../styles/common-styles";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
+    section: Section
     popupCloseFunction: () => void
-    sectionAdditionFunction: (string: string) => void
+    sectionRenameFunction: (string: string) => void
 }
 
 export function SectionPopup(props: IProps) {
 
-    const [sectionName, setSectionName] = useState('') 
+    const [sectionName, setSectionName] = useState(props.section.name) 
 
     function onChange(event: React.FormEvent<HTMLInputElement>) {
         setSectionName(event.currentTarget.value)
@@ -17,7 +19,7 @@ export function SectionPopup(props: IProps) {
 
     function onSubmit(event: React.FormEvent) {
         event.preventDefault();
-        props.sectionAdditionFunction(sectionName)
+        props.sectionRenameFunction(sectionName)
         props.popupCloseFunction()
     }
 
@@ -47,7 +49,7 @@ export function SectionPopup(props: IProps) {
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
                     <input
                     type="submit"
-                    value="Create Section"
+                    value="Save"
                     className={primaryButtonMd + "cursor-pointer"}
                     />
                 </div>

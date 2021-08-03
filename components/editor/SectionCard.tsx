@@ -14,6 +14,8 @@ import ReactionStep from '../../p5/model/ReactionStep';
 import { arrayUnion, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 import { AuthContext } from '../../context/provider';
 import FirebaseConstants from '../../model/FirebaseConstants';
+import { PencilIcon } from '@heroicons/react/outline';
+import SectionRenamePopup from './SectionRenamePopup';
 
 interface IProps {
     userId: string
@@ -25,6 +27,8 @@ interface IProps {
 export default function SectionCard(props: IProps) {
 
     const [sectionDeletePopupVis, setSectionDeletePopupVis]
+        = React.useState<boolean>(false)
+    const [sectionRenamePopupVis, setSectionRenamePopupVis]
         = React.useState<boolean>(false)
     const [reactionCreationPopupVis, setReactionCreationPopupVis]
         = React.useState<boolean>(false)
@@ -117,9 +121,19 @@ export default function SectionCard(props: IProps) {
     function toggleSectionDeletePopup() {
         setSectionDeletePopupVis(!sectionDeletePopupVis)
     }
+    
+    function toggleSectionRenamePopup() {
+        setSectionRenamePopupVis(!sectionRenamePopupVis)
+    }
 
     function toggleReactionCreationPopup() {
         setReactionCreationPopupVis(!reactionCreationPopupVis)
+    }
+
+    function renameSection(newName: string) {
+        props.section.name = newName
+        props.setModuleFunction(props.module)
+        updateSectionsInFirebase()
     }
 
     function createReaction(reactionName: string) {
@@ -213,8 +227,16 @@ export default function SectionCard(props: IProps) {
             <div className=" px-6 py-4 flex flex-col gap-4 bg-gray-100 overflow-hidden rounded-md">
 
                     <div className="flex flex-row justify-between items-center">
-                        <div className="font-semibold text-md bg-gray-100">
-                            {props.section.name}
+                        <div className="flex gap-2 items-center group">
+                            <div className="font-semibold text-md bg-gray-100">
+                                {props.section.name}
+                            </div>
+                            <div>
+                                <PencilIcon
+                                    onClick={toggleSectionRenamePopup}
+                                    className="invisible w-4 h-4 text-gray-400 hover:text-gray-500 cursor-pointer group-hover:visible"
+                                />
+                            </div>
                         </div>
 
                         <div className="flex flex-row content-center gap-1">
@@ -289,6 +311,19 @@ export default function SectionCard(props: IProps) {
                     />
                     :
                     ''
+                    }
+
+                    {/* Section rename */}
+                    {
+                        sectionRenamePopupVis
+                        ?
+                        <SectionRenamePopup 
+                            section={props.section}
+                            popupCloseFunction={toggleSectionRenamePopup}
+                            sectionRenameFunction={renameSection}
+                        />
+                        :
+                        null
                     }
 
             </div>

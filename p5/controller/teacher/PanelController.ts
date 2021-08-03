@@ -1,15 +1,7 @@
 import p5, { Element } from "p5";
 import Constants from "../../Constants";
-import { Atom } from "../../model/chemistry/atoms/Atom";
-import BondType from "../../model/chemistry/bonds/BondType";
-import { ArrowType } from "../../model/chemistry/CurlyArrow";
-import Molecule from "../../model/chemistry/Molecule";
 import Reaction from "../../model/Reaction";
-import ReactionStep from "../../model/ReactionStep";
-import ReactionStepLoader from "../../utilities/ReactionStepLoader";
-import Utilities from "../../utilities/Utilities";
-import DomElementCreator from "../../view/DomElementCreator";
-import { TeacherController } from "./EditorController";
+import TeacherController from "./TeacherController";
 
 class PanelController {
 
@@ -23,6 +15,7 @@ class PanelController {
     rightX: number | undefined
     topY: number | undefined
     bottomY: number | undefined
+    canvasParent: HTMLElement
 
     selectedElement: Element | null
     selectedElementId: string | null
@@ -36,21 +29,22 @@ class PanelController {
         this.selectedElement = null
         this.selectedElementId = null
 
-        this.setOffsets()
+        this.canvasParent = null
+        this.setCanvasParent()
 
 	}
 
-    setOffsets() {
+    setCanvasParent() {
 
-        const canvasParent = document.getElementById('p5-canvas')
-        if (!canvasParent)
+        this.canvasParent = document.getElementById('p5-canvas')
+        if (!this.canvasParent)
             throw new Error("canvas parent element not found")
 
-        const canvasParentRect = canvasParent.getBoundingClientRect()
-        this.leftX = canvasParentRect.x
-        this.rightX = canvasParentRect.x + canvasParentRect.width
-        this.bottomY = canvasParentRect.y
-        this.topY = canvasParentRect.y + canvasParentRect.height
+        // this.canvasParent = canvasParent.getBoundingClientRect()
+        // this.leftX = canvasParentRect.x
+        // this.rightX = canvasParentRect.x + canvasParentRect.width
+        // this.bottomY = canvasParentRect.y
+        // this.topY = canvasParentRect.y + canvasParentRect.height
 
     }
 
@@ -68,12 +62,10 @@ class PanelController {
 
     moveElementIfSelected() {
 
-        if (!this.leftX || !this.bottomY)
-            throw new Error("canvas bounding box not defined")
-
         if (this.selectedElement != null) {
-            const xPosition = this.p5.mouseX + this.leftX - Constants.ATOM_RADIUS
-            const yPosition = this.p5.mouseY + this.bottomY - Constants.ATOM_RADIUS
+            const boundingRect = this.editorController.panelController.canvasParent.getBoundingClientRect()
+            const xPosition = this.p5.mouseX + boundingRect.x - Constants.ATOM_RADIUS
+            const yPosition = this.p5.mouseY + boundingRect.y- Constants.ATOM_RADIUS
             this.selectedElement.position(xPosition, yPosition)
         }
 

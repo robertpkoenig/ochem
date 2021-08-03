@@ -1,6 +1,6 @@
-import { ClipboardCopyIcon, PaperAirplaneIcon } from "@heroicons/react/outline";
-import { SyntheticEvent } from "react";
-import { primaryButtonMd, primaryButtonSm } from "../../styles/common-styles";
+import { CheckCircleIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
+import { useState } from "react";
+import { primaryButtonMd } from "../../styles/common-styles";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
@@ -10,11 +10,18 @@ interface IProps {
 
 export default function SharePopup(props: IProps) {
 
+    const [copyConfirmVis, setCopyConfirmVis] = useState(false)
+
     function copyLinkText() {
-        const linkText: HTMLInputElement = document.getElementById("linkText") as HTMLInputElement
-        linkText.select()
-        linkText.setSelectionRange(0, 9999)
-        document.execCommand("copy")
+        // const linkText: HTMLInputElement = document.getElementById("linkText") as HTMLInputElement
+        // linkText.select()
+        // linkText.setSelectionRange(0, 9999)
+        // document.execCommand("copy")
+        navigator.clipboard.writeText(window.location.hostname + ":3000" + "/student/invitiation/" + props.moduleId)
+        setCopyConfirmVis(true)
+        setTimeout(function() {
+            setCopyConfirmVis(false)
+        }, 1000)
     }
 
     // This is a dummy 'onChange' handler for the input below to silence warnings
@@ -23,8 +30,22 @@ export default function SharePopup(props: IProps) {
     return (
         <PopupBackground popupCloseFunction={props.popupCloseFunction}>
             <div className="shadow rounded-md flex flex-col gap-3 px-6 py-6 bg-white">
-                <div className="flex flex-row items-center gap-1 font-bold text-lg text-indigo-600">
-                    Share
+                <div className="flex flex-row justify-between items-center gap-1 font-bold text-lg text-indigo-600">
+                    <div>
+                        Share
+                    </div>
+                    <div className="text-green-500 text-sm font-normal flex gap-1 items-center">
+                        {
+                            copyConfirmVis
+                            ?
+                            <>
+                                <CheckCircleIcon className="w-4 h-4" />
+                                Copied
+                            </>
+                            :
+                            null
+                        }
+                    </div>
                 </div>
                 <div>
                     <p className="font-light text-gray-500">
@@ -37,7 +58,7 @@ export default function SharePopup(props: IProps) {
                         id="linkText"
                         className="font-light border border-gray-300 rounded-md text-gray-700 flex-grow"
                         type="text"
-                        value={window.location.hostname + "/student/invitiation/" + props.moduleId}
+                        value={window.location.hostname + ":3000" + "/student/invitiation/" + props.moduleId}
                     />
                     <button
                         className={primaryButtonMd + "w-auto"}

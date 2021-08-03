@@ -54,9 +54,16 @@ export function AuthProvider({ children }: Props) {
         if (!user) {
             onAuthStateChanged(auth, (loggedInUser) => {
                 
-                if (!loggedInUser &&
-                    !pagesNotRequiringAuth.includes(router.pathname)) {            
-                    {
+                // if there is no user in the auth
+                if (!loggedInUser) {
+                    // if this page does not require auth, simply
+                    // tell downstream components that auth has been attempted
+                    if (pagesNotRequiringAuth.includes(router.pathname)) {            
+                        setLoginAttempted(true)
+                    }
+                    // If this page requires auth, and user is not logged in
+                    // go back to the home page
+                    else {
                         router.push("/")
                     }
                 }
@@ -69,8 +76,6 @@ export function AuthProvider({ children }: Props) {
                         setLoginAttempted(true)
                     })
                 }
-
-                // setProviderFinished(true)
 
            })
         }

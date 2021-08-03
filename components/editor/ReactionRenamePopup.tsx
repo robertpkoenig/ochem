@@ -1,43 +1,54 @@
-import React, { EventHandler, SyntheticEvent, useState } from "react";
+import React, { FormEvent, FormEventHandler, MouseEventHandler, SyntheticEvent, useState } from "react";
+import Reaction from "../../p5/model/Reaction";
 import { primaryButtonMd } from "../../styles/common-styles";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
+    reaction: Reaction
     popupCloseFunction: () => void
-    sectionAdditionFunction: (string: string) => void
+    reameFunction: (reactionName: string) => void
 }
 
-export function SectionPopup(props: IProps) {
+export default function ReactionRenamePopup(props: IProps) {
 
-    const [sectionName, setSectionName] = useState('') 
+    const [reactionName, setReactionName] = useState<string>(props.reaction.name)
 
-    function onChange(event: React.FormEvent<HTMLInputElement>) {
-        setSectionName(event.currentTarget.value)
+    function onReactionNameChange(event: FormEvent<HTMLInputElement>) {
+        setReactionName(event.currentTarget.value)
     }
 
     function onSubmit(event: React.FormEvent) {
         event.preventDefault();
-        props.sectionAdditionFunction(sectionName)
+        props.reameFunction(reactionName)
         props.popupCloseFunction()
+    }
+
+    function stopPropagation(event: SyntheticEvent) {
+        event.stopPropagation()
     }
 
     return (
         
-        <PopupBackground popupCloseFunction={props.popupCloseFunction}>
+        <PopupBackground
+            popupCloseFunction={props.popupCloseFunction} 
+        >
             <form onSubmit={onSubmit}>
-                <div className="shadow overflow-hidden sm:rounded-md">
+                <div
+                    onClick={stopPropagation}
+                    className="shadow overflow-hidden sm:rounded-md"
+                >
                 <div className="px-4 py-5 bg-white sm:p-6">
                     <div className="flex flex-col gap-6">
                     <div className="w-96">
                         <label htmlFor="module-name" className="block text-sm font-medium text-gray-700">
-                            Section name
+                            Reaction name
                         </label>
                         <input
                         type="text"
                         name="module-name"
-                        value={sectionName}
-                        placeholder="Type module name here"
-                        onChange={onChange}
+                        value={reactionName}
+                        placeholder="Type reaction name here"
+                        onChange={onReactionNameChange}
                         id="module-name"
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         />
@@ -47,7 +58,7 @@ export function SectionPopup(props: IProps) {
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
                     <input
                     type="submit"
-                    value="Create Section"
+                    value="Create reaction"
                     className={primaryButtonMd + "cursor-pointer"}
                     />
                 </div>
@@ -58,5 +69,3 @@ export function SectionPopup(props: IProps) {
     )
 
 }
-
-export default SectionPopup
