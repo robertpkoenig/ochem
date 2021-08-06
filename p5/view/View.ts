@@ -6,7 +6,7 @@ import BondType from "../model/chemistry/bonds/BondType"
 import Reaction from "../model/Reaction"
 import UserType from "../model/UserType"
 import ArrowViewer from "./ArrowViewer"
-import TeacherView from "./EditorView"
+import TeacherView from "./TeacherView"
 import MoleculeViewer from "./MoleculeViewer"
 import StudentView from "./StudentView"
 
@@ -14,7 +14,7 @@ class View {
 
     // Upstrea objects
     p5: p5
-reaction: Reaction
+    reaction: Reaction
     controller: Controller
 
     // Properties
@@ -78,6 +78,7 @@ reaction: Reaction
         this.renderMolecules()
         this.renderArrow()
         this.renderDraftArrow()
+        this.renderStraightArrow()
     }
 
     renderMolecules() {
@@ -98,6 +99,32 @@ reaction: Reaction
             this.controller.arrowCreator.draftArrow
         if (draftArrow != null) {
             this.arrowViewer.renderArrow(draftArrow)
+        }
+    }
+
+    renderStraightArrow() {
+        const straightArrow =
+            this.reaction.currentStep.straightArrow
+        if (straightArrow) {
+            this.p5.push()
+            this.p5.stroke(0)
+            this.p5.strokeWeight(Constants.ARROW_STROKE_WEIGHT)
+                this.p5.line(
+                    straightArrow.startVector.x,
+                    straightArrow.startVector.y,
+                    straightArrow.endVector.x,
+                    straightArrow.endVector.y,
+                )
+                this.p5.fill(0)
+                this.p5.triangle(
+                    straightArrow.endVector.x,
+                    straightArrow.endVector.y,
+                    straightArrow.trianglePointOne.x,
+                    straightArrow.trianglePointOne.y,
+                    straightArrow.trianglePointTwo.x,
+                    straightArrow.trianglePointTwo.y,
+                )
+            this.p5.pop()  
         }
     }
 

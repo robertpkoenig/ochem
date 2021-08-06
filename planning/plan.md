@@ -1,13 +1,16 @@
+
+
 Next.js/Firebase
 
-- homepage screenshots
+- option to use more elements with scrolling
+- homepage nav links
 - tooltips
 - how-to video
 
-P5
 
-- get angle controls
-- option to use more elements with scrolling
-- white outline for arrows
-- plus and minus signs on atoms
+Prior to hand-in
+
+- feedback from lecturers and students
+- write 10-15k words
+- demo video (which I'll include on the website)
 

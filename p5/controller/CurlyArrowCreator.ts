@@ -7,7 +7,7 @@ import HoverDetector from "./teacher/HoverDetector"
 import ReactionSaver from "./teacher/ReactionSaver"
 import UndoManager from "./teacher/UndoManager"
 
-class ArrowCreator {
+class CurlyArrowCreator {
 
     // upstream objects
 	reaction: Reaction
@@ -141,4 +141,4 @@ class ArrowCreator {
 
 }
 
-export default ArrowCreator
+export default CurlyArrowCreator

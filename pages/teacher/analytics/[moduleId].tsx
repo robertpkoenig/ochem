@@ -122,6 +122,9 @@ export default function Analytics() {
         tempDatesForDataProcessing.reverse()
         setDatesForDataProcessing(tempDatesForDataProcessing)
 
+        console.log(tempDatesForDataProcessing);
+        
+
         // Get the dates for display
         const tempDatesForDisplay: string[] = []
         date = new Date()

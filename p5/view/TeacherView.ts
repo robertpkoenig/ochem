@@ -7,12 +7,13 @@ import Reaction from "../model/Reaction";
 import CollisionDetector from "../model/physics/CollisinDetector";
 import p5 from "p5";
 import { CurlyArrow } from "../model/chemistry/CurlyArrow";
+import StraightArrow from "../model/chemistry/StraightArrow";
 
 class TeacherView {
 
     p5: p5
     reaction: Reaction
-    editorController: TeacherController
+    teacherController: TeacherController
     collisionDetector: CollisionDetector
 
     panelCenterX: number
@@ -27,7 +28,7 @@ class TeacherView {
     {
         this.p5 = p5
         this.reaction = reaction
-        this.editorController = editorController
+        this.teacherController = editorController
         this.collisionDetector = collisionDetector
         this.setParams()
 
@@ -41,21 +42,58 @@ class TeacherView {
 
     render() {
 
+        this.decorateIonIfHovered()
+
         this.decorateAtomIfHovered()
         this.decorateBondIfHovered()
         this.decorateArrowIfHovered()
+        this.decorateStraightArrowIfHovered()
 
         this.renderDraftBond()
+        this.renderDraftStraightArrow()
+
+        this.renderAngleControlDummyBonds()
 
     }
 
-    decorateAtomIfHovered() {
+    private renderAngleControlDummyBonds() {
+        for (const bond of this.reaction.currentStep.getAllBonds()) {
+            if (bond.type == null) {
+                this.p5.stroke(237, 233, 254)
+                this.p5.line(bond.atoms[0].circle.pos.x, bond.atoms[0].circle.pos.y,
+                             bond.atoms[1].circle.pos.x, bond.atoms[1].circle.pos.y)
+                }
+        }
+    }
+
+    private decorateIonIfHovered() {
+        if (this.teacherController.teacherReactionPage.state.eraserOn) {
+            const hoveredIon = this.teacherController.hoverDetector.ionCurrentlyHovered
+            if (hoveredIon != null) {
+                this.drawIonOutline(hoveredIon)
+                this.showEraserTip()
+            }
+        }
+    }
+
+    private drawIonOutline(atom: Atom) {
+        const x = atom.getPosVector().x + Constants.ION_ORBIT_RADIUS
+        const y = atom.getPosVector().y - Constants.ION_ORBIT_RADIUS
+        this.p5.push()
+            this.p5.noFill()
+            this.p5.stroke(Constants.RED_OUTLINE_COLOR)
+            this.p5.strokeWeight(Constants.OUTLINE_THICKNESS)
+            this.p5.ellipse(x, y, Constants.ION_RADIUS + Constants.OUTLINE_THICKNESS)
+        this.p5.pop()
+    }
+
+    private decorateAtomIfHovered() {
     
-        const hoveredAtom = this.editorController.hoverDetector.atomCurrentlyHovered
+        const hoveredAtom = this.teacherController.hoverDetector.atomCurrentlyHovered
 
         if (hoveredAtom != null) {
 
-            if (this.editorController.teacherReactionPage.state.eraserOn) {
+            if (this.teacherController.teacherReactionPage.state.eraserOn) {
                 this.drawAtomOutline(hoveredAtom, Constants.RED_OUTLINE_COLOR)
                 this.showEraserTip()
             }
@@ -71,7 +109,7 @@ class TeacherView {
 
     }
 
-    drawAtomOutline(atom: Atom, color: string) {
+    private drawAtomOutline(atom: Atom, color: string) {
         this.p5.push()
             this.p5.noFill()
             this.p5.stroke(color)
@@ -82,10 +120,10 @@ class TeacherView {
         this.p5.pop()
     }
 
-    showEraserTip() {
+    private showEraserTip() {
         const eraserTip = this.p5.select("#eraser-tip")
         eraserTip.style("display", "inline")
-        const boundingRect = this.editorController.panelController.canvasParent.getBoundingClientRect()
+        const boundingRect = this.teacherController.panelController.canvasParent.getBoundingClientRect()
         const x = this.p5.mouseX + boundingRect.x + 10
         const y = this.p5.mouseY + boundingRect.y + 10
         eraserTip.position(x, y)
@@ -93,35 +131,35 @@ class TeacherView {
         this.eraserTipVisible = true
     }
 
-    hideEraserTip() {
+    private hideEraserTip() {
         const eraserTip = this.p5.select("#eraser-tip")
         eraserTip.style("display", "none")
 
         this.eraserTipVisible = false
     }
 
-    decorateBondIfHovered() {
+    private decorateBondIfHovered() {
 
-        const hoveredBond = this.editorController.hoverDetector.bondCurrentlyHovered
+        const hoveredBond = this.teacherController.hoverDetector.bondCurrentlyHovered
 
         if (hoveredBond != null) {
-            if (this.editorController.teacherReactionPage.state.eraserOn) {
+            if (this.teacherController.teacherReactionPage.state.eraserOn) {
                 this.drawBondOutline(hoveredBond, Constants.RED_OUTLINE_COLOR)
                 this.showEraserTip()
                 this.eraserTipVisible = true
             }
-            if (this.editorController.teacherReactionPage.state.arrowType != null) {
+            if (this.teacherController.teacherReactionPage.state.arrowType != null) {
                 this.drawBondOutline(hoveredBond, Constants.BLUE_OUTLINE_COLOR)
             }
         }
 
     }
 
-    drawBondOutline(bond: Bond, color: string) {
+    private drawBondOutline(bond: Bond, color: string) {
 
         this.p5.push()
 
-            if (bond.type == BondType.SINGLE) {
+            if (bond.type == BondType.SINGLE || bond.type == null) {
             this.p5.stroke(0)
             this.p5.stroke(color)
             this.p5.strokeWeight(Constants.STROKE_WEIGHT + Constants.OUTLINE_THICKNESS * 2)
@@ -151,33 +189,33 @@ class TeacherView {
 
     }
 
-    renderDraftBond() {
+    private renderDraftBond() {
         
-        if (this.editorController.bondCreator.startAtom != null) {
+        if (this.teacherController.bondCreator.startAtom != null) {
             
             this.p5.push()
 
                 this.p5.fill(0)
 
-                if (this.editorController.teacherReactionPage.state.bondType == BondType.SINGLE) {
+                if (this.teacherController.teacherReactionPage.state.bondType == BondType.SINGLE) {
                 this.p5.stroke(0)
-                this.p5.line(this.editorController.bondCreator.startAtom.circle.pos.x,
-                    this.editorController.bondCreator.startAtom.circle.pos.y,
+                this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
+                    this.teacherController.bondCreator.startAtom.circle.pos.y,
                     this.p5.mouseX,
                     this.p5.mouseY)
                 }
 
-                if (this.editorController.teacherReactionPage.state.bondType == BondType.DOUBLE) {
+                if (this.teacherController.teacherReactionPage.state.bondType == BondType.DOUBLE) {
                     this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3)
                     this.p5.stroke(0)
-                    this.p5.line(this.editorController.bondCreator.startAtom.circle.pos.x,
-                        this.editorController.bondCreator.startAtom.circle.pos.y,
+                    this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
+                        this.teacherController.bondCreator.startAtom.circle.pos.y,
                         this.p5.mouseX,
                         this.p5.mouseY)
                     this.p5.strokeWeight(Constants.STROKE_WEIGHT)
                     this.p5.stroke(255)
-                    this.p5.line(this.editorController.bondCreator.startAtom.circle.pos.x,
-                        this.editorController.bondCreator.startAtom.circle.pos.y,
+                    this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
+                        this.teacherController.bondCreator.startAtom.circle.pos.y,
                         this.p5.mouseX,
                         this.p5.mouseY)
                 }
@@ -188,17 +226,17 @@ class TeacherView {
         
     }
 
-    decorateArrowIfHovered() {
+    private decorateArrowIfHovered() {
 
-        const arrow = this.editorController.hoverDetector.arrowCurrentlyHovered
+        const arrow = this.teacherController.hoverDetector.curlyArrowCurrentlyHovered
         
-        if (arrow != null && this.editorController.teacherReactionPage.state.eraserOn) {
+        if (arrow != null && this.teacherController.teacherReactionPage.state.eraserOn) {
             this.drawArrowOutline(arrow, Constants.RED_OUTLINE_COLOR)
         }
 
     }
 
-    drawArrowOutline(arrow: CurlyArrow, color: string) {
+    private drawArrowOutline(arrow: CurlyArrow, color: string) {
 
         this.p5.push()
 
@@ -216,6 +254,61 @@ class TeacherView {
                 arrow.anchorTwo.x, arrow.anchorTwo.y,
                 arrow.endVector.x, arrow.endVector.y
             )
+
+        this.p5.pop()
+
+    }
+
+    public renderDraftStraightArrow() {
+        const draftArrow = this.teacherController.straightArrowCreator.draftArrow
+        if (draftArrow) {
+            this.renderStraightArrow(draftArrow)
+        }
+    }
+
+    public renderStraightArrow(arrow: StraightArrow) {
+        this.p5.push()
+        this.p5.stroke(0)
+        this.p5.strokeWeight(Constants.ARROW_STROKE_WEIGHT)
+        this.p5.line(arrow.startVector.x, arrow.startVector.y, arrow.endVector.x, arrow.endVector.y)
+        this.p5.fill(0)
+        this.p5.triangle(
+            arrow.endVector.x,
+            arrow.endVector.y,
+            arrow.trianglePointOne.x,
+            arrow.trianglePointOne.y,
+            arrow.trianglePointTwo.x,
+            arrow.trianglePointTwo.y,
+        )
+        this.p5.pop()
+    }
+
+    public decorateStraightArrowIfHovered() {
+        const straightArrow =
+            this.teacherController.hoverDetector.straightArrowCurrentlyHovered
+        if (straightArrow != null && this.teacherController.teacherReactionPage.state.eraserOn) {
+            this.decorateStraightArrow(straightArrow, Constants.RED_OUTLINE_COLOR)
+        }
+
+    }
+
+    public decorateStraightArrow(arrow: StraightArrow, color: string) {
+
+        this.p5.push()
+
+            this.p5.noFill()
+            this.p5.stroke(color)
+
+            this.p5.strokeWeight(
+                Constants.ARROW_STROKE_WEIGHT +
+                Constants.OUTLINE_THICKNESS * 2
+            )
+
+            this.p5.line(arrow.startVector.x,
+                         arrow.startVector.y,
+                         arrow.endVector.x,
+                         arrow.endVector.y
+                         )
 
         this.p5.pop()
 

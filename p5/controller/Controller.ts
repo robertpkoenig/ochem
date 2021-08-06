@@ -7,7 +7,7 @@ import CollisionDetector from "../model/physics/CollisinDetector"
 import TeacherReactionPage from "../../pages/teacher/reactions/[reactionId]"
 import StudentReactionPage from "../../pages/student/reactions/[reactionId]"
 import UserType from "../model/UserType"
-import ArrowCreator from "./ArrowCreator"
+import CurlyArrowCreator from "./CurlyArrowCreator"
 import HoverDetector from "./teacher/HoverDetector"
 import StudentController from "./teacher/StudentController"
 import TeacherController from "./teacher/TeacherController"
@@ -26,7 +26,7 @@ class Controller {
     // downstream collaborating objects
     bodyMover: BodyMover
     hoverDetector: HoverDetector
-    arrowCreator: ArrowCreator
+    arrowCreator: CurlyArrowCreator
     teacherController: TeacherController
     studentController: StudentController
 
@@ -46,7 +46,7 @@ class Controller {
         this.userType = userType
 
         this.hoverDetector = new HoverDetector(reaction, collisionDetector)
-        this.arrowCreator = new ArrowCreator(reaction, this.hoverDetector, page)
+        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, page)
 
         this.bodyMover = new BodyMover(p5, reaction)
 
@@ -84,6 +84,7 @@ class Controller {
         if (this.reaction.currentStep.curlyArrow) {
             this.reaction.currentStep.curlyArrow.update(this.p5)
         }
+        // I think I should change this update function to sit with the arrowCreator?
         if (this.arrowCreator.draftArrow != null) {
             this.arrowCreator.draftArrow.update(this.p5)
         }

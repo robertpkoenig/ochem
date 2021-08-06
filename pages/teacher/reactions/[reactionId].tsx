@@ -3,7 +3,7 @@ import { ArrowLeftIcon, PlusIcon, XIcon } from "@heroicons/react/solid"
 import { GetServerSideProps } from "next"
 import Link from "next/link"
 import React from "react"
-import { RotateCcw, RotateCw } from "react-feather"
+import { MinusCircle, PlusCircle, RotateCcw, RotateCw } from "react-feather"
 import Constants from "../../../p5/Constants"
 import TeacherController from "../../../p5/controller/teacher/TeacherController"
 import ReactionSaver from "../../../p5/controller/teacher/ReactionSaver"
@@ -19,10 +19,11 @@ import Utilities from "../../../p5/utilities/Utilities"
 import { doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore"
 import FirebaseConstants from "../../../model/FirebaseConstants"
 import Module from "../../../model/Module"
-import { PencilAltIcon, PencilIcon } from "@heroicons/react/outline"
+import { MinusCircleIcon, PencilAltIcon, PencilIcon, PlusCircleIcon } from "@heroicons/react/outline"
 import PromptPopup from "../../../components/editor/PromptPopup"
 import ReactionRenamePopup from "../../../components/editor/ReactionRenamePopup"
 import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
+import Ion from "../../../p5/model/chemistry/atoms/Ion"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -46,9 +47,12 @@ interface IState {
     loading: boolean
     reaction: Reaction
     physicsOn: boolean
-    eraserOn: boolean
     bondType: BondType
     arrowType: ArrowType
+    straightArrowSelected: boolean
+    angleControlSelected: boolean
+    selectedIon: Ion
+    eraserOn: boolean
     teacherController: TeacherController
     selectedElement: HTMLElement
     promptPopupVisible: boolean
@@ -69,9 +73,12 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             loading: true,
             reaction: null,
             physicsOn: false,
-            eraserOn: false,
             bondType: null,
             arrowType: null,
+            straightArrowSelected: false,
+            angleControlSelected: false,
+            selectedIon: null,
+            eraserOn: false,
             teacherController: null,
             selectedElement: null,
             promptPopupVisible: false,
@@ -198,7 +205,10 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                 ...prevState,
                 eraserOn: !prevState.eraserOn,
                 bondType: null,
-                arrowType: null
+                arrowType: null,
+                straightArrowSelected: false,
+                ionSelected: null,
+                angleControlSelected: false,
             }
         })        
     }
@@ -220,7 +230,10 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                     ...prevState,
                     bondType: bondType,
                     arrowType: null,
-                    eraserOn: false
+                    eraserOn: false,
+                    straightArrowSelected: false,
+                    selectedIon: null,
+                    angleControlSelected: false,
                 }
             }) 
         }
@@ -244,11 +257,69 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                     ...prevState,
                     arrowType: arrowType,
                     bondType: null,
-                    eraserOn: false
+                    eraserOn: false,
+                    straightArrowSelected: false,
+                    angleControlSelected: false,
+                    selectedIon: null,
                 }
             }) 
         }
        
+    }
+
+    selectIon(ion: Ion) {
+
+        if (this.state.selectedIon == ion) {
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    selectedIon: null
+                }
+            })  
+        }
+
+        else {
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    selectedIon: ion,
+                    eraserOn: false,
+                    bondType: null,
+                    arrowType: null,
+                    straightArrowSelected: false,
+                    angleControlSelected: false,
+                }
+            })
+        }
+
+   }
+
+    toggleStraightArrow() {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                straightArrowSelected: !prevState.straightArrowSelected,
+                eraserOn: false,
+                bondType: null,
+                selectedIon: null,
+                arrowType: null,
+                angleControlSelected: false,
+            }
+        })
+    }
+
+    toggleAngleControl() {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                angleControlSelected: !prevState.angleControlSelected,
+                straightArrowSelected: false,
+                eraserOn: false,
+                bondType: null,
+                selectedIon: null,
+                arrowType: null,
+            }
+        })
     }
 
     setCurrentStep(stepId: string) {
@@ -551,7 +622,9 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                             <div className="bg-white rounded-lg shadow p-5 flex flex-col gap-2 h-full">
                 
                                     {bondTypeButtons}
+
                                     <hr className="my-2"></hr>
+
                                     {/* Double curly arrow */}
                                     <button
                                         className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
@@ -566,29 +639,69 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     >
                                         <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
                                     </button>
+
+                                    {/* Straight arrow */}
+                                    <button
+                                        className={this.state.straightArrowSelected ? selectedButton : squareButton}
+                                        onClick={() => this.toggleStraightArrow()}
+                                    >
+                                        <img className={buttonImage} src="/assets/images/straight-arrow.svg" alt="straight arrow" />
+                                    </button>
+
                                     <hr className="my-2"></hr>
+
+                                    {/* Plus */}
+                                    <button
+                                        className={this.state.selectedIon ==  Ion.CATION ? selectedButton : squareButton}
+                                        onClick={() => this.selectIon(Ion.CATION)}
+                                    >
+                                        <PlusCircle className="w-4 h-4" />
+                                    </button>
+
+                                    {/* Minus */}
+                                    <button
+                                        className={this.state.selectedIon ==  Ion.ANION ? selectedButton : squareButton}
+                                        onClick={() => this.selectIon(Ion.ANION)}
+                                    >
+                                        <MinusCircle className="w-4 h-4" />
+                                    </button>
+
+                                    <hr className="my-2"></hr>
+
+                                    {/* Angle control */}
+                                    <button
+                                        className={this.state.angleControlSelected ? selectedButton : squareButton}
+                                        onClick={() => this.toggleAngleControl()}
+                                    >
+                                        <img className={buttonImage} src="/assets/images/angle-control.svg" alt="eraser" />
+                                    </button>
+
+                                    <hr className="my-2"></hr>
+
+                                    {/* Eraser */}
                                     <button
                                         className={this.state.eraserOn ? selectedButton : squareButton}
                                         onClick={() => this.toggleEraser()}
                                     >
                                         <img className={buttonImage} src="/assets/images/eraser.svg" alt="eraser" />
                                     </button>
+
                                     {/* Undo */}
                                     <button
                                         onClick={() => this.undo()}
                                         className={squareButton}
-                                        // add in logic to trigger the undo
                                     >
                                         <RotateCcw className="w-3.5 h-3.5"/>
                                     </button>
+
                                     {/* Redo */}
                                     <button
                                         onClick={() => this.redo()}
                                         className={squareButton}
-                                        // add logic to trigger the redo
                                     >
                                         <RotateCw className="w-3.5 h-3.5" />
                                     </button>
+
                                 </div>
                             {/* p5 canvas */}
                             <div id={Constants.CANVAS_PARENT_NAME} className=" h-700 bg-white rounded-lg shadow flex-grow">

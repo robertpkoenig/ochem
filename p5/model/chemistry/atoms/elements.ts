@@ -103,6 +103,14 @@ const AtomicElements: IAtomicElements = {
         mass: 10,
         radius: 20,
     },
+    "dummy": {
+        name: "dummy",
+        abbreviation: "",
+        numDesiredValenceElectrons: 1,
+        color: null,
+        mass: 10,
+        radius: 20,
+    }
     
 }
 

@@ -1,9 +1,11 @@
 import Reaction from "../Reaction"
 import SAT, { Circle, Polygon, Vector } from 'sat'
-import { Body } from "./Body"
 import { Bond } from "../chemistry/bonds/Bond"
 import p5 from "p5"
 import { CurlyArrow } from "../chemistry/CurlyArrow"
+import { Atom } from "../chemistry/atoms/Atom"
+import Constants from "../../Constants"
+import StraightArrow from "../chemistry/StraightArrow"
 
 class CollisionDetector {
 
@@ -15,15 +17,24 @@ class CollisionDetector {
         this.reaction = reaction
     }
 
-    twoBodiesOverlap(bodyOne: Body, bodyTwo: Body): boolean {
-        const circleOne = new SAT.Circle(bodyOne.circle.pos, bodyOne.radius)
-        const circleTwo = new SAT.Circle(bodyTwo.circle.pos, bodyTwo.radius)
+    twoBodiesOverlap(atomOne: Atom, atomTwo: Atom): boolean {
+        const circleOne = new SAT.Circle(atomOne.circle.pos, atomOne.radius)
+        const circleTwo = new SAT.Circle(atomTwo.circle.pos, atomTwo.radius)
         return SAT.testCircleCircle(circleOne, circleTwo)
     }
 
-    mouseHoveredOverBody(body: Body): boolean {
+    mouseHoveredOverAtom(atom: Atom): boolean {
         const mousePosition = new Vector(this.p5.mouseX, this.p5.mouseY)
-        return SAT.pointInCircle(mousePosition, body.circle)
+        return SAT.pointInCircle(mousePosition, atom.circle)
+    }
+
+    mouseHoveredOverIon(atom: Atom) {
+        const mouseVector = new Vector(this.p5.mouseX, this.p5.mouseY)
+        const ionX = atom.getPosVector().x + Constants.ION_ORBIT_RADIUS
+        const ionY = atom.getPosVector().y - Constants.ION_ORBIT_RADIUS
+        const ionCoordinateVector = new Vector(ionX, ionY)
+        const ionCircle = new SAT.Circle(ionCoordinateVector, Constants.ION_RADIUS / 2)
+        return SAT.pointInCircle(mouseVector, ionCircle)
     }
 
     mouseHoveredOverBond(bond: Bond): boolean {
@@ -49,6 +60,16 @@ class CollisionDetector {
             }
         }
         return false
+    }
+
+    mouseHoveredOverStraightArrow(arrow: StraightArrow): boolean {
+        const mouseVector = new Vector(this.p5.mouseX, this.p5.mouseY)
+        const mouseCircle = new Circle(mouseVector, 10)
+        const bondPolygon = new Polygon(new Vector, [
+            arrow.startVector,
+            arrow.endVector
+        ])
+        return SAT.testCirclePolygon(mouseCircle, bondPolygon)
     }
 
 }

@@ -7,6 +7,7 @@ class Atom extends Body {
 
     public element: IAtomicElement
     public uuid: string
+    public ion: string
 
     constructor(
         element: IAtomicElement
@@ -14,6 +15,9 @@ class Atom extends Body {
         super(element.mass, element.radius)
         this.element = element
         this.uuid = uuid()
+
+        // initialize cation/anion to false and fill in after instantiation
+        this.ion = null
     }
 
     toJSON() {
@@ -21,7 +25,8 @@ class Atom extends Body {
             x: this.circle.pos.x,
             y: this.circle.pos.y,
             name: this.element.name,
-            id: this.uuid 
+            id: this.uuid,
+            ion: this.ion,
         }
     }
 

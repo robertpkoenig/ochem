@@ -3,14 +3,17 @@ import { Bond } from "../../model/chemistry/bonds/Bond";
 import Reaction from "../../model/Reaction";
 import CollisionDetector from "../../model/physics/CollisinDetector";
 import { CurlyArrow } from "../../model/chemistry/CurlyArrow";
+import StraightArrow from "../../model/chemistry/StraightArrow";
 
 class HoverDetector {
 
+    ionCurrentlyHovered: Atom
     atomCurrentlyHovered: Atom
     bondCurrentlyHovered: Bond
     reaction: Reaction
     collisionDetector: CollisionDetector
-    arrowCurrentlyHovered: CurlyArrow;
+    curlyArrowCurrentlyHovered: CurlyArrow;
+    straightArrowCurrentlyHovered: StraightArrow
 
     constructor(reaction: Reaction,
                 collisionDetector: CollisionDetector) {
@@ -18,38 +21,73 @@ class HoverDetector {
         this.reaction = reaction
         this.collisionDetector = collisionDetector
 
+        this.ionCurrentlyHovered = null
         this.atomCurrentlyHovered = null
         this.bondCurrentlyHovered = null
-        this.arrowCurrentlyHovered = null
+        this.curlyArrowCurrentlyHovered = null
+        this.straightArrowCurrentlyHovered = null
 
     }
 
     detectHovering() {
 
-        this.detectAtomHover()
+        this.detectIonHover()
+
+        // If it's already hovered over an ion, don't
+        // say it's hovered over an atom
+        if (this.ionCurrentlyHovered) {
+            this.atomCurrentlyHovered = null
+        }
+        else {
+            this.detectAtomHover()
+        }
+
         // If an atom is hovered, don't detect a bond hover
         // because bonds go into the atom, and this would
         // result in both a bond and atom highlighted
-        if (this.atomCurrentlyHovered) {
+        if (this.ionCurrentlyHovered || this.atomCurrentlyHovered) {
             this.bondCurrentlyHovered = null
         }
         else {
             this.detectBondHover()
         }
 
-        if (this.bondCurrentlyHovered || this.atomCurrentlyHovered) {
-            this.arrowCurrentlyHovered = null
+        if (this.bondCurrentlyHovered || this.atomCurrentlyHovered
+            || this.ionCurrentlyHovered) {
+            this.curlyArrowCurrentlyHovered = null
         }
 
         else {
-            this.detectArrowHover()
+            this.detectCurlyArrowHover()
+        }
+
+        if (this.bondCurrentlyHovered || this.atomCurrentlyHovered
+            || this.ionCurrentlyHovered || this.curlyArrowCurrentlyHovered) {
+            this.straightArrowCurrentlyHovered = null
+        }
+
+        else {
+            this.detectStraightArrowHover()
         }
 
     }
 
+    private detectIonHover() {
+        for (const atom of this.reaction.currentStep.getAllAtoms()) {
+            if (atom.ion) {
+                if (this.collisionDetector.mouseHoveredOverIon(atom)) {
+                    this.ionCurrentlyHovered = atom
+                    return
+                }
+            }
+        }
+        this.ionCurrentlyHovered = null
+    }
+
     private detectAtomHover() {
         for (const atom of this.reaction.currentStep.getAllAtoms()) {
-            if (this.collisionDetector.mouseHoveredOverBody(atom)) {
+            if (atom.element.name == "dummy") continue
+            if (this.collisionDetector.mouseHoveredOverAtom(atom)) {
                 this.atomCurrentlyHovered = atom
                 return
             }
@@ -67,13 +105,23 @@ class HoverDetector {
         this.bondCurrentlyHovered = null
     }
 
-    private detectArrowHover() {        
+    private detectCurlyArrowHover() {        
         const arrow = this.reaction.currentStep.curlyArrow
         if (arrow != null && this.collisionDetector.mouseHoveredOverArrow(arrow)) {
-            this.arrowCurrentlyHovered = arrow   
+            this.curlyArrowCurrentlyHovered = arrow   
         }
         else {
-            this.arrowCurrentlyHovered = null
+            this.curlyArrowCurrentlyHovered = null
+        }
+    }
+
+    detectStraightArrowHover() {
+        const arrow = this.reaction.currentStep.straightArrow
+        if (arrow != null && this.collisionDetector.mouseHoveredOverStraightArrow(arrow)) {
+            this.straightArrowCurrentlyHovered = arrow
+        }
+        else {
+            this.straightArrowCurrentlyHovered = null
         }
     }
 

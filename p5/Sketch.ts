@@ -27,9 +27,6 @@ function createP5Context(
     
         p5.setup = () => {
 
-            console.log(page);
-            
-
             const canvasParent = document.getElementById(Constants.CANVAS_PARENT_NAME)
             const canvasParentRect = canvasParent.getBoundingClientRect()
             const canvas = p5.createCanvas(canvasParentRect.width, 700)

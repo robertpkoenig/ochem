@@ -1,9 +1,11 @@
+import { Vector } from "sat"
 import Constants from "../Constants"
 import { Atom } from "../model/chemistry/atoms/Atom"
 import { AtomFactory } from "../model/chemistry/atoms/AtomFactory"
 import { Bond } from "../model/chemistry/bonds/Bond"
 import { CurlyArrow } from "../model/chemistry/CurlyArrow"
 import Molecule from "../model/chemistry/Molecule"
+import StraightArrow from "../model/chemistry/StraightArrow"
 import ReactionStep from "../model/ReactionStep"
 import Utilities from "./Utilities"
 
@@ -21,10 +23,11 @@ class ReactionStepLoader {
 
                 for (const savedAtom of savedMolecule.atoms) {
                     const newAtom: Atom = AtomFactory.createAtom(
-                                                            savedAtom.name,
-                                                            savedAtom.x,
-                                                            savedAtom.y
-                                                            )
+                                                                savedAtom.name,
+                                                                savedAtom.x,
+                                                                savedAtom.y,
+                                                                )
+                    newAtom.ion = savedAtom.ion
                     newAtom.uuid = savedAtom.id
                     newMolecule.atoms.push(newAtom)
                 }
@@ -44,11 +47,48 @@ class ReactionStepLoader {
         }
 
         const order = reactionStepPlainObject["order"]
-        const uuid = reactionStepPlainObject["uuid"]
-
         const restoredReactionStep = new ReactionStep(order)
+
+        const uuid = reactionStepPlainObject["uuid"]
         restoredReactionStep.uuid = uuid
         restoredReactionStep.molecules.push(...restoredMolecules)
+        
+        // Restore the straight arrow
+        const savedStraightArrow =
+            JSON.parse(reactionStepPlainObject["straightArrow"])
+        
+        if (savedStraightArrow != null) {
+
+            const straightArrowStartVector = new Vector(
+                savedStraightArrow.startVector.x,
+                savedStraightArrow.startVector.y,
+                )
+    
+            const straightArrowEndVector = new Vector(
+                savedStraightArrow.endVector.x,
+                savedStraightArrow.endVector.y,
+                )
+    
+            const trianglePointOne = new Vector(
+                savedStraightArrow.trianglePointOne.x,
+                savedStraightArrow.trianglePointOne.y,
+                )
+    
+            const trianglePointTwo = new Vector(
+                savedStraightArrow.trianglePointTwo.x,
+                savedStraightArrow.trianglePointTwo.y,
+                )
+    
+            const restoredStraightArrow = 
+                new StraightArrow(straightArrowStartVector)
+            
+            restoredStraightArrow.endVector = straightArrowEndVector
+            restoredStraightArrow.trianglePointOne = trianglePointOne
+            restoredStraightArrow.trianglePointTwo = trianglePointTwo
+
+            restoredReactionStep.straightArrow = restoredStraightArrow
+
+        }
 
         const savedCurlyArrow = reactionStepPlainObject["curlyArrow"]
 

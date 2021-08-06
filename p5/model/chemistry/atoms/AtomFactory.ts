@@ -10,7 +10,7 @@ class AtomFactory {
         return newAtom
     }
 
-    static createAtomFromElement(name: string): Atom {
+    private static createAtomFromElement(name: string): Atom {
 
         const element: IAtomicElement = AtomicElements[name]
         if (!element) throw new Error("Attempted to get nonexistent element")

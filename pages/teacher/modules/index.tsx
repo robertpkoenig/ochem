@@ -14,6 +14,7 @@ import { AuthContext } from '../../../context/provider'
 import LoadingScreen from '../../../components/LoadingScreen'
 import FirebaseConstants from '../../../model/FirebaseConstants'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
+import ModuleAnalyticsRecord from '../../../model/ModuleAnalyticsRecord'
 
 interface IProps {
 }
@@ -84,8 +85,9 @@ export default function Modules(props: IProps) {
         setDoc(doc(db, FirebaseConstants.MODULES, moduleId), newModule);
         createModuleListing(name, moduleId, creationDate)
 
-        const newModuleAnalyticsRecord = {
-            moduleId: moduleId
+        const newModuleAnalyticsRecord: ModuleAnalyticsRecord = {
+            moduleId: moduleId,
+            studentIds: []
         }
         setDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), newModuleAnalyticsRecord)
     }

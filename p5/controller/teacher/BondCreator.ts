@@ -1,4 +1,4 @@
-import SAT from "sat";
+
 import { Vector } from "sat";
 import Constants from "../../Constants";
 import { Atom } from "../../model/chemistry/atoms/Atom";
@@ -28,11 +28,11 @@ class BondCreator {
 
 	}
 
-	startBondIfAtomClicked(mouseVector: Vector) {
+    startBondIfAtomClicked(mouseVector: Vector) {
         if (this.editorController.hoverDetector.atomCurrentlyHovered != null) {
             this.startAtom = this.editorController.hoverDetector.atomCurrentlyHovered
         }
-	}
+}
 
 	completeBondIfReleasedOverAtom(mouseVector: Vector) {
 

@@ -11,7 +11,9 @@ import {
     GlobeIcon,
     ChartBarIcon,
     MenuIcon,
-    XIcon
+    XIcon,
+    InboxIcon,
+    SparklesIcon
   } from '@heroicons/react/outline'
 
 const navigation = [
@@ -182,38 +184,221 @@ export default function Example() {
                 />
             </div>
         </div>
-        <div className="relative bg-gray-100 py-16 sm:py-24 lg:py-32">
+        <div className="relative bg-indigo-50 py-16 sm:py-24 lg:py-32">
             <div className="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl">
-                <h2 className="text-base font-semibold tracking-wider text-indigo-600 uppercase">Easy to use</h2>
+                <h2 className="text-base font-semibold tracking-wider text-indigo-600 uppercase">
+                    HOW IT WORKS
+                </h2>
                 <p className="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
                 Create interactions tailored to your course
                 </p>
                 <p className="mt-5 max-w-prose mx-auto text-xl text-gray-500">
-                Build your own reactions, or select from our pre-built library.Organize your content into sections that match the progression of your module.
+                Build your reactions tailored to your course. Organize content into sections that match the progression of your module.
                 </p>
-                <div className="mt-12">
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {features.map((feature) => (
-                    <div key={feature.name} className="pt-6">
-                        <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                <div className="mt-12 flex gap-4">
+                    {/* Step 1 */}
+                    <div className="pt-6 flex-1">
+                        <div className="flow-root bg-gray-50 rounded-lg px-8 pb-8">
                         <div className="-mt-6">
                             <div>
-                            <span className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-md shadow-lg">
-                                <feature.icon className="h-6 w-6 text-white" aria-hidden="true" />
+                            <span className=" h-14 w-14 text-white text-xl font-extrabold inline-flex items-center justify-center bg-indigo-500 rounded-md shadow-lg">
+                                1
                             </span>
                             </div>
-                            <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">{feature.name}</h3>
+                            <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
+                                Use the drop-and-drop editor to create mechanisms. You specify each step of the reaction.
+                            </h3>
                             <p className="mt-5 text-base text-gray-500">
-                            {feature.text}
+                                
                             </p>
                         </div>
                         </div>
                     </div>
-                    ))}
-                </div>
+                    {/* Step 2 */}
+                    <div className="pt-6 flex-1">
+                        <div className="flow-root bg-gray-50 rounded-lg px-8 pb-8">
+                        <div className="-mt-6">
+                            <div>
+                            <span className=" h-14 w-14 text-white text-xl font-extrabold inline-flex items-center justify-center bg-indigo-500 rounded-md shadow-lg">
+                                2
+                            </span>
+                            </div>
+                            <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
+                                Students practice reactions, and get feedback everytime they draw a curly arrow.
+                            </h3>
+                            <p className="mt-5 text-base text-gray-500">
+                                
+                            </p>
+                        </div>
+                        </div>
+                    </div>
+                    {/* Step 3 */}
+                    <div className="pt-6 flex-1">
+                        <div className="flow-root bg-gray-50 rounded-lg px-8 pb-8">
+                        <div className="-mt-6">
+                            <div>
+                            <span className=" h-14 w-14 text-white text-xl font-extrabold inline-flex items-center justify-center bg-indigo-500 rounded-md shadow-lg">
+                                3
+                            </span>
+                            </div>
+                            <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
+                                You can view real time engagement data to make sure students are using the content.
+                            </h3>
+                            <p className="mt-5 text-base text-gray-500">
+                                
+                            </p>
+                        </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div className="relative bg-white pt-16 pb-32 overflow-hidden">
+        {/* Editor */}
+          <div className="relative">
+            <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
+                <div>
+                  <div>
+                    <span className="h-12 w-12 rounded-md flex items-center justify-center bg-indigo-600">
+                      <InboxIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+                      Specify each step of the mechanism
+                    </h2>
+                    <p className="mt-4 text-lg text-gray-500">
+                        Drag and drop atoms, create bonds, and specify curly arrows. Create a prompt for the reaction.
+                        Ochem then generates the student interaction, with feedback for each arrow they draw.
+                    </p>
+                    <div className="mt-6">
+                      <a
+                        href="#"
+                        className="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                      >
+                        Get started
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-12 sm:mt-16 lg:mt-0">
+                <div className="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+                  <img
+                    className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+                    src="/assets/screenshots/editor.png"
+                    alt="Inbox user interface"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Organization */}
+          <div className="mt-24">
+            <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+                <div>
+                  <div>
+                    <span className="h-12 w-12 rounded-md flex items-center justify-center bg-indigo-600">
+                      <SparklesIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+                      Easily organise content
+                    </h2>
+                    <p className="mt-4 text-lg text-gray-500">
+                      Group mechanisms into sections. Control which sections and reactions are visible to students.
+                      Students can keep track of their progress.
+                    </p>
+                    <div className="mt-6">
+                      <a
+                        href="#"
+                        className="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                      >
+                        Get started
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1">
+                <div className="pr-4 -ml-48 sm:pr-6 md:-ml-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+                  <img
+                    className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
+                    src="/assets/screenshots/organize.png"
+                    alt="Customer profile user interface"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Analytics */}
+          <div className="relative mt-24">
+            <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
+                <div>
+                  <div>
+                    <span className="h-12 w-12 rounded-md flex items-center justify-center bg-indigo-600">
+                      <InboxIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+                      Measure student engagement
+                    </h2>
+                    <p className="mt-4 text-lg text-gray-500">
+                        You don't want to spend time creating study aids that students never use. With Ochem, you can
+                        see how many students are accessing content.
+                    </p>
+                    <div className="mt-6">
+                      <a
+                        href="#"
+                        className="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                      >
+                        Get started
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-12 sm:mt-16 lg:mt-0">
+                <div className="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+                  <img
+                    className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+                    src="/assets/screenshots/analytics.png"
+                    alt="Inbox user interface"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="bg-indigo-50">
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-24 lg:px-8 lg:flex lg:items-center lg:justify-between">
+            <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 md:text-4xl">
+            <span className="block">Ready to dive in?</span>
+            <span className="block text-indigo-600">Ochem is free for 2021-22.</span>
+            </h2>
+            <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
+            <div className="inline-flex rounded-md shadow">
+                <Link href="/auth/signup">
+                <a
+                href="#"
+                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                >
+                Get started
+                </a>
+                </Link>
+            </div>
+            </div>
+        </div>
+        </div>
+
     </div>
   )
 }

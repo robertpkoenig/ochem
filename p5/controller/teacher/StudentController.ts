@@ -3,7 +3,7 @@ import { Vector } from "sat"
 import StudentReactionPage from "../../../pages/student/reactions/[reactionId]"
 import CollisionDetector from "../../model/physics/CollisinDetector"
 import Reaction from "../../model/Reaction"
-import ArrowCreator from "../ArrowCreator"
+import CurlyArrowCreator from "../CurlyArrowCreator"
 import BodyMover from "../BodyMover"
 import HoverDetector from "./HoverDetector"
 
@@ -15,7 +15,7 @@ class StudentController {
     collisionDetector: CollisionDetector
     studentReactionPage: StudentReactionPage
     hoverDetector: HoverDetector
-    arrowCreator: ArrowCreator
+    arrowCreator: CurlyArrowCreator
     bodyMover: BodyMover
 
     constructor(
@@ -24,7 +24,7 @@ class StudentController {
         collisionDetector: CollisionDetector,
         studentReactionPage: StudentReactionPage,
         hoverDetector: HoverDetector,
-        arrowCreator: ArrowCreator,
+        arrowCreator: CurlyArrowCreator,
         bodyMover: BodyMover
     ) {
         this.p5 = p5

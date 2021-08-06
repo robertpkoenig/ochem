@@ -3,13 +3,15 @@ import { Bond } from "./chemistry/bonds/Bond"
 import { CurlyArrow } from "./chemistry/CurlyArrow"
 import Molecule from "./chemistry/Molecule"
 import { v4 as uuid } from 'uuid'
+import StraightArrow from "./chemistry/StraightArrow"
 
 class ReactionStep {
 
-    public name: string | null
+    public name: string
     public order: number
     public molecules: Molecule[]
-    public curlyArrow: CurlyArrow | null
+    public curlyArrow: CurlyArrow
+    public straightArrow: StraightArrow
     public uuid: string
     public promptText: string
 
@@ -18,6 +20,7 @@ class ReactionStep {
         this.order = order
         this.molecules = []
         this.curlyArrow = null
+        this.straightArrow = null
         this.uuid = uuid()
         this.promptText = ""
     }
@@ -58,11 +61,15 @@ class ReactionStep {
         const curlyArrowAsPlainObject =
             this.curlyArrow ? this.curlyArrow.toJSON() : null
 
+        const straightArrowAsPlainObject = 
+            this.straightArrow ? JSON.stringify(this.straightArrow) : null
+
         return {
             name: this.name,
             order: this.order,
             molecules: moleculesAsPlainObjects,
             curlyArrow: curlyArrowAsPlainObject,
+            straightArrow: straightArrowAsPlainObject,
             uuid: this.uuid,
         }
     }

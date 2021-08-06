@@ -1,7 +1,7 @@
 import DeleteManager from "./DeleteManager";
-import { TeacherController } from "./EditorController";
 import Reaction from "../../model/Reaction";
 import ReactionSaver from "./ReactionSaver";
+import TeacherController from "./TeacherController";
 
 class Eraser {
 
@@ -14,9 +14,24 @@ class Eraser {
     }
 
     eraseAnythingClicked() {
+        this.eraseIonIfClicked()
         this.eraseAtomIfClicked()
         this.eraseBondIfClicked()
         this.eraseArrowIfClicked()
+        this.eraseStraightArrowIfClicked()
+    }
+
+    eraseIonIfClicked() {
+        
+        const ionCurrentlyHovered =
+            this.editorController.hoverDetector.ionCurrentlyHovered
+
+        if (ionCurrentlyHovered != null) {
+            this.editorController.undoManager.addUndoPoint()
+            ionCurrentlyHovered.ion = null
+            ReactionSaver.saveReaction(this.editorController.reaction)
+        }
+
     }
 
     eraseAtomIfClicked() {
@@ -47,10 +62,20 @@ class Eraser {
 
     eraseArrowIfClicked() {
         const arrowHovered = 
-            this.editorController.hoverDetector.arrowCurrentlyHovered
+            this.editorController.hoverDetector.curlyArrowCurrentlyHovered
         if (arrowHovered != null) {
             this.editorController.undoManager.addUndoPoint()
             this.editorController.reaction.currentStep.curlyArrow = null
+            ReactionSaver.saveReaction(this.editorController.reaction)
+        }
+    }
+
+    eraseStraightArrowIfClicked() {
+        const arrowHovered = 
+            this.editorController.hoverDetector.straightArrowCurrentlyHovered
+        if (arrowHovered != null) {
+            this.editorController.undoManager.addUndoPoint()
+            this.editorController.reaction.currentStep.straightArrow = null
             ReactionSaver.saveReaction(this.editorController.reaction)
         }
     }

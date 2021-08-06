@@ -58,7 +58,7 @@ export default function ReactionRenamePopup(props: IProps) {
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
                     <input
                     type="submit"
-                    value="Create reaction"
+                    value="Save"
                     className={primaryButtonMd + "cursor-pointer"}
                     />
                 </div>
