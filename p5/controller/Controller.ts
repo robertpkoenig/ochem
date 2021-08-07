@@ -9,7 +9,7 @@ import StudentReactionPage from "../../pages/student/reactions/[reactionId]"
 import UserType from "../model/UserType"
 import CurlyArrowCreator from "./CurlyArrowCreator"
 import HoverDetector from "./teacher/HoverDetector"
-import StudentController from "./teacher/StudentController"
+import StudentController from "./student/StudentController"
 import TeacherController from "./teacher/TeacherController"
 
 

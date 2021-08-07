@@ -5,7 +5,7 @@ import CollisionDetector from "../../model/physics/CollisinDetector"
 import Reaction from "../../model/Reaction"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import BodyMover from "../BodyMover"
-import HoverDetector from "./HoverDetector"
+import HoverDetector from "../teacher/HoverDetector"
 
 class StudentController {
 
