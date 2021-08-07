@@ -45,14 +45,14 @@ function createP5Context(
             // Clear the canvas
             p5.background(255)
 
-            controller.process()
+            reaction.update()
     
             if (userType == UserType.STUDENT ||
                 controller.teacherController.teacherReactionPage.state.physicsOn) {
                 physicsEngine.applyPhysics()
             }
-    
-            reaction.update()
+
+            controller.process()
         
             view.render()
     

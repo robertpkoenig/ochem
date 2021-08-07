@@ -68,6 +68,8 @@ class ReactionLoader {
         restoredReaction.currentStep = currentStep
 
 
+        console.log(restoredReaction);
+        
         return restoredReaction
 
     }

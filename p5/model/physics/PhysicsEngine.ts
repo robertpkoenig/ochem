@@ -1,5 +1,6 @@
 import { Vector } from "sat"
 import Constants from "../../Constants"
+import { Atom } from "../chemistry/atoms/Atom"
 import Reaction from "../Reaction"
 import { Body } from "./Body"
 
@@ -16,8 +17,8 @@ class PhysicsEngine {
     }
 
     applyPhysics() {
+        this.makeBondLengthCorrect()
         this.applyBodyRepulsionWithinMolecules()
-        this.applyPull()
         this.applyAllForces()
     }
 
@@ -26,8 +27,9 @@ class PhysicsEngine {
         // other particles
         for (const molecule of this.reaction.currentStep.molecules) {
             const atoms = molecule.atoms
-            
             for (let i = 0 ; i < atoms.length ; i++) {
+                if (atoms[i].element.name == "dummy") console.log(atoms[i].circle.pos.x);
+                
                 for (let j = i + 1 ; j < atoms.length ; j++) {
                     const atomOne = atoms[i]
                     const atomTwo = atoms[j]
@@ -35,19 +37,21 @@ class PhysicsEngine {
                 }
             }
         }
-
     }
 
-    repulseTwoObjects(bodyOne: Body, bodyTwo: Body) {
+    repulseTwoObjects(atomOne: Atom, atomTwo: Atom) {
 
-        const posOne = bodyOne.circle.pos
-        const posTwo = bodyTwo.circle.pos
+        // Only repulse them 
+        const posOne = atomOne.circle.pos
+        const posTwo = atomTwo.circle.pos
         const distanceVector = posOne.clone().sub(posTwo)
 
-        const massProduct = bodyOne.mass * bodyTwo.mass
+        const massProduct = atomOne.mass * atomTwo.mass
 
         // scale the force to be smaller if the atoms are further apart
         const magnitudeSquared = distanceVector.len2()
+
+        // I think I have to limit this force to be the max of this, or the pull force
         const xForce =
             (distanceVector.x / magnitudeSquared) * Constants.ATOM_REPULSION_FACTOR * massProduct
         const yForce = 
@@ -55,35 +59,60 @@ class PhysicsEngine {
 
         const forceVector = new Vector(xForce, yForce)
 
-        bodyOne.force.add(forceVector)
-        bodyTwo.force.add(forceVector.reverse())
+        atomOne.force.add(forceVector)
+        atomTwo.force.add(forceVector.reverse())
 
     }
 
-    applyPull() {
+    makeBondLengthCorrect() {
 
         for (const bond of this.reaction.currentStep.getAllBonds()) {
 
+            // Get the positions of the two atoms
             const posOne = bond.atoms[0].circle.pos
             const posTwo = bond.atoms[1].circle.pos
+
+            // Calculate the distance between the two points
             const distanceVector = posOne.clone().sub(posTwo)
+            const currentBondLength = distanceVector.len()
+
+            // Calculate normalized distance
             const normalizedDistance = distanceVector.clone().normalize()
+
+            // Calculate difference between the current bond length
+            // and what the bond length should be
+            let desiredBondLength = bond.distance
+            const difBetweenDesiredAndCurrentLength = desiredBondLength - currentBondLength
             
-            const magnitude = distanceVector.len()
+            const lengthDifAsPercentOfCurrentLength = difBetweenDesiredAndCurrentLength / currentBondLength
 
-            let distance = bond.distance
+            // if (lengthDifAsPercentOfCurrentLength < 0.01) return
 
-            const bondStretch = distance - magnitude
+            const distanceVectorScaledToDifference = distanceVector.scale(lengthDifAsPercentOfCurrentLength / 4)
 
-            const xForce =
-                (normalizedDistance.x * bondStretch / Constants.BOND_PULL_FACTOR)
-            const yForce = 
-                (normalizedDistance.y * bondStretch / Constants.BOND_PULL_FACTOR)
+            bond.atoms[0].force.add(distanceVectorScaledToDifference)
+            bond.atoms[1].force.add(distanceVectorScaledToDifference.reverse())
 
-            const forceVector = new Vector(xForce, yForce)
+            // const posOne = bond.atoms[0].circle.pos
+            // const posTwo = bond.atoms[1].circle.pos
+            // const distanceVector = posOne.clone().sub(posTwo)
+            // const normalizedDistance = distanceVector.clone().normalize()
+            
+            // const magnitude = distanceVector.len()
 
-            bond.atoms[0].force.add(forceVector)
-            bond.atoms[1].force.add(forceVector.reverse())
+            // let distance = bond.distance
+
+            // const bondStretch = distance - magnitude
+
+            // const xForce =
+            //     (normalizedDistance.x * bondStretch / Constants.BOND_PULL_FACTOR)
+            // const yForce = 
+            //     (normalizedDistance.y * bondStretch / Constants.BOND_PULL_FACTOR)
+
+            // const forceVector = new Vector(xForce, yForce)
+
+            // bond.atoms[0].force.add(forceVector)
+            // bond.atoms[1].force.add(forceVector.reverse())
 
         }
 

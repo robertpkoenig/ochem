@@ -22,15 +22,16 @@ class MoleculeViewer {
     private renderAtoms(reactionStep: ReactionStep) {
 
         for (const atom of reactionStep.getAllAtoms()) {
-            if (atom.element.name == "dummy") continue
-            this.p5.push()
-                this.p5.noStroke()
-                this.p5.fill(atom.element.color)                
-                this.p5.ellipse(atom.circle.pos.x, atom.circle.pos.y, atom.radius * 2)
-                this.p5.fill("white")
-                this.p5.text(atom.element.abbreviation, atom.circle.pos.x, atom.circle.pos.y + 2)
-            this.p5.pop()
-            if (atom.ion) this.renderIon(atom)
+            if (atom.element.name != "dummy") {
+                this.p5.push()
+                    this.p5.noStroke()
+                    this.p5.fill(atom.element.color)                
+                    this.p5.ellipse(atom.circle.pos.x, atom.circle.pos.y, atom.radius * 2)
+                    this.p5.fill("white")
+                    this.p5.text(atom.element.abbreviation, atom.circle.pos.x, atom.circle.pos.y + 2)
+                this.p5.pop()
+                if (atom.ion) this.renderIon(atom)
+            }
         }
 
     }

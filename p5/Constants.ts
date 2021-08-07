@@ -9,7 +9,7 @@ class Constants  {
     public static ION_ORBIT_RADIUS = 15
     public static ION_RADIUS = 15
 
-    public static ATOM_REPULSION_FACTOR = 1
+    public static ATOM_REPULSION_FACTOR = 2
     public static BOND_DISTANCE = 100
     public static BOND_PULL_FACTOR = 10
     public static THRESHOLD_DISTANCE = 100

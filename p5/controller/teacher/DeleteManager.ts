@@ -43,6 +43,16 @@ class DeleteManager {
 
         this.removeAllReferencesToBond(bondToDelete, reaction)
 
+        // for dummy angle control bonds
+        if (bondToDelete.atoms[0].element.name == "dummy") {
+            this.deleteAtom(reaction, bondToDelete.atoms[0])
+            return
+        }
+        if (bondToDelete.atoms[1].element.name == "dummy") {
+            this.deleteAtom(reaction, bondToDelete.atoms[1])
+            return
+        }
+
         const listOne = this.getListOfAtomsConnectedToAtom(bondToDelete.atoms[0])
         const listTwo = this.getListOfAtomsConnectedToAtom(bondToDelete.atoms[1])
 

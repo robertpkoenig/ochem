@@ -104,8 +104,6 @@ export default function ModulePage(props: IProps) {
     }
 
     function resetModule(module: Module) {
-        console.log("hello");
-        
         const moduleCopy: Module = Object.assign(module) 
         setModule(moduleCopy)
         forceUpdate(!dummyBoolean)
