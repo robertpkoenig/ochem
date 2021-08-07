@@ -13,4 +13,4 @@ interface IController {
     handleMousePressed(): void
 }
 
-export { IController }
+export default IController

@@ -1,7 +1,7 @@
 import Reaction from "../../model/Reaction"
 import ReactionLoader from "../../utilities/ReactionLoader"
 import Utilities from "../../utilities/Utilities"
-import { TeacherController } from "./EditorController"
+import TeacherController from "./TeacherController"
 
 class UndoManager {
 
