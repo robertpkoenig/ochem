@@ -105,7 +105,7 @@ export default function Modules(props: IProps) {
 
     const moduleListEmptyState = <div className={emptyState}
                                     >
-                                    You don't have any modules yet
+                                    You don&apos;t have any modules yet
                                     </div>
                                     
     const moduleList: ReactNode = (

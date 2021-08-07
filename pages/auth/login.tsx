@@ -23,7 +23,7 @@ export default function Login() {
                 setLoading(false) 
             }
         }
-    }, [loginAttempted])
+    }, [loginAttempted, user, router])
 
 
     return (

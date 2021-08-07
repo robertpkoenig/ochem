@@ -1,15 +1,13 @@
 import React, { FormEvent, useContext, useEffect, useState } from 'react'
-import { withRouter, NextRouter, useRouter } from 'next/router'
-import { loadGetInitialProps } from 'next/dist/next-server/lib/utils'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Module from '../../../model/Module'
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
-import FirebaseConstants from '../../../model/FirebaseConstants'
+import { doc, getFirestore, setDoc } from 'firebase/firestore'
 import { AuthContext } from '../../../context/provider'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import UserType from '../../../p5/model/UserType'
 import User from '../../../model/User'
+import Image from 'next/image'
 
 export default function Login() {
 

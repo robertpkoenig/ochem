@@ -1,7 +1,12 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import logo from '../assets/logo.svg'
 import Link from 'next/link'
+
+import logo from '../public/assets/logo.svg'
+import woman from "../public/assets/images/woman-with-laptop.jpg"
+import module from "../public/assets/screenshots/organize.png"
+import editor from "../public/assets/screenshots/editor.png"
+import analytics from "../public/assets/screenshots/analytics.png"
 
 /* This example requires Tailwind CSS v2.0+ */
 import React, { Fragment } from 'react'
@@ -103,11 +108,11 @@ export default function Example() {
                                 <div className="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
                                 <div className="px-5 pt-4 flex items-center justify-between">
                                     <div>
-                                    <img
+                                    {/* <img
                                         className="h-8 w-auto"
                                         src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
                                         alt=""
-                                    />
+                                    /> */}
                                     </div>
                                     <div className="-mr-2">
                                     <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
@@ -286,11 +291,11 @@ export default function Example() {
               </div>
               <div className="mt-12 sm:mt-16 lg:mt-0">
                 <div className="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-                  <img
-                    className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-                    src="/assets/screenshots/editor.png"
-                    alt="Inbox user interface"
-                  />
+                    <img
+                        className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+                        src="/assets/screenshots/editor.png"
+                        alt="Inbox user interface"
+                    />
                 </div>
               </div>
             </div>
@@ -326,11 +331,11 @@ export default function Example() {
               </div>
               <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1">
                 <div className="pr-4 -ml-48 sm:pr-6 md:-ml-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-                  <img
-                    className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
-                    src="/assets/screenshots/organize.png"
-                    alt="Customer profile user interface"
-                  />
+                    <img
+                        className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
+                        src="/assets/screenshots/organize.png"
+                        alt="Customer profile user interface"
+                    />
                 </div>
               </div>
             </div>
@@ -350,7 +355,7 @@ export default function Example() {
                       Measure student engagement
                     </h2>
                     <p className="mt-4 text-lg text-gray-500">
-                        You don't want to spend time creating study aids that students never use. With Ochem, you can
+                        You don&apos;t want to spend time creating study aids that students never use. With Ochem, you can
                         see how many students are accessing content.
                     </p>
                     <div className="mt-6">
@@ -366,11 +371,11 @@ export default function Example() {
               </div>
               <div className="mt-12 sm:mt-16 lg:mt-0">
                 <div className="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-                  <img
-                    className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-                    src="/assets/screenshots/analytics.png"
-                    alt="Inbox user interface"
-                  />
+                    <img
+                        className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+                        src="/assets/screenshots/analytics.png"
+                        alt="Inbox user interface"
+                    />
                 </div>
               </div>
             </div>
