@@ -3,7 +3,7 @@ import * as React from 'react';
 import Module from '../../model/Module';
 import ReactionListing from '../../model/ReactionListing';
 import Section from '../../model/SectionListing';
-import { emptyState, roundEditButtonContainer, secondaryButtonSm } from '../../styles/common-styles';
+import { roundEditButtonContainer, secondaryButtonSm } from '../../styles/common-styles';
 import PopupBackground from '../PopupBackground';
 import ReactionCard from './ReactionCard';
 import ReactionCreationPopup from './ReactionPopup';
@@ -16,6 +16,7 @@ import { AuthContext } from '../../context/provider';
 import FirebaseConstants from '../../model/FirebaseConstants';
 import { PencilIcon } from '@heroicons/react/outline';
 import SectionRenamePopup from './SectionRenamePopup';
+import EmptyState from '../EmptyState';
 
 interface IProps {
     userId: string
@@ -194,9 +195,7 @@ export default function SectionCard(props: IProps) {
 
     }
 
-    const reactionListEmptyState =   <div className={emptyState}>
-                                        This section has no reactions yet
-                                    </div>
+    const reactionListEmptyState =  <EmptyState text="This section has no reactions yet" />
 
     let reactionList: React.ReactNode
 

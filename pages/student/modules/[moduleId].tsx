@@ -3,12 +3,12 @@ import Section from "../../../model/SectionListing";
 import { useRouter } from 'next/router'
 import Module from "../../../model/Module";
 import Layout from "../../../components/Layout";
-import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
 import StudentSectionCard from "../../../components/student/StudentSectionCard";
 import { AuthContext } from "../../../context/provider";
 import { arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import FirebaseConstants from "../../../model/FirebaseConstants";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
+import EmptyState from "../../../components/EmptyState";
 
 interface IProps {
 
@@ -91,9 +91,7 @@ export default function ModulePage(props: IProps) {
 
     }
 
-    const sectionListEmptyState =   <div className={emptyState}>
-                                        This module has no sections
-                                    </div>
+    const sectionListEmptyState = <EmptyState text="This module has no sections" />
 
     let sectionList: React.ReactNode = null
 

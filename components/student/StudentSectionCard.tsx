@@ -1,14 +1,7 @@
-import { PlusIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid';
-import * as React from 'react';
 import Module from '../../model/Module';
 import ReactionListing from '../../model/ReactionListing';
 import Section from '../../model/SectionListing';
-import { emptyState, roundEditButtonContainer, secondaryButtonSm } from '../../styles/common-styles';
-import PopupBackground from '../PopupBackground';
 import StudentReactionCard from './StudentReactionCard';
-import { v4 as uuid } from 'uuid'
-import Reaction from '../../p5/model/Reaction';
-import ReactionStep from '../../p5/model/ReactionStep';
 
 interface ISectionCardProps {
     section: Section

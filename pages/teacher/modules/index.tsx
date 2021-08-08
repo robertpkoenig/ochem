@@ -8,13 +8,12 @@ import { v4 as uuid } from 'uuid'
 import ModuleCard from '../../../components/editor/ModuleCard'
 import ModuleListing from '../../../model/ModuleListing'
 import Module from '../../../model/Module'
-import { emptyState } from '../../../styles/common-styles'
 import { collection, query, where, doc, getDocs, getFirestore, setDoc } from "firebase/firestore";
 import { AuthContext } from '../../../context/provider'
-import LoadingScreen from '../../../components/LoadingScreen'
 import FirebaseConstants from '../../../model/FirebaseConstants'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 import ModuleAnalyticsRecord from '../../../model/ModuleAnalyticsRecord'
+import EmptyState from '../../../components/EmptyState'
 
 interface IProps {
 }
@@ -103,10 +102,7 @@ export default function Modules(props: IProps) {
         setModuleListings([newModuleListing, ...moduleListings])
     }
 
-    const moduleListEmptyState = <div className={emptyState}
-                                    >
-                                    You don&apos;t have any modules yet
-                                    </div>
+    const moduleListEmptyState = <EmptyState text="You don&apos;t have any modules yet" />
                                     
     const moduleList: ReactNode = (
     

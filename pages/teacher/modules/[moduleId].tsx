@@ -6,13 +6,14 @@ import { PlusIcon } from "@heroicons/react/solid";
 import PopupBackground from "../../../components/PopupBackground";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
-import { emptyState, primaryButtonMd } from "../../../styles/common-styles";
+import { primaryButtonMd } from "../../../styles/common-styles";
 import { GetServerSideProps } from 'next'
 import { doc, getDoc, updateDoc, getFirestore, setDoc } from "firebase/firestore";
 import FirebaseConstants from "../../../model/FirebaseConstants";
 import { AuthContext } from "../../../context/provider";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import ModuleEditorLayout from "../../../components/editor/ModuleEditorLayout";
+import EmptyState from "../../../components/EmptyState";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -109,9 +110,7 @@ export default function ModulePage(props: IProps) {
         forceUpdate(!dummyBoolean)
     }
 
-    const sectionListEmptyState =   <div className={emptyState}>
-                                        This module has no sections
-                                    </div>
+    const sectionListEmptyState =   <EmptyState text="This module has no sections" />
 
     let sectionList: React.ReactNode
 
