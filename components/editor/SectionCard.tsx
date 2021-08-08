@@ -194,7 +194,7 @@ export default function SectionCard(props: IProps) {
 
     }
 
-    const reactionListEmptyState =   <div className={emptyState}>
+    const reactionListEmptyState =   <div className="h-20 border-2 border-gray-200 border-dashed rounded-lg text-gray-400 font-light flex flex-col place-content-center items-center">
                                         This section has no reactions yet
                                     </div>
 
