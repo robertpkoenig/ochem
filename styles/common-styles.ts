@@ -5,8 +5,6 @@ export const primaryButtonMd =
     items-center
     px-4
     py-2
-    border
-    border-transparent
     text-sm
     font-medium
     rounded-md
@@ -24,8 +22,6 @@ export const secondaryButtonMd =
     items-center
     px-4
     py-2
-    border
-    border-transparent
     text-sm
     font-medium 
     rounded-md
@@ -38,10 +34,7 @@ export const primaryButtonSm =
     `
     inline-flex
     items-center
-    px-4
-    py-1.5
-    border
-    border-transparent
+    p-2
     text-xs
     font-medium
     rounded
@@ -55,10 +48,8 @@ export const secondaryButtonSm =
     `
     inline-flex
     items-center
-    px-4
     py-1.5
-    border
-    border-transparent
+    px-4
     text-xs
     font-medium 
     rounded
