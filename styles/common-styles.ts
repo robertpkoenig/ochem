@@ -34,7 +34,7 @@ export const primaryButtonSm =
     `
     flex
     items-center
-    px-2.5
+    px-2
     py-1.5
     text-xs
     font-medium
@@ -49,7 +49,7 @@ export const secondaryButtonSm =
     `
     flex
     items-center
-    px-2.5
+    px-2
     py-1.5
     text-xs
     font-medium 
