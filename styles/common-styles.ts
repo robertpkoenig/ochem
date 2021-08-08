@@ -38,7 +38,7 @@ export const primaryButtonSm =
     `
     inline-flex
     items-center
-    px-2.5
+    px-2
     py-1.5
     border
     border-transparent
@@ -55,7 +55,7 @@ export const secondaryButtonSm =
     `
     inline-flex
     items-center
-    px-2.5
+    px-2
     py-1.5
     border
     border-transparent
@@ -89,7 +89,7 @@ export const redButtonSm =
     inline-flex
     items-center
     justify-center
-    px-2.5
+    px-2
     py-1.5
     border
     border-transparent
