@@ -94,7 +94,7 @@ export const redButtonSm =
     hover:bg-red-200
     `
 
-export const emptyState = "h-20 border-2 border-gray-200 border-dashed rounded-lg text-gray-400 font-light flex flex-col place-content-center items-center "
+export const emptyState = "h-20 border-2 border-gray-200 border-dashed rounded-lg text-gray-400 font-light flex flex-col place-content-center items-center"
 
 export const roundEditButtonContainer =
     `
