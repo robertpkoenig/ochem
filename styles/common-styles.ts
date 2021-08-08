@@ -35,8 +35,8 @@ export const primaryButtonSm =
     flex
     items-center
     gap-2
-    px-3
-    py-1.5
+    px-3 
+    py-1.5 
     text-xs
     font-medium
     rounded
@@ -50,8 +50,9 @@ export const secondaryButtonSm =
     `
     flex
     items-center
-    px-2
-    py-1.5
+    gap-2
+    px-3 
+    py-1.5 
     text-xs
     font-medium 
     rounded
@@ -78,11 +79,11 @@ export const redButtonMd =
 
 export const redButtonSm =
     `
-    inline-flex
+    flex
     items-center
-    justify-center
-    px-2.5
-    py-1.5
+    gap-2
+    px-3 
+    py-1.5 
     border
     border-transparent
     text-xs
@@ -95,16 +96,17 @@ export const redButtonSm =
 
 export const emptyState = 
     `
-    h-24
-    border-2
-    border-dashed
-    border-gray-200
-    rounded-lg
-    text-gray-400
-    font-light flex
-    flex-col
-    place-content-center
-    items-center
+    h-20 
+    border-2 
+    border-gray-200 
+    border-dashed 
+    rounded-lg 
+    text-gray-400 
+    font-light 
+    flex 
+    flex-col 
+    place-content-center 
+    items-center 
     `
 
 export const roundEditButtonContainer =
