@@ -78,7 +78,7 @@ function ModuleCard(props: IProps) {
                     </Link> */}
 
                     <Link href={"/teacher/modules/" + props.moduleListing.uuid}>
-                        <a className={ "flex gap-2 " + primaryButtonSm }>
+                        <a className={ primaryButtonSm }>
                             <PencilAltIcon className="w-3 h-3" />
                             Edit
                         </a>
