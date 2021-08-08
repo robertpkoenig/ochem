@@ -38,7 +38,7 @@ export const primaryButtonSm =
     `
     inline-flex
     items-center
-    px-2
+    px-4
     py-1.5
     border
     border-transparent
@@ -55,7 +55,7 @@ export const secondaryButtonSm =
     `
     inline-flex
     items-center
-    px-2
+    px-4
     py-1.5
     border
     border-transparent
@@ -103,7 +103,7 @@ export const redButtonSm =
 
 export const emptyState = 
     `
-    h-24
+    py-10
     border-2
     border-dashed
     border-gray-200
