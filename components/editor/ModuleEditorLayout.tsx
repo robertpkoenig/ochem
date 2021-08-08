@@ -58,14 +58,14 @@ export default function ModuleEditorLayout(props: LayoutProps) {
 
             <Link href={"/teacher/analytics/" + props.module?.uuid}>
                 <a className={secondaryButtonSm}>
-                    <ChartBarIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+                    <ChartBarIcon className="-ml-0.5 h-4 w-4" aria-hidden="true" />
                     Analytics
                 </a>
             </Link>
             
             <Link href={"/student/modules/" + props.module?.uuid}>
                 <a className={secondaryButtonSm}>
-                    <EyeIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+                    <EyeIcon className="-ml-0.5 h-4 w-4" aria-hidden="true" />
                     Preview
                 </a>
             </Link>
@@ -74,7 +74,7 @@ export default function ModuleEditorLayout(props: LayoutProps) {
             className={primaryButtonSm}
             onClick={() => toggleSharePopup()}
             >
-                <PaperAirplaneIcon className="-ml-0.5 mr-1.5 h-4 w-4" aria-hidden="true" />
+                <PaperAirplaneIcon className="-ml-0.5 h-4 w-4" aria-hidden="true" />
                 Invite Students
             </button>
         </div>

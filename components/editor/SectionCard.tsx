@@ -282,7 +282,7 @@ export default function SectionCard(props: IProps) {
                             type="button"
                             className={ secondaryButtonSm }
                         >
-                            <PlusIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
+                            <PlusIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
                             New reaction
                         </button>
                     </div>
