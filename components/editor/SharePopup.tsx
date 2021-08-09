@@ -17,7 +17,7 @@ export default function SharePopup(props: IProps) {
         // linkText.select()
         // linkText.setSelectionRange(0, 9999)
         // document.execCommand("copy")
-        navigator.clipboard.writeText(window.location.hostname + "/student/invitiation/" + props.moduleId)
+        navigator.clipboard.writeText(window.location.hostname + "/student/invitation/" + props.moduleId)
         setCopyConfirmVis(true)
         setTimeout(function() {
             setCopyConfirmVis(false)
@@ -58,7 +58,7 @@ export default function SharePopup(props: IProps) {
                         id="linkText"
                         className="font-light border border-gray-300 rounded-md text-gray-700 flex-grow"
                         type="text"
-                        value={window.location.hostname + ":3000" + "/student/invitiation/" + props.moduleId}
+                        value={window.location.hostname + ":3000" + "/student/invitation/" + props.moduleId}
                     />
                     <button
                         className={primaryButtonMd + "w-auto"}

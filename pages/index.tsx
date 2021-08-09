@@ -17,8 +17,8 @@ import {
     ChartBarIcon,
     MenuIcon,
     XIcon,
-    InboxIcon,
-    SparklesIcon
+    FolderIcon,
+    PlayIcon
   } from '@heroicons/react/outline'
 
 const navigation = [
@@ -168,12 +168,14 @@ export default function Example() {
 
                             </div>
                             <div className="mt-3 sm:mt-0 sm:ml-3">
-                            <a
-                                href="#"
-                                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10"
-                            >
-                                Learn more
-                            </a>
+                                <button
+                                    className="w-full flex gap-2 items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10"
+                                >
+                                    <PlayIcon className="w-6 h-6" />
+                                    <div>
+                                        Demo
+                                    </div>
+                                </button>
                             </div>
                         </div>
                         </div>
@@ -267,7 +269,7 @@ export default function Example() {
                 <div>
                   <div>
                     <span className="h-12 w-12 rounded-md flex items-center justify-center bg-indigo-600">
-                      <InboxIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                      <PencilAltIcon className="h-6 w-6 text-white" aria-hidden="true" />
                     </span>
                   </div>
                   <div className="mt-6">
@@ -307,7 +309,7 @@ export default function Example() {
                 <div>
                   <div>
                     <span className="h-12 w-12 rounded-md flex items-center justify-center bg-indigo-600">
-                      <SparklesIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                      <FolderIcon className="h-6 w-6 text-white" aria-hidden="true" />
                     </span>
                   </div>
                   <div className="mt-6">
@@ -347,7 +349,7 @@ export default function Example() {
                 <div>
                   <div>
                     <span className="h-12 w-12 rounded-md flex items-center justify-center bg-indigo-600">
-                      <InboxIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                      <ChartBarIcon className="h-6 w-6 text-white" aria-hidden="true" />
                     </span>
                   </div>
                   <div className="mt-6">

@@ -20,10 +20,12 @@ interface dropDownOption {
 export default function BlueNavBar() {
 
     const { user } = useContext(AuthContext)
+    const { setUser } = useContext(AuthContext)
     const router = useRouter()
 
     function signOut() {
         const auth = getAuth()
+        setUser(null)
         auth.signOut()
         router.push("/")
     }

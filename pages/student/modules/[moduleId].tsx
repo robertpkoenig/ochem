@@ -61,6 +61,7 @@ export default function ModulePage(props: IProps) {
             )
         
         setDoc(dateRecordDocLocation, {
+            "date": dateString,
             "studentIds": arrayUnion(user.userId)
         }, {merge: true})
         

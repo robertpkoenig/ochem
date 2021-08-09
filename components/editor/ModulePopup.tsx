@@ -17,7 +17,7 @@ export default function ModulePopup(props: IProps) {
     }
 
     function onModuleSubtitleChange(event: FormEvent<HTMLInputElement>) {
-        setModuleName(event.currentTarget.value)
+        setModuleSubtitle(event.currentTarget.value)
     }
 
     function onSubmit(event: React.FormEvent) {

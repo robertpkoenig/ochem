@@ -85,9 +85,11 @@ export default function Modules(props: IProps) {
         createModuleListing(name, moduleId, creationDate)
 
         const newModuleAnalyticsRecord: ModuleAnalyticsRecord = {
+            moduleName: name,
             moduleId: moduleId,
             studentIds: []
         }
+
         setDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), newModuleAnalyticsRecord)
     }
 

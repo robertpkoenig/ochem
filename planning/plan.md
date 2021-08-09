@@ -7,6 +7,8 @@ Next.js/Firebase
 - homepage nav links
 - tooltips
 - how-to video
+- delete moduleAnalytics thing when deleting the module
+- when I leave the p5 page, the p5 context needs to end
 
 Prior to hand-in
 - feedback from lecturers and students

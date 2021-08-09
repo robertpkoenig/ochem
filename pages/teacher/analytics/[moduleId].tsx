@@ -36,7 +36,7 @@ export default function Analytics() {
                         moduleId,
                         FirebaseConstants.DATE_RECORDS
             )
-        const q = query(dateRecordsCollectionLocation, orderBy("date"), limit(7))
+        const q = query(dateRecordsCollectionLocation, orderBy("date", "desc"), limit(7))
         getDocs(q).then(docs => {
             const tempDateRecords: DateRecord[] = []
             docs.forEach((doc) => {
@@ -67,30 +67,27 @@ export default function Analytics() {
     useEffect(() => {
         if (!dateRecords) return
         const tempStudentNumbers: number[] = []
+        let tempNumUniquesLastSevenDays = 0
 
         for (const date of datesForDataProcessing) {
             
             let newStudentNumber = 0
             for (const dateRecord of dateRecords) {
                 if (dateRecord.date == date) {
-                    newStudentNumber += dateRecord.studentIds.length    
+                    newStudentNumber += dateRecord.studentIds.length
+                    tempNumUniquesLastSevenDays += dateRecord.studentIds.length    
                     break
                 }
             }
             tempStudentNumbers.push(newStudentNumber)
         }
         setStudentNumbers(tempStudentNumbers)
-
-        let tempNumUniquesLastSevenDays = 0
-        for (const dateRecord of dateRecords) {
-            tempNumUniquesLastSevenDays += dateRecord.studentIds.length
-        }
         setNumUniquesLastSevenDays(tempNumUniquesLastSevenDays)
 
     }, [dateRecords])
 
     useEffect(() => {
-        if (moduleAnalyticsRecord && studentNumbers.length > 0) {
+        if (moduleAnalyticsRecord) {
             setLoading(false)
         }
     }, [moduleAnalyticsRecord, studentNumbers])
@@ -123,7 +120,6 @@ export default function Analytics() {
         setDatesForDataProcessing(tempDatesForDataProcessing)
 
         console.log(tempDatesForDataProcessing);
-        
 
         // Get the dates for display
         const tempDatesForDisplay: string[] = []
@@ -173,7 +169,7 @@ export default function Analytics() {
         <ScreenWithLoading loading={loading} >
             <Layout
                 title="Analytics"
-                subtitle="Module name goes here"
+                subtitle={moduleAnalyticsRecord?.moduleName}
             >
                 <div className="flex flex-row gap-10 ">
                     <div>
