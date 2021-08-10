@@ -58,7 +58,7 @@ export default function SharePopup(props: IProps) {
                         id="linkText"
                         className="font-light border border-gray-300 rounded-md text-gray-700 flex-grow"
                         type="text"
-                        value={window.location.hostname + ":3000" + "/student/invitation/" + props.moduleId}
+                        value={window.location.hostname + "/student/invitation/" + props.moduleId}
                     />
                     <button
                         className={primaryButtonMd + "w-auto"}

@@ -271,9 +271,9 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
                                 <div className="flex flex-row gap-6 items-center">
 
-                                    <button onClick={this.arrowDrawnSuccesfully.bind(this)} className="text-sm text-white">
+                                    {/* <button onClick={this.arrowDrawnSuccesfully.bind(this)} className="text-sm text-white">
                                         Something
-                                    </button>
+                                    </button> */}
 
                                 </div>
                             </div>

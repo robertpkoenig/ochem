@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 /* This example requires Tailwind CSS v2.0+ */
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import {
     PencilAltIcon,
@@ -12,6 +12,7 @@ import {
     FolderIcon,
     PlayIcon
   } from '@heroicons/react/outline'
+import VideoPopup from '../components/VideoPopup'
 
 const navigation = [
   { name: 'How It Works', href: '#how-it-works' },
@@ -25,7 +26,14 @@ const features = [
 ]
 
 export default function Example() {
-  return (
+
+    const [videoPopupVis, setVideoPopupVis] = useState<boolean>(false)
+
+    function toggleVideoPopup() {
+        setVideoPopupVis(!videoPopupVis)
+    }
+
+    return (
     <div>
         <div className="relative bg-white overflow-hidden">
             <div className="max-w-7xl mx-auto">
@@ -161,11 +169,12 @@ export default function Example() {
                             </div>
                             <div className="mt-3 sm:mt-0 sm:ml-3">
                                 <button
+                                    onClick={toggleVideoPopup}
                                     className="w-full flex gap-2 items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10"
                                 >
                                     <PlayIcon className="w-6 h-6" />
                                     <div>
-                                        Demo
+                                        Intro
                                     </div>
                                 </button>
                             </div>
@@ -194,7 +203,7 @@ export default function Example() {
                 {/* <p className="mt-5 max-w-prose mx-auto text-xl text-gray-500">
                 Build your reactions tailored to your course. Organize content into sections that match the progression of your module.
                 </p> */}
-                <div className="mt-12 flex gap-4">
+                <div className="mt-12 flex flex-col gap-4 md:flex-row ">
                     {/* Step 1 */}
                     <div className="pt-6 flex-1">
                         <div className="flow-root bg-gray-50 rounded-lg px-8 pb-8">
@@ -257,7 +266,7 @@ export default function Example() {
         {/* Editor */}
           <div className="relative">
             <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
+              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-36 lg:max-w-none lg:mx-0 lg:px-0">
                 <div>
                   <div>
                     <span className="h-12 w-12 rounded-md flex items-center justify-center bg-indigo-600">
@@ -297,7 +306,7 @@ export default function Example() {
           {/* Organization */}
           <div className="mt-24">
             <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-36 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
                 <div>
                   <div>
                     <span className="h-12 w-12 rounded-md flex items-center justify-center bg-indigo-600">
@@ -337,7 +346,7 @@ export default function Example() {
           {/* Analytics */}
           <div className="relative mt-24">
             <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
+              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-36 lg:max-w-none lg:mx-0 lg:px-0">
                 <div>
                   <div>
                     <span className="h-12 w-12 rounded-md flex items-center justify-center bg-indigo-600">
@@ -378,34 +387,43 @@ export default function Example() {
 
         {/* Bottom CTA */}
         <div className="bg-indigo-50">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
-            <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            <span className="block">Ready to dive in?</span>
-            <span className="block text-indigo-600">Ochem is free!</span>
-            </h2>
-            <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
-            <div className="inline-flex rounded-md shadow">
-                <Link href="/auth/signup">
-                    <a
-                    className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                    >
-                    Get started
-                    </a>
-                </Link>
-            </div>
-            <div className="ml-3 inline-flex rounded-md shadow">
-                <button
-                    className="flex gap-1 items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50"
-                >
-                    <PlayIcon className="w-6 h-6" />
-                    <div>
-                        Demo
+            <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+                <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    <span className="block">Ready to dive in?</span>
+                    <span className="block text-indigo-600">Ochem is free!</span>
+                </h2>
+                <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
+                    <div className="inline-flex rounded-md shadow">
+                        <Link href="/auth/signup">
+                            <a
+                            className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                            >
+                            Get started
+                            </a>
+                        </Link>
                     </div>
-                </button>
-            </div>
+                    <div className="ml-3 inline-flex rounded-md shadow">
+                        <button
+                            onClick={toggleVideoPopup}
+                            className="flex gap-1 items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50"
+                        >
+                            <PlayIcon className="w-6 h-6" />
+                            <div>
+                                Intro
+                            </div>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-        </div>
+
+        {
+            videoPopupVis
+            ?
+            <VideoPopup popupCloseFunction={toggleVideoPopup} />
+            :
+            null
+        }
 
     </div>
   )

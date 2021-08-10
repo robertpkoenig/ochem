@@ -23,8 +23,8 @@ export default function PopupBackground(props: IProps) {
     return (
 
         <div 
-        className={popupCSS}
-        onClick={props.popupCloseFunction}
+            className={popupCSS}
+            onClick={props.popupCloseFunction}
         >
             <div className="flex flex-col gap-2 ">
 
