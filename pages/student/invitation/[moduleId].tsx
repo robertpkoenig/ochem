@@ -103,13 +103,10 @@ export default function Login() {
                                 <span className="text-2xl font-bold">
                                     Organic Chemistry One
                                 </span>
-                                <span className="text-l font-light">
-                                    CH302
-                                </span>
                             </div>
 
                             <div className="text-l font-light">
-                                Stephen Thomas
+                                John Smith
                             </div>
 
                         </div>
