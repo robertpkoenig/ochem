@@ -65,7 +65,7 @@ class PanelController {
         if (this.selectedElement != null) {
             const boundingRect = this.editorController.panelController.canvasParent.getBoundingClientRect()
             const xPosition = this.p5.mouseX + boundingRect.x - Constants.ATOM_RADIUS
-            const yPosition = this.p5.mouseY + boundingRect.y- Constants.ATOM_RADIUS
+            const yPosition = this.p5.mouseY + boundingRect.y - Constants.ATOM_RADIUS + window.scrollY
             this.selectedElement.position(xPosition, yPosition)
         }
 

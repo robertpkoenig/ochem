@@ -27,8 +27,6 @@ export default function LogInCard() {
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault()
         const auth = getAuth();
-        console.log(emailValue);
-        console.log(passwordValue);
         
         signInWithEmailAndPassword(auth, emailValue, passwordValue)
         .then((userCredential) => {

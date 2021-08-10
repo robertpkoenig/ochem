@@ -27,9 +27,7 @@ class PhysicsEngine {
         // other particles
         for (const molecule of this.reaction.currentStep.molecules) {
             const atoms = molecule.atoms
-            for (let i = 0 ; i < atoms.length ; i++) {
-                if (atoms[i].element.name == "dummy") console.log(atoms[i].circle.pos.x);
-                
+            for (let i = 0 ; i < atoms.length ; i++) {                
                 for (let j = i + 1 ; j < atoms.length ; j++) {
                     const atomOne = atoms[i]
                     const atomTwo = atoms[j]

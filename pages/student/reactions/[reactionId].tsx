@@ -14,6 +14,7 @@ import { findConfigFile } from "typescript"
 import { primaryButtonSm, secondaryButtonSm } from "../../../styles/common-styles"
 import { Transition } from "@headlessui/react"
 import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
+import p5 from "p5"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -39,6 +40,7 @@ interface IState {
     loading: boolean
     successToastVis: boolean
     failureToastVis: boolean
+    p5: p5
 }
 
 class StudentReactionPage extends React.Component<IProps, IState> {
@@ -57,6 +59,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
             loading: true,
             successToastVis: false,
             failureToastVis: false,
+            p5: null
         }
 
     }
@@ -91,6 +94,19 @@ class StudentReactionPage extends React.Component<IProps, IState> {
             })
         }
 
+    }
+
+    setP5(p5: p5) {
+        this.setState(
+            {
+               ...this.state,
+               p5: p5
+            }
+        )
+    }
+
+    componentWillUnmount() {
+        this.state.p5.remove()
     }
 
     setArrowType(arrowType: ArrowType) {

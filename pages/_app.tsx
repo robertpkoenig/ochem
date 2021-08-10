@@ -2,6 +2,7 @@ import 'tailwindcss/tailwind.css'
 import type { AppProps } from 'next/app'
 import React from 'react'
 import { AuthProvider } from '../context/provider'
+import '../styles/globals.css'
 
 
 function MyApp({ Component, pageProps }: AppProps) {

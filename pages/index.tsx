@@ -1,12 +1,4 @@
-import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
-
-import logo from '../public/assets/logo.svg'
-import woman from "../public/assets/images/woman-with-laptop.jpg"
-import module from "../public/assets/screenshots/organize.png"
-import editor from "../public/assets/screenshots/editor.png"
-import analytics from "../public/assets/screenshots/analytics.png"
 
 /* This example requires Tailwind CSS v2.0+ */
 import React, { Fragment } from 'react'
@@ -22,9 +14,8 @@ import {
   } from '@heroicons/react/outline'
 
 const navigation = [
-  { name: 'Product', href: '#' },
-  { name: 'Features', href: '#' },
-  { name: 'Testimonials', href: '#' },
+  { name: 'How It Works', href: '#how-it-works' },
+  { name: 'Features', href: '#features' },
 ]
 
 const features = [
@@ -149,10 +140,11 @@ export default function Example() {
                         <div className="sm:text-center lg:text-left">
                         <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
                             <span className="block">Create interactive</span>
-                            <span className="block text-indigo-600">reaction mechanisms</span>
+                            <span className="block text-indigo-600">arrow pushing</span>
+                            <span className="block text-indigo-600">exercises</span>
                         </h1>
                         <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                            Help students reinforce critical organic chemistry concepts with engaging interactive arrow pushing excercises
+                            Help students reinforce critical organic chemistry <br></br>concepts with engaging interactive content
                         </p>
                         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div className="rounded-md shadow">
@@ -191,17 +183,17 @@ export default function Example() {
                 />
             </div>
         </div>
-        <div className="relative bg-indigo-50 py-16 sm:py-24 lg:py-32">
+        <div id="how-it-works" className="relative bg-indigo-50 py-16 sm:py-24 lg:py-32">
             <div className="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl">
                 <h2 className="text-base font-semibold tracking-wider text-indigo-600 uppercase">
                     HOW IT WORKS
                 </h2>
                 <p className="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
-                Create interactions tailored to your course
+                Create exercises tailored to your module
                 </p>
-                <p className="mt-5 max-w-prose mx-auto text-xl text-gray-500">
+                {/* <p className="mt-5 max-w-prose mx-auto text-xl text-gray-500">
                 Build your reactions tailored to your course. Organize content into sections that match the progression of your module.
-                </p>
+                </p> */}
                 <div className="mt-12 flex gap-4">
                     {/* Step 1 */}
                     <div className="pt-6 flex-1">
@@ -213,7 +205,7 @@ export default function Example() {
                             </span>
                             </div>
                             <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
-                                Use the drop-and-drop editor to create mechanisms. You specify each step of the reaction.
+                                Use the drop-and-drop editor to specify each step of the mechanism
                             </h3>
                             <p className="mt-5 text-base text-gray-500">
                                 
@@ -231,7 +223,7 @@ export default function Example() {
                             </span>
                             </div>
                             <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
-                                Students practice reactions, and get feedback everytime they draw a curly arrow.
+                                Easily share with students, so they can practice on any browser
                             </h3>
                             <p className="mt-5 text-base text-gray-500">
                                 
@@ -249,7 +241,7 @@ export default function Example() {
                             </span>
                             </div>
                             <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
-                                You can view real time engagement data to make sure students are using the content.
+                                View real time data on student <br></br>content engagement
                             </h3>
                             <p className="mt-5 text-base text-gray-500">
                                 
@@ -261,7 +253,7 @@ export default function Example() {
             </div>
         </div>
 
-        <div className="relative bg-white pt-16 pb-32 overflow-hidden">
+        <div id="features" className="relative bg-white pt-16 pb-32 overflow-hidden">
         {/* Editor */}
           <div className="relative">
             <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
@@ -274,20 +266,20 @@ export default function Example() {
                   </div>
                   <div className="mt-6">
                     <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
-                      Specify each step of the mechanism
+                      Intuitive editor
                     </h2>
                     <p className="mt-4 text-lg text-gray-500">
                         Drag and drop atoms, create bonds, and specify curly arrows. Create a prompt for the reaction.
                         Ochem then generates the student interaction, with feedback for each arrow they draw.
                     </p>
-                    <div className="mt-6">
+                    {/* <div className="mt-6">
                       <a
                         href="#"
                         className="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
                       >
                         Get started
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -314,20 +306,20 @@ export default function Example() {
                   </div>
                   <div className="mt-6">
                     <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
-                      Easily organise content
+                      Exercise collections
                     </h2>
                     <p className="mt-4 text-lg text-gray-500">
                       Group mechanisms into sections. Control which sections and reactions are visible to students.
                       Students can keep track of their progress.
                     </p>
-                    <div className="mt-6">
+                    {/* <div className="mt-6">
                       <a
                         href="#"
                         className="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
                       >
                         Get started
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -354,20 +346,20 @@ export default function Example() {
                   </div>
                   <div className="mt-6">
                     <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
-                      Measure student engagement
+                      Engagement Analytics
                     </h2>
                     <p className="mt-4 text-lg text-gray-500">
                         You don&apos;t want to spend time creating study aids that students never use. With Ochem, you can
                         see how many students are accessing content.
                     </p>
-                    <div className="mt-6">
+                    {/* <div className="mt-6">
                       <a
                         href="#"
                         className="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
                       >
                         Get started
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -386,21 +378,30 @@ export default function Example() {
 
         {/* Bottom CTA */}
         <div className="bg-indigo-50">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-24 lg:px-8 lg:flex lg:items-center lg:justify-between">
-            <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 md:text-4xl">
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+            <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
             <span className="block">Ready to dive in?</span>
-            <span className="block text-indigo-600">Ochem is free for 2021-22.</span>
+            <span className="block text-indigo-600">Ochem is free!</span>
             </h2>
             <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
             <div className="inline-flex rounded-md shadow">
                 <Link href="/auth/signup">
-                <a
-                href="#"
-                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                >
-                Get started
-                </a>
+                    <a
+                    className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                    >
+                    Get started
+                    </a>
                 </Link>
+            </div>
+            <div className="ml-3 inline-flex rounded-md shadow">
+                <button
+                    className="flex gap-1 items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50"
+                >
+                    <PlayIcon className="w-6 h-6" />
+                    <div>
+                        Demo
+                    </div>
+                </button>
             </div>
             </div>
         </div>

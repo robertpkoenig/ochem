@@ -24,6 +24,7 @@ import PromptPopup from "../../../components/editor/PromptPopup"
 import ReactionRenamePopup from "../../../components/editor/ReactionRenamePopup"
 import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
 import Ion from "../../../p5/model/chemistry/atoms/Ion"
+import p5 from "p5"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -46,7 +47,8 @@ interface IProps {
 interface IState {
     loading: boolean
     reaction: Reaction
-    physicsOn: boolean
+    attractionOn: boolean
+    repulsionOn: boolean
     bondType: BondType
     arrowType: ArrowType
     straightArrowSelected: boolean
@@ -57,6 +59,7 @@ interface IState {
     selectedElement: HTMLElement
     promptPopupVisible: boolean
     renamePopupVisible: boolean
+    p5: p5
 }
 
 class TeacherReactionPage extends React.Component<IProps, IState> {
@@ -72,7 +75,8 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         this.state = {
             loading: true,
             reaction: null,
-            physicsOn: false,
+            attractionOn: false,
+            repulsionOn: false,
             bondType: null,
             arrowType: null,
             straightArrowSelected: false,
@@ -83,6 +87,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             selectedElement: null,
             promptPopupVisible: false,
             renamePopupVisible: false,
+            p5: null,
         }
 
     }
@@ -117,6 +122,19 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             })
         }
 
+    }
+
+    setP5(p5: p5) {
+        this.setState(
+            {
+               ...this.state,
+               p5: p5
+            }
+        )
+    }
+
+    componentWillUnmount() {
+        this.state.p5.remove()
     }
 
     toggleVisibility() {
@@ -187,16 +205,33 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         }
     }
 
-    togglePhysics() {
+    toggleAttraction() {
         this.setState((prevState) => {
             return {
                 ...prevState,
-                physicsOn: !prevState.physicsOn,
+                attractionOn: !prevState.attractionOn,
                 bondType: null,
                 eraserOn: false,
                 arrowType: null
             }
         })        
+    }
+
+    toggleRepulsion() {
+        if (this.state.attractionOn) {
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    repulsionOn: !prevState.repulsionOn,
+                    bondType: null,
+                    eraserOn: false,
+                    arrowType: null
+                }
+            }) 
+        }   
+        else {
+            alert("you must have attraction on to enable repulsion")
+        }    
     }
 
     toggleEraser() {
@@ -433,6 +468,10 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         const listOfAtomicElements = Object.values(AtomicElements).map(element => {
             return (
 
+                element.name == "dummy"
+                ?
+                null
+                :
                 // This is the background to the atom which acts as the empty state
                 // when the element is dragged onto the canvas
                 <div 
@@ -524,7 +563,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                             Publish
                                         </div>
                                         <Switch
-                                                checked={this.state.physicsOn}
+                                                checked={this.state.reaction?.visible}
                                                 onChange={() => this.toggleVisibility()}
                                                 className={
                                                     (this.state.reaction?.visible ? 'bg-green-300 ' : 'bg-gray-200 ') +
@@ -706,20 +745,39 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                             {/* p5 canvas */}
                             <div id={Constants.CANVAS_PARENT_NAME} className=" h-700 bg-white rounded-lg shadow flex-grow">
                                 <div className=" p-5 absolute flex flex-row items-center gap-2 text-sm text-gray-500">
-                                    Physics
+                                    Attraction
                                     <Switch
-                                        checked={this.state.physicsOn}
-                                        onChange={() => this.togglePhysics()}
+                                        checked={this.state.attractionOn}
+                                        onChange={() => this.toggleAttraction()}
                                         className={
-                                            (this.state.physicsOn ? 'bg-indigo-600 ' : 'bg-gray-200 ') +
+                                            (this.state.attractionOn ? 'bg-indigo-600 ' : 'bg-gray-200 ') +
                                             'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
                                         }
                                         >
-                                        <span className="sr-only">Toggle physics</span>
+                                        <span className="sr-only">Toggle attraction</span>
                                         <span
                                             aria-hidden="true"
                                             className={
-                                                (this.state.physicsOn ? 'translate-x-5 ' : 'translate-x-0 ') +
+                                                (this.state.attractionOn ? 'translate-x-5 ' : 'translate-x-0 ') +
+                                                'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
+                                            }
+                                    />
+                                    </Switch>
+
+                                    Repulsion
+                                    <Switch
+                                        checked={this.state.repulsionOn}
+                                        onChange={() => this.toggleRepulsion()}
+                                        className={
+                                            (this.state.repulsionOn ? 'bg-indigo-600 ' : 'bg-gray-200 ') +
+                                            'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
+                                        }
+                                        >
+                                        <span className="sr-only">Toggle repulsion</span>
+                                        <span
+                                            aria-hidden="true"
+                                            className={
+                                                (this.state.repulsionOn ? 'translate-x-5 ' : 'translate-x-0 ') +
                                                 'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                                             }
                                     />

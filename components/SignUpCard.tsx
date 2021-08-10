@@ -71,7 +71,7 @@ export default function SignUpCard() {
                 src="/assets/logo.svg"
                 alt="Workflow"
             />
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create teacher account</h2>
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Teacher sign up</h2>
             <p className="mt-2 text-center text-sm text-gray-600">
                 Already have an account?{' '}
                 <Link href="/auth/login">

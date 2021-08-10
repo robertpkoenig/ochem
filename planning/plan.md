@@ -9,6 +9,7 @@ Next.js/Firebase
 - how-to video
 - delete moduleAnalytics thing when deleting the module
 - when I leave the p5 page, the p5 context needs to end
+- forgot password flow
 
 Prior to hand-in
 - feedback from lecturers and students

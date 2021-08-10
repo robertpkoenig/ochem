@@ -37,6 +37,8 @@ function createP5Context(
             physicsEngine = new PhysicsEngine(reaction)
             controller = new Controller(p5, reaction, collisionDetector, page, userType)
             view = new View(p5, reaction, controller, userType)
+
+            page.setP5(p5)
            
         }
     
@@ -47,10 +49,13 @@ function createP5Context(
 
             reaction.update()
     
-            if (userType == UserType.STUDENT ||
-                controller.teacherController.teacherReactionPage.state.physicsOn) {
-                physicsEngine.applyPhysics()
+            if (controller.teacherController?.teacherReactionPage.state.repulsionOn) { 
+                physicsEngine.applyBodyRepulsionWithinMolecules()
             }
+            if (controller.teacherController?.teacherReactionPage.state.attractionOn) {
+                physicsEngine.makeBondLengthCorrect()
+            }
+            physicsEngine.applyAllForces()
 
             controller.process()
         
