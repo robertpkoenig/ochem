@@ -708,14 +708,14 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     <hr className="my-2"></hr>
 
                                     {/* Angle control */}
-                                    <button
+                                    {/* <button
                                         className={this.state.angleControlSelected ? selectedButton : squareButton}
                                         onClick={() => this.toggleAngleControl()}
                                     >
                                         <img className={buttonImage} src="/assets/images/angle-control.svg" alt="eraser" />
                                     </button>
 
-                                    <hr className="my-2"></hr>
+                                    <hr className="my-2"></hr> */}
 
                                     {/* Eraser */}
                                     <button
