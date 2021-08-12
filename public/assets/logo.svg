@@ -29,7 +29,7 @@
      inkscape:cx="35"
      inkscape:cy="62.142857"
      inkscape:document-units="mm"
-     inkscape:current-layer="g933"
+     inkscape:current-layer="text928"
      inkscape:document-rotation="0"
      showgrid="false"
      units="px"
@@ -62,17 +62,15 @@
          fill="#4F46E5"
          id="path889"
          style="stroke-width:0.126549" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-weight:normal;font-size:20.32px;line-height:1.25;font-family:sans-serif;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.238125"
-         x="5.2433987"
-         y="20.391973"
-         id="text928"><tspan
-           sodipodi:role="line"
-           id="tspan926"
-           x="5.2433987"
-           y="20.391973"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:20.32px;font-family:Poppins;-inkscape-font-specification:'Poppins Bold';fill:#ffffff;fill-opacity:1;stroke-width:0.238125">O</tspan></text>
+      <g
+         aria-label="O"
+         id="text928"
+         style="font-style:normal;font-weight:normal;font-size:20.32px;line-height:1.25;font-family:sans-serif;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.238125">
+        <path
+           d="m 13.249479,20.534213 q -2.01168,0 -3.6982404,-0.934719 -1.66624,-0.93472 -2.66192,-2.60096 -0.9753599,-1.68656 -0.9753599,-3.77952 0,-2.09296 0.9753599,-3.7592003 0.99568,-1.66624 2.66192,-2.60096 1.6865604,-0.93472 3.6982404,-0.93472 2.01168,0 3.677919,0.93472 1.68656,0.93472 2.6416,2.60096 0.97536,1.6662403 0.97536,3.7592003 0,2.09296 -0.97536,3.77952 -0.97536,1.66624 -2.6416,2.60096 -1.666239,0.934719 -3.677919,0.934719 z m 0,-3.169919 q 1.70688,0 2.72288,-1.13792 1.036319,-1.13792 1.036319,-3.00736 0,-1.88976 -1.036319,-3.00736 -1.016,-1.1379203 -2.72288,-1.1379203 -1.7272,0 -2.76352,1.1176003 -1.0160004,1.1176 -1.0160004,3.02768 0,1.88976 1.0160004,3.02768 1.03632,1.1176 2.76352,1.1176 z"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:20.32px;font-family:Poppins;-inkscape-font-specification:'Poppins Bold';fill:#ffffff;fill-opacity:1;stroke-width:0.238125"
+           id="path891" />
+      </g>
     </g>
   </g>
 </svg>
