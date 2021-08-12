@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useEffect, useState } from 'react'
+import { FormEvent, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { arrayUnion, doc, DocumentSnapshot, getDoc, getFirestore, setDoc } from 'firebase/firestore'
@@ -11,7 +11,7 @@ import Image from 'next/image'
 import FirebaseConstants from '../../../model/FirebaseConstants'
 import ModuleListing from '../../../model/ModuleListing'
 
-export default function Login() {
+export default function Invitation() {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [moduleId, setModuleId] = useState<string>('')
@@ -52,7 +52,12 @@ export default function Login() {
 
     useEffect(() => {
     if (loginAttempted) {
-            getData()
+            if (user) {
+                router.push('/student/modules/' + router.query.moduleId)
+            }
+            else {
+                getData()
+            }
         }
     }, [loginAttempted])
 
@@ -78,7 +83,7 @@ export default function Login() {
                     router.push("/student/modules/" + moduleId)
                 })
                 setDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), {
-                    studentIds: arrayUnion(user.userId)
+                    studentIds: arrayUnion(userCredential.user.uid)
                 })
             })
             .catch((error) => {

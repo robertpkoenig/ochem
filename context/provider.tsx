@@ -11,12 +11,14 @@ type authContextType = {
     user: User,
     setUser: (user: User) => void,
     loginAttempted: boolean,
+    setLoginAttempted: (loginAttempted: boolean) => void
 }
 
 const authContextDefaultValues: authContextType = {
     user: null,
     setUser: null,
     loginAttempted: false,
+    setLoginAttempted: null
 }
 
 export const AuthContext = createContext<authContextType>(authContextDefaultValues);
@@ -85,7 +87,8 @@ export function AuthProvider({ children }: Props) {
     const authContext = {
         user,
         setUser,
-        loginAttempted
+        loginAttempted,
+        setLoginAttempted
     }
 
     return (

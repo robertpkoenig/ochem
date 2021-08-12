@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Section from "../../../model/SectionListing";
 import { useRouter } from 'next/router'
 import Module from "../../../model/Module";
