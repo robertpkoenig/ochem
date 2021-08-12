@@ -1,7 +1,7 @@
 import p5 from 'p5'
 import { Vector } from 'sat'
 import { Controller } from './controller/Controller'
-import CollisionDetector from './model/physics/CollisinDetector'
+import CollisionDetector from './view/CollisinDetector'
 import { PhysicsEngine } from './model/physics/PhysicsEngine'
 import Utilities from './utilities/Utilities'
 import { View } from './view/View'
@@ -52,7 +52,8 @@ function createP5Context(
             if (controller.teacherController?.teacherReactionPage.state.repulsionOn) { 
                 physicsEngine.applyBodyRepulsionWithinMolecules()
             }
-            if (controller.teacherController?.teacherReactionPage.state.attractionOn) {
+            if (controller.teacherController?.teacherReactionPage.state.attractionOn
+                || controller.studentController != null) {
                 physicsEngine.makeBondLengthCorrect()
             }
             physicsEngine.applyAllForces()

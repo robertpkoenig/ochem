@@ -4,7 +4,7 @@ import { Atom } from "../model/chemistry/atoms/Atom";
 import { Bond } from "../model/chemistry/bonds/Bond";
 import BondType from "../model/chemistry/bonds/BondType";
 import Reaction from "../model/Reaction";
-import CollisionDetector from "../model/physics/CollisinDetector";
+import CollisionDetector from "./CollisinDetector";
 import p5 from "p5";
 import { CurlyArrow } from "../model/chemistry/CurlyArrow";
 import StraightArrow from "../model/chemistry/StraightArrow";
@@ -15,9 +15,6 @@ class TeacherView {
     reaction: Reaction
     teacherController: TeacherController
     collisionDetector: CollisionDetector
-
-    panelCenterX: number
-    panelCenterY: number
 
     eraserTipVisible: boolean
 
@@ -30,14 +27,8 @@ class TeacherView {
         this.reaction = reaction
         this.teacherController = editorController
         this.collisionDetector = collisionDetector
-        this.setParams()
 
         this.eraserTipVisible = false
-    }
-
-    setParams() {
-        this.panelCenterX = Constants.EDITOR_MARGIN + Constants.EDITOR_PANEL_WIDTH / 2
-        this.panelCenterY = window.innerHeight / 2 
     }
 
     render() {
@@ -67,12 +58,17 @@ class TeacherView {
     }
 
     private decorateIonIfHovered() {
-        if (this.teacherController.teacherReactionPage.state.eraserOn) {
-            const hoveredIon = this.teacherController.hoverDetector.ionCurrentlyHovered
-            if (hoveredIon != null) {
+        const hoveredIon = this.teacherController.hoverDetector.ionCurrentlyHovered
+
+        if (hoveredIon != null) {
+            if (this.teacherController.teacherReactionPage.state.eraserOn) {
                 this.drawIonOutline(hoveredIon)
                 this.showEraserTip()
             }
+        }
+
+        else if (this.eraserTipVisible) {
+            this.hideEraserTip()
         }
     }
 
@@ -101,10 +97,6 @@ class TeacherView {
                 this.drawAtomOutline(hoveredAtom, Constants.BLUE_OUTLINE_COLOR)
             }
 
-        }
-
-        else if (this.eraserTipVisible) {
-            this.hideEraserTip()
         }
 
     }
@@ -160,7 +152,6 @@ class TeacherView {
         this.p5.push()
 
             if (bond.type == BondType.SINGLE || bond.type == null) {
-            this.p5.stroke(0)
             this.p5.stroke(color)
             this.p5.strokeWeight(Constants.STROKE_WEIGHT + Constants.OUTLINE_THICKNESS * 2)
             this.p5.line(bond.atoms[0].circle.pos.x,
@@ -172,7 +163,7 @@ class TeacherView {
 
             if (bond.type == BondType.DOUBLE) {
                 this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3 + Constants.OUTLINE_THICKNESS * 2)
-                this.p5.stroke(0)
+                this.p5.stroke(color)
                 this.p5.line(bond.atoms[0].circle.pos.x,
                     bond.atoms[0].circle.pos.y,
                     bond.atoms[1].circle.pos.x,
@@ -232,6 +223,7 @@ class TeacherView {
         
         if (arrow != null && this.teacherController.teacherReactionPage.state.eraserOn) {
             this.drawArrowOutline(arrow, Constants.RED_OUTLINE_COLOR)
+            this.showEraserTip()
         }
 
     }
@@ -288,6 +280,7 @@ class TeacherView {
             this.teacherController.hoverDetector.straightArrowCurrentlyHovered
         if (straightArrow != null && this.teacherController.teacherReactionPage.state.eraserOn) {
             this.decorateStraightArrow(straightArrow, Constants.RED_OUTLINE_COLOR)
+            this.showEraserTip()
         }
 
     }

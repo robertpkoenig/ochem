@@ -3,7 +3,7 @@ import Reaction from "../model/Reaction"
 import BodyMover from "./BodyMover"
 
 import { Vector } from "sat"
-import CollisionDetector from "../model/physics/CollisinDetector"
+import CollisionDetector from "../view/CollisinDetector"
 import TeacherReactionPage from "../../pages/teacher/reactions/[reactionId]"
 import StudentReactionPage from "../../pages/student/reactions/[reactionId]"
 import UserType from "../model/UserType"
@@ -60,7 +60,6 @@ class Controller {
                     this.arrowCreator,
                     this.bodyMover,
                     page as TeacherReactionPage,
-                    userType
                 )
             
             this.arrowCreator.undoManager = this.teacherController.undoManager
@@ -106,7 +105,7 @@ class Controller {
             this.studentController.routeMousePressed(mouseVector)
         }
         if (this.page.state.arrowType != null) {
-            this.arrowCreator.startArrowIfObjectClicked(mouseVector)
+            this.arrowCreator.startArrowIfObjectClicked()
         }
     }
 

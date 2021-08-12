@@ -18,7 +18,7 @@ class IonCreator {
         this.teacherController.undoManager.addUndoPoint()
         const atomClicked = this.teacherController.hoverDetector.atomCurrentlyHovered
         if (atomClicked != null) {
-            atomClicked.ion = ionString
+            atomClicked.ionSymbol = ionString
         }
         ReactionSaver.saveReaction(this.reaction)
     }

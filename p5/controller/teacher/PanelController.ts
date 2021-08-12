@@ -11,10 +11,6 @@ class PanelController {
 	editorController: TeacherController
 
     // properties
-    leftX: number | undefined
-    rightX: number | undefined
-    topY: number | undefined
-    bottomY: number | undefined
     canvasParent: HTMLElement
 
     selectedElement: Element | null
@@ -39,12 +35,6 @@ class PanelController {
         this.canvasParent = document.getElementById('p5-canvas')
         if (!this.canvasParent)
             throw new Error("canvas parent element not found")
-
-        // this.canvasParent = canvasParent.getBoundingClientRect()
-        // this.leftX = canvasParentRect.x
-        // this.rightX = canvasParentRect.x + canvasParentRect.width
-        // this.bottomY = canvasParentRect.y
-        // this.topY = canvasParentRect.y + canvasParentRect.height
 
     }
 

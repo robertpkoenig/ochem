@@ -195,39 +195,39 @@ class StudentReactionPage extends React.Component<IProps, IState> {
         let stepIndicators: React.ReactNode
         if (this.state.reaction) {
             stepIndicators =   
-                                    <div className="flex flex-row gap-3 ">
-                                    <div className="text-xs font-medium">
-                                        Step 
-                                        {" " + (this.state.reaction.currentStep.order + 1)} of 
-                                            {" " + this.state.reaction.steps.length}
-                                    </div>
-                                    <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                                        {
-                                        this.state.reaction.steps.map(step => (
+                <div className="flex flex-row gap-3 ">
+                    <div className="text-xs font-medium">
+                        Step 
+                        {" " + (this.state.reaction.currentStep.order + 1)} of 
+                            {" " + this.state.reaction.steps.length}
+                    </div>
+                    <ol className="rounded-md flex gap-2 text-indigo-400 ">
+                        {
+                        this.state.reaction.steps.map(step => (
 
-                                            <li 
-                                                key={step.uuid}
-                                                className="relative flex items-center justify-center"
-                                            >
-                                                {
-                                                step === this.state.reaction.currentStep
-                                                ?
-                                                <span className="absolute w-5 h-5 p-px flex" aria-hidden="true">
-                                                    <span className="w-full h-full rounded-full bg-indigo-200 animate-pulse" />
-                                                </span>
-                                                :
-                                                null
-                                                }
+                            <li 
+                                key={step.uuid}
+                                className="relative flex items-center justify-center"
+                            >
+                                {
+                                step === this.state.reaction.currentStep
+                                ?
+                                <span className="absolute w-5 h-5 p-px flex" aria-hidden="true">
+                                    <span className="w-full h-full rounded-full bg-indigo-200 animate-pulse" />
+                                </span>
+                                :
+                                null
+                                }
 
-                                                <span className={"relative w-2.5 h-2.5 rounded-full  " +
-                                                (step.order > this.state.reaction.currentStep.order
-                                                    ? " bg-gray-300 " : "bg-indigo-600")} />
-                                                
-                                            </li>
-                                        ))
-                                        }
-                                    </ol>
-                                    </div>
+                                <span className={"relative w-2.5 h-2.5 rounded-full  " +
+                                (step.order > this.state.reaction.currentStep.order
+                                    ? " bg-gray-300 " : "bg-indigo-600")} />
+                                
+                            </li>
+                        ))
+                        }
+                    </ol>
+                </div>
         }
         else {
             stepIndicators = "Loading"
@@ -271,7 +271,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
                                 <div className="flex flex-row gap-6 items-center">
 
-                                    {/* <button onClick={this.arrowDrawnSuccesfully.bind(this)} className="text-sm text-white">
+                                    {/* <button onMouseDown={this.arrowDrawnSuccesfully.bind(this)} className="text-sm text-white">
                                         Something
                                     </button> */}
 
@@ -341,7 +341,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                         {/* Double curly arrow */}
                                         <button
                                             className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
-                                            onClick={() => this.setArrowType(ArrowType.DOUBLE)}
+                                            onMouseDown={() => this.setArrowType(ArrowType.DOUBLE)}
                                         >
                                             <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
                                         </button>
@@ -349,7 +349,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                         {/* Single curly arrow */}
                                         <button
                                             className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
-                                            onClick={() => this.setArrowType(ArrowType.SINGLE)}
+                                            onMouseDown={() => this.setArrowType(ArrowType.SINGLE)}
                                         >
                                             <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
                                         </button>
@@ -389,7 +389,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                             </div>
                                         </div>
                                         <div className="flex flex-row gap-4">
-                                            <button className={secondaryButtonSm} onClick={this.resetReaction.bind(this)}>
+                                            <button className={secondaryButtonSm} onMouseDown={this.resetReaction.bind(this)}>
                                                 Retry
                                             </button>
 

@@ -1,18 +1,21 @@
 import React, { FormEvent, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { doc, getFirestore, setDoc } from 'firebase/firestore'
+import { arrayUnion, doc, DocumentSnapshot, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 import { AuthContext } from '../../../context/provider'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import UserType from '../../../p5/model/UserType'
 import User from '../../../model/User'
 import Image from 'next/image'
+import FirebaseConstants from '../../../model/FirebaseConstants'
+import ModuleListing from '../../../model/ModuleListing'
 
 export default function Login() {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [moduleId, setModuleId] = useState<string>('')
+    const [moduleListing, setModuleListing] = useState<ModuleListing>(null)
 
     const [firstNameValue, setFirstNameValue] = useState('');
     const [lastNameValue, setLastNameValue] = useState('');
@@ -37,10 +40,19 @@ export default function Login() {
 
     const router = useRouter()
 
+    async function getData() {
+        const db = getFirestore()
+
+        const moduleIdParam = router.query.moduleId as string
+        setModuleId(moduleIdParam)
+        const moduleDoc = await getDoc(doc(db, FirebaseConstants.MODULE_LISTINGS, moduleIdParam))
+        setModuleListing(moduleDoc.data() as ModuleListing)
+        setLoading(false)
+    }
+
     useEffect(() => {
-        if (loginAttempted) {
-            setModuleId(router.query.moduleId as string)
-            setLoading(false)
+    if (loginAttempted) {
+            getData()
         }
     }, [loginAttempted])
 
@@ -64,6 +76,9 @@ export default function Login() {
                 }
                 setDoc(doc(db, "users", userCredential.user.uid), newUser).then(() => {
                     router.push("/student/modules/" + moduleId)
+                })
+                setDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), {
+                    studentIds: arrayUnion(user.userId)
                 })
             })
             .catch((error) => {
@@ -101,12 +116,12 @@ export default function Login() {
 
                             <div className="flex flex-col gap-2">
                                 <span className="text-2xl font-bold">
-                                    Organic Chemistry One
+                                    {moduleListing?.name}
                                 </span>
                             </div>
 
                             <div className="text-l font-light">
-                                John Smith
+                                {moduleListing?.authorName}
                             </div>
 
                         </div>

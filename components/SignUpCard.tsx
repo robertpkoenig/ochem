@@ -58,6 +58,8 @@ export default function SignUpCard() {
             })
         })
         .catch((error) => {
+
+            
             alert(error.message)
         });
 

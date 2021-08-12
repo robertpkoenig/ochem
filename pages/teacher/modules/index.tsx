@@ -98,6 +98,7 @@ export default function Modules(props: IProps) {
             name: name,
             creationDate: creationDate,
             authorId: user.userId,
+            authorName: user.firstName + " " + user.lastName,
             uuid: moduleId
         }
         setDoc(doc(db, FirebaseConstants.MODULE_LISTINGS, moduleId), newModuleListing);

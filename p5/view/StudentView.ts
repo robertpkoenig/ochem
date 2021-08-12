@@ -60,7 +60,6 @@ class StudentView {
         this.p5.push()
 
             if (bond.type == BondType.SINGLE) {
-            this.p5.stroke(0)
             this.p5.stroke(color)
             this.p5.strokeWeight(Constants.STROKE_WEIGHT + Constants.OUTLINE_THICKNESS * 2)
             this.p5.line(bond.atoms[0].circle.pos.x,
@@ -72,7 +71,7 @@ class StudentView {
 
             if (bond.type == BondType.DOUBLE) {
                 this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3 + Constants.OUTLINE_THICKNESS * 2)
-                this.p5.stroke(0)
+                this.p5.stroke(color)
                 this.p5.line(bond.atoms[0].circle.pos.x,
                     bond.atoms[0].circle.pos.y,
                     bond.atoms[1].circle.pos.x,

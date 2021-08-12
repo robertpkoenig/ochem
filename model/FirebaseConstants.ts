@@ -16,5 +16,6 @@ export default class FirebaseConstants {
     public static DATE_RECORDS = "dateRecords"
     public static STUDENT_IDS = "studentIds"
     public static VISIBLE = "visible"
+    public static NAME = "name"
 
 }

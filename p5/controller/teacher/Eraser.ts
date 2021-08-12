@@ -28,7 +28,7 @@ class Eraser {
 
         if (ionCurrentlyHovered != null) {
             this.editorController.undoManager.addUndoPoint()
-            ionCurrentlyHovered.ion = null
+            ionCurrentlyHovered.ionSymbol = null
             ReactionSaver.saveReaction(this.editorController.reaction)
         }
 

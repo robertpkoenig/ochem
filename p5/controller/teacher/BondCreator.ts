@@ -28,13 +28,13 @@ class BondCreator {
 
 	}
 
-    startBondIfAtomClicked(mouseVector: Vector) {
+    startBondIfAtomClicked() {
         if (this.editorController.hoverDetector.atomCurrentlyHovered != null) {
             this.startAtom = this.editorController.hoverDetector.atomCurrentlyHovered
         }
 }
 
-	completeBondIfReleasedOverAtom(mouseVector: Vector) {
+	completeBondIfReleasedOverAtom() {
 
 		if (this.startAtom == null) {
             return

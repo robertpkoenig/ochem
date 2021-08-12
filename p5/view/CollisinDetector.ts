@@ -1,11 +1,11 @@
-import Reaction from "../Reaction"
+import Reaction from "../model/Reaction"
 import SAT, { Circle, Polygon, Vector } from 'sat'
-import { Bond } from "../chemistry/bonds/Bond"
+import { Bond } from "../model/chemistry/bonds/Bond"
 import p5 from "p5"
-import { CurlyArrow } from "../chemistry/CurlyArrow"
-import { Atom } from "../chemistry/atoms/Atom"
-import Constants from "../../Constants"
-import StraightArrow from "../chemistry/StraightArrow"
+import { CurlyArrow } from "../model/chemistry/CurlyArrow"
+import { Atom } from "../model/chemistry/atoms/Atom"
+import Constants from "../Constants"
+import StraightArrow from "../model/chemistry/StraightArrow"
 
 class CollisionDetector {
 

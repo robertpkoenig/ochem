@@ -172,7 +172,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         })
     }
 
-    toggleRenamePopup() {
+    toggleReactionRenamePopup() {
         this.setState(prevState => {
             return {
                 ...prevState,
@@ -188,6 +188,19 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         updateDoc(reactionRef, {
             name: newName
         })
+
+        // Module doc ref to access the nested reaction listing object
+        const moduleDocRef = doc(this.db, FirebaseConstants.MODULES, this.state.reaction.moduleId)
+
+        // Update the reaction listing document in firestore
+        const reactionRefWithinSection =
+            FirebaseConstants.SECTIONS + "."+ this.state.reaction.sectionId + "."+
+            FirebaseConstants.REACTION_LISTINGS + "." + this.state.reaction.uuid + 
+            "." + FirebaseConstants.NAME
+
+        const sectionVisibilityUpdateObject: any = {}
+        sectionVisibilityUpdateObject[reactionRefWithinSection] = newName
+        updateDoc(moduleDocRef, sectionVisibilityUpdateObject)
     }
 
     setPromptText(promptText: string) {
@@ -327,7 +340,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             })
         }
 
-   }
+    }
 
     toggleStraightArrow() {
         this.setState(prevState => {
@@ -453,7 +466,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             return (
                 <button 
                     className={this.state.bondType == bondType ? selectedButton : squareButton}
-                    onClick={() => this.setBondType(bondType)}
+                    onMouseDown={() => this.setBondType(bondType)}
                     key={bondType}
                 >
                     <img 
@@ -498,7 +511,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         if (this.state.reaction) {
             listOfStepButtons =   this.state.reaction.steps.map(step => (
                                         <li 
-                                            onClick={() => this.setCurrentStep(step.uuid)}
+                                            onMouseDown={() => this.setCurrentStep(step.uuid)}
                                             key={step.uuid}
                                             className={"group relative px-2 flex gap-1 items-center rounded-md  hover:bg-indigo-700 hover:text-white cursor-pointer " +
                                             (step === this.state.reaction.currentStep
@@ -508,7 +521,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                                 Step {step.order + 1}
                                             </span>
                                             <button
-                                                onClick={(e) => this.deleteStep(e, step.uuid)}
+                                                onMouseDown={(e) => this.deleteStep(e, step.uuid)}
                                                 className={" invisible absolute top-0 right-0 text-indigo-300 bg-indigo-500 hover:text-white hover:bg-indigo-400 rounded-full p-0.5 " +
                                                     ((this.state.reaction.steps.length > 1) ? " group-hover:visible" : null)}
                                                 style={{transform: "translate(40%, -40%)"}}
@@ -548,7 +561,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                         {this.state.reaction ? this.state.reaction.name : null}
                                     </h1>
                                     <PencilIcon
-                                        onClick={this.toggleRenamePopup.bind(this)}
+                                        onMouseDown={this.toggleReactionRenamePopup.bind(this)}
                                         className="w-4 h-4 text-indigo-400 hover:text-indigo-100 cursor-pointer"
                                     />
                                 </div>
@@ -599,11 +612,11 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                         </div>
                                         <PencilIcon
                                             className="text-indigo-400 w-4 h-4 hover:text-indigo-100 cursor-pointer"
-                                            onClick={() => this.togglePromptPopup()}
+                                            onMouseDown={() => this.togglePromptPopup()}
                                         />
                                     </div>
                                     <div
-                                        onClick={() => this.setPromptText(null)}
+                                        onMouseDown={() => this.setPromptText(null)}
                                         className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
                                         Remove prompt
                                     </div>
@@ -620,7 +633,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                             </ol>
                                         </nav>
                                         <button
-                                            onClick={() => this.createNewStep()}
+                                            onMouseDown={() => this.createNewStep()}
                                             className="text-indigo-100 hover:text-white text-sm flex flex-row"
                                         >
                                             <PlusIcon className="w-5 h-5" />
@@ -631,7 +644,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     this.state.reaction && !this.state.reaction.prompt
                                     ?
                                     <div
-                                        onClick={() => this.togglePromptPopup()}
+                                        onMouseDown={() => this.togglePromptPopup()}
                                         className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
                                         + Add prompt
                                     </div>
@@ -667,14 +680,14 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     {/* Double curly arrow */}
                                     <button
                                         className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
-                                        onClick={() => this.setArrowType(ArrowType.DOUBLE)}
+                                        onMouseDown={() => this.setArrowType(ArrowType.DOUBLE)}
                                     >
                                         <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
                                     </button>
                                     {/* Single curly arrow */}
                                     <button
                                         className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
-                                        onClick={() => this.setArrowType(ArrowType.SINGLE)}
+                                        onMouseDown={() => this.setArrowType(ArrowType.SINGLE)}
                                     >
                                         <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
                                     </button>
@@ -682,7 +695,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     {/* Straight arrow */}
                                     <button
                                         className={this.state.straightArrowSelected ? selectedButton : squareButton}
-                                        onClick={() => this.toggleStraightArrow()}
+                                        onMouseDown={() => this.toggleStraightArrow()}
                                     >
                                         <img className={buttonImage} src="/assets/images/straight-arrow.svg" alt="straight arrow" />
                                     </button>
@@ -692,7 +705,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     {/* Plus */}
                                     <button
                                         className={this.state.selectedIon ==  Ion.CATION ? selectedButton : squareButton}
-                                        onClick={() => this.selectIon(Ion.CATION)}
+                                        onMouseDown={() => this.selectIon(Ion.CATION)}
                                     >
                                         <PlusCircle className="w-4 h-4" />
                                     </button>
@@ -700,7 +713,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     {/* Minus */}
                                     <button
                                         className={this.state.selectedIon ==  Ion.ANION ? selectedButton : squareButton}
-                                        onClick={() => this.selectIon(Ion.ANION)}
+                                        onMouseDown={() => this.selectIon(Ion.ANION)}
                                     >
                                         <MinusCircle className="w-4 h-4" />
                                     </button>
@@ -710,7 +723,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     {/* Angle control */}
                                     {/* <button
                                         className={this.state.angleControlSelected ? selectedButton : squareButton}
-                                        onClick={() => this.toggleAngleControl()}
+                                        onMouseDown={() => this.toggleAngleControl()}
                                     >
                                         <img className={buttonImage} src="/assets/images/angle-control.svg" alt="eraser" />
                                     </button>
@@ -720,14 +733,14 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     {/* Eraser */}
                                     <button
                                         className={this.state.eraserOn ? selectedButton : squareButton}
-                                        onClick={() => this.toggleEraser()}
+                                        onMouseDown={() => this.toggleEraser()}
                                     >
                                         <img className={buttonImage} src="/assets/images/eraser.svg" alt="eraser" />
                                     </button>
 
                                     {/* Undo */}
                                     <button
-                                        onClick={() => this.undo()}
+                                        onMouseDown={() => this.undo()}
                                         className={squareButton}
                                     >
                                         <RotateCcw className="w-3.5 h-3.5"/>
@@ -735,7 +748,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
                                     {/* Redo */}
                                     <button
-                                        onClick={() => this.redo()}
+                                        onMouseDown={() => this.redo()}
                                         className={squareButton}
                                     >
                                         <RotateCw className="w-3.5 h-3.5" />
@@ -808,25 +821,13 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                     :
                     null
                 }
-                {/* Prompt popup */}
-                {
-                    this.state.promptPopupVisible
-                    ?
-                    <PromptPopup
-                        popupCloseFunction={this.togglePromptPopup.bind(this)}
-                        setPromptTextFunction={this.setPromptText.bind(this)}
-                        initialText={this.state.reaction.prompt}
-                    />
-                    :
-                    null
-                }
                 {/* Rename popup */}
                 {
                     this.state.renamePopupVisible
                     ?
                     <ReactionRenamePopup
                         reaction={this.state.reaction}
-                        popupCloseFunction={this.toggleRenamePopup.bind(this)}
+                        popupCloseFunction={this.toggleReactionRenamePopup.bind(this)}
                         reameFunction={this.renameReaction.bind(this)}
                     />
                     :

@@ -18,6 +18,10 @@ export default function SectionCard(props: ISectionCardProps){
         Object.values(props.section.reactionListings).filter(reactionListing => {
             return reactionListing.visible
         })
+    
+    filteredReactionList.sort((a, b) => {
+            return a.order - b.order
+        })
 
     const reactionList = 
             <div className=" border border-gray-300 overflow-hidden rounded-md ">
@@ -28,7 +32,7 @@ export default function SectionCard(props: ISectionCardProps){
                             reactionListing={reactionListing}
                             section={props.section}
                             module={props.module}
-                            modulesChecked={props.completedReactionIds}
+                            reactionsChecked={props.completedReactionIds}
                             checkAdditionFunction={props.checkAdditionFunction}
                         />
                     </li>

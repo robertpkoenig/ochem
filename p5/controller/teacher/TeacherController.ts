@@ -3,7 +3,7 @@ import SingleAtomMoleculeCreator from "./AtomCreator"
 import BondCreator from "./BondCreator"
 import PanelController from "./PanelController"
 import { Vector } from "sat"
-import CollisionDetector from "../../model/physics/CollisinDetector"
+import CollisionDetector from "../../view/CollisinDetector"
 import UndoManager from "./UndoManager"
 import HoverDetector from "./HoverDetector"
 import Eraser from "./Eraser"
@@ -27,9 +27,6 @@ class TeacherController {
     bodyMover: BodyMover
     teacherReactionPage: TeacherReactionPage | null
 
-    // properties
-    userType: UserType
-
 	// downstream collaborating objects
 	atomCreator: SingleAtomMoleculeCreator
 	bondCreator: BondCreator
@@ -46,8 +43,7 @@ class TeacherController {
                 hoverDetector: HoverDetector,
                 arrowCreator: CurlyArrowCreator,
                 bodyMover: BodyMover,
-                teacherReactionPage: TeacherReactionPage,
-                userType: UserType) {
+                teacherReactionPage: TeacherReactionPage) {
 
         // Upstream collaborating objects
         this.p5 = p5
@@ -57,7 +53,6 @@ class TeacherController {
         this.arrowCreator = arrowCreator
         this.bodyMover = bodyMover
         this.teacherReactionPage = teacherReactionPage
-        this.userType = userType
 
         // Downstream collaborating objects
 		this.atomCreator = new SingleAtomMoleculeCreator(p5, reaction, this)
@@ -83,7 +78,7 @@ class TeacherController {
 
     routeMousePressed(mouseVector: Vector) {
         if (this.teacherReactionPage.state.bondType != null) {
-            this.bondCreator.startBondIfAtomClicked(mouseVector)
+            this.bondCreator.startBondIfAtomClicked()
         }
         if (this.teacherReactionPage.state.bondType == null &&
             this.teacherReactionPage.state.arrowType == null) {
@@ -105,7 +100,7 @@ class TeacherController {
 
     routeMouseReleased(mouseVector: Vector) {
         if (this.teacherReactionPage.state.bondType != null) {
-            this.bondCreator.completeBondIfReleasedOverAtom(mouseVector)
+            this.bondCreator.completeBondIfReleasedOverAtom()
         }
         if (this.panelController.selectedElementId != null) {
             this.panelController.dropElement()  

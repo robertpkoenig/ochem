@@ -1,7 +1,7 @@
 import p5 from "p5"
 import { Vector } from "sat"
 import StudentReactionPage from "../../../pages/student/reactions/[reactionId]"
-import CollisionDetector from "../../model/physics/CollisinDetector"
+import CollisionDetector from "../../view/CollisinDetector"
 import Reaction from "../../model/Reaction"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import BodyMover from "../BodyMover"

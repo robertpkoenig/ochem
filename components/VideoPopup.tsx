@@ -15,7 +15,7 @@ export default function VideoPopup(props: IProps) {
                         // frameborder="0"
                         allowFullScreen={true}
                         // webkitAllowFullScreen={true}
-                        className="w-full h-full"
+                        className="z-10 w-full h-full"
                     />
                 </div>
             </div>

@@ -27,7 +27,7 @@ class ReactionStepLoader {
                                                                 savedAtom.x,
                                                                 savedAtom.y,
                                                                 )
-                    newAtom.ion = savedAtom.ion
+                    newAtom.ionSymbol = savedAtom.ion
                     newAtom.uuid = savedAtom.id
                     newMolecule.atoms.push(newAtom)
                 }

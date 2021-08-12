@@ -32,12 +32,12 @@ class CurlyArrowCreator {
         // that is where the undo manager is created
     }
 
-    startArrowIfObjectClicked(mouseVector: Vector) {
-       this.startArrowIfAtomClicked(mouseVector) 
-       this.startArrowIfBondClicked(mouseVector) 
+    startArrowIfObjectClicked() {
+       this.startArrowIfAtomClicked() 
+       this.startArrowIfBondClicked() 
 	}
 
-    private startArrowIfAtomClicked(mouseVector: Vector) {
+    private startArrowIfAtomClicked() {
         const hoveredAtom = this.hoverDetector.atomCurrentlyHovered
         if (hoveredAtom != null) {
             const newArrow = new CurlyArrow (
@@ -48,7 +48,7 @@ class CurlyArrowCreator {
         }
     }
 
-    private startArrowIfBondClicked(mouseVector: Vector) {
+    private startArrowIfBondClicked() {
         const hoveredBond = this.hoverDetector.bondCurrentlyHovered
         if (hoveredBond != null) {
             const newArrow = new CurlyArrow (

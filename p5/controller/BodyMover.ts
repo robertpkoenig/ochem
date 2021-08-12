@@ -1,13 +1,13 @@
 import p5 from "p5";
 import SAT from "sat";
+import { Atom } from "../model/chemistry/atoms/Atom";
 import Reaction from "../model/Reaction";
-import { Body } from "../model/physics/Body";
 
 class BodyMover {
 
 	p5: p5
 	reaction: Reaction
-	atomBeingDragged: Body
+	atomBeingDragged: Atom
 
 	constructor(p5: p5, reaction: Reaction) {
 		this.p5 = p5
@@ -15,6 +15,8 @@ class BodyMover {
 		this.atomBeingDragged = null
 	}
 
+    // Replace this logic to just use the currently hovered atom
+    // this is redundant with that logic
 	startDraggingBodyIfPressed(mouseVector: SAT.Vector) {
         for (const body of this.reaction.currentStep.getAllAtoms()) {
             if (SAT.pointInCircle(mouseVector, body.circle)) {

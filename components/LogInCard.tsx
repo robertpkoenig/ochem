@@ -7,6 +7,7 @@ import redirectUserHome from "../helper/redirectUserToHome";
 import User from "../model/User";
 import UserType from "../p5/model/UserType";
 import { primaryButtonMd } from "../styles/common-styles";
+import Link from 'next/link'
 
 export default function LogInCard() {
 
@@ -56,9 +57,11 @@ export default function LogInCard() {
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Log in to your account</h2>
                 <p className="mt-2 text-center text-sm text-gray-600">
                     Or{' '}
-                    <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                    create account
-                    </a>
+                    <Link href="/auth/signup">
+                        <a className="font-medium text-indigo-600 hover:text-indigo-500">
+                            Sign up
+                        </a>
+                    </Link>
                 </p>
             </div>
     

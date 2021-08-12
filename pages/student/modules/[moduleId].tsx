@@ -105,11 +105,14 @@ export default function ModulePage(props: IProps) {
                     })
                 return filteredReactionObjects.length > 0
             })
+        const orderedSectionObjects = filteredSectionObjects.sort((a,b) => {
+            return a.order - b.order
+        })
         sectionList = (
             <div className="flex flex-col gap-5 ">
                 {filteredSectionObjects.map((sectionListing: Section) => 
                     <div key={sectionListing.order}>
-                        <StudentSectionCard
+                    <StudentSectionCard
                             section={sectionListing}
                             module={module}
                             completedReactionIds={completedReactionIds}
@@ -124,8 +127,8 @@ export default function ModulePage(props: IProps) {
     return (
         <ScreenWithLoading loading={loading} >
             <Layout
-                title={module ? module.title : null}
-                subtitle="Subtitle or explenation for this module"
+                title={module?.title}
+                subtitle={module?.subtitle ? module.subtitle : null}
             >
                 {module && module.sections ? sectionList : sectionListEmptyState}
             </Layout>

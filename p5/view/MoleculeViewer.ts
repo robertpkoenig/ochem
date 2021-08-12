@@ -10,8 +10,7 @@ class MoleculeViewer {
     p5: p5
 
     constructor(p5: p5) {
-        this.p5 = p5
-    }
+        this.p5 = p5    }
 
     public render(reaction: Reaction) {
         const reactionStep = reaction.currentStep
@@ -30,7 +29,7 @@ class MoleculeViewer {
                     this.p5.fill("white")
                     this.p5.text(atom.element.abbreviation, atom.circle.pos.x, atom.circle.pos.y + 2)
                 this.p5.pop()
-                if (atom.ion) this.renderIon(atom)
+                if (atom.ionSymbol) this.renderIon(atom)
             }
         }
 
@@ -51,7 +50,7 @@ class MoleculeViewer {
             // cation bounding circle
             this.p5.noStroke()
             this.p5.fill(0)
-            this.p5.text(atom.ion, x, y + 2)
+            this.p5.text(atom.ionSymbol, x, y + 2)
 
         this.p5.pop()
     }
