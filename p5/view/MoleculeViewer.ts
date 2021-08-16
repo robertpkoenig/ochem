@@ -5,6 +5,7 @@ import BondType from "../model/chemistry/bonds/BondType"
 import Reaction from "../model/Reaction"
 import ReactionStep from "../model/ReactionStep"
 
+// Contains methods to draw atoms, bonds, and ions of a molecule
 class MoleculeViewer {
 
     p5: p5

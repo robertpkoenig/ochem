@@ -1,6 +1,7 @@
 import p5 from "p5";
 import { CurlyArrow } from "../model/chemistry/CurlyArrow";
 
+// Draws curly arrows
 class ArrowViewer {
 
     p5: p5

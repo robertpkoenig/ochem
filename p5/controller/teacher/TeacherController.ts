@@ -12,7 +12,6 @@ import p5 from "p5"
 import TeacherReactionPage from "../../../pages/teacher/reactions/[reactionId]"
 import UserType from "../../model/UserType"
 import BodyMover from "../BodyMover"
-import AngleCreator from "./AngleCreator"
 import IonCreator from "./IonCreator"
 import StraightArrowCreator from "./StraightArrowCreator"
 
@@ -33,7 +32,6 @@ class TeacherController {
     panelController: PanelController
     undoManager: UndoManager
     eraser: Eraser
-    angleCreator: AngleCreator
     ionCreator: IonCreator
     straightArrowCreator: StraightArrowCreator
 
@@ -60,7 +58,6 @@ class TeacherController {
 		this.panelController = new PanelController(p5, reaction, this)
         this.undoManager = new UndoManager(this)
         this.eraser = new Eraser(reaction, this)
-        this.angleCreator = new AngleCreator(reaction, this)
         this.ionCreator = new IonCreator(reaction, this)
         this.straightArrowCreator = new StraightArrowCreator(reaction, this)
         
@@ -86,9 +83,6 @@ class TeacherController {
         }
         if (this.teacherReactionPage.state.eraserOn) {
             this.eraser.eraseAnythingClicked()
-        }
-        if (this.teacherReactionPage.state.angleControlSelected) {
-            this.angleCreator.createAngleControlIfAtomClicked(mouseVector)
         }
         if (this.teacherReactionPage.state.selectedIon) {
             this.ionCreator.createIonIfAtomClicked(this.teacherReactionPage.state.selectedIon)

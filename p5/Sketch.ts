@@ -25,6 +25,7 @@ function createP5Context(
         let collisionDetector: CollisionDetector
         let controller: Controller
     
+        // Contains the setup logic for the p5 instance
         p5.setup = () => {
 
             const canvasParent = document.getElementById(Constants.CANVAS_PARENT_NAME)
@@ -42,6 +43,7 @@ function createP5Context(
            
         }
     
+        // This is run continuously while the p5 instance is active
         p5.draw = () => {
 
             // Clear the canvas
@@ -64,16 +66,19 @@ function createP5Context(
     
         }
     
+        // Triggered whenever p5 senses a mousePress anywhere on the page
         p5.mousePressed = () => {
             const mouseVector = new Vector(p5.mouseX, p5.mouseY)
             controller.routeMousePressed(mouseVector)
         }
     
+        // Triggered when mouse is released anywhere on the page
         p5.mouseReleased = () => {
             const mouseVector = new Vector(p5.mouseX, p5.mouseY)
             controller.routeMouseReleased(mouseVector)
         }
     
+        // Triggered when a keyboard key is pressed
         p5.keyPressed = () => {
             if (p5.key == "=") Utilities.printReactionState(reaction)
         }

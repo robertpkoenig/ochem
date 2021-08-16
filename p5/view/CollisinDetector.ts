@@ -7,6 +7,9 @@ import { Atom } from "../model/chemistry/atoms/Atom"
 import Constants from "../Constants"
 import StraightArrow from "../model/chemistry/StraightArrow"
 
+// Contains methods for checking if various elements
+// visually overlap. It utilizes an open source collision
+// detection library call SAT https://www.npmjs.com/package/sat
 class CollisionDetector {
 
     p5: p5
@@ -17,7 +20,7 @@ class CollisionDetector {
         this.reaction = reaction
     }
 
-    twoBodiesOverlap(atomOne: Atom, atomTwo: Atom): boolean {
+    twoAtomsOverlap(atomOne: Atom, atomTwo: Atom): boolean {
         const circleOne = new SAT.Circle(atomOne.circle.pos, atomOne.radius)
         const circleTwo = new SAT.Circle(atomTwo.circle.pos, atomTwo.radius)
         return SAT.testCircleCircle(circleOne, circleTwo)

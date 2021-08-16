@@ -5,6 +5,7 @@ import { Atom } from "../model/chemistry/atoms/Atom"
 import { Bond } from "../model/chemistry/bonds/Bond"
 import BondType from "../model/chemistry/bonds/BondType"
 
+// Performs student-specific rendering tasks.
 class StudentView {
 
     p5: p5
@@ -21,13 +22,10 @@ class StudentView {
     }
 
     decorateAtomIfHovered() {
-    
         const hoveredAtom = this.controller.hoverDetector.atomCurrentlyHovered
-
         if (hoveredAtom != null) {
             this.drawAtomOutline(hoveredAtom, Constants.BLUE_OUTLINE_COLOR)
         }
-
     }
 
     drawAtomOutline(atom: Atom, color: string) {

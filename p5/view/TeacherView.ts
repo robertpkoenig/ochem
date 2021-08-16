@@ -43,18 +43,6 @@ class TeacherView {
         this.renderDraftBond()
         this.renderDraftStraightArrow()
 
-        this.renderAngleControlDummyBonds()
-
-    }
-
-    private renderAngleControlDummyBonds() {
-        for (const bond of this.reaction.currentStep.getAllBonds()) {
-            if (bond.type == null) {
-                this.p5.stroke(237, 233, 254)
-                this.p5.line(bond.atoms[0].circle.pos.x, bond.atoms[0].circle.pos.y,
-                             bond.atoms[1].circle.pos.x, bond.atoms[1].circle.pos.y)
-                }
-        }
     }
 
     private decorateIonIfHovered() {
@@ -112,6 +100,8 @@ class TeacherView {
         this.p5.pop()
     }
 
+    // Sets the position of the eraser tip DOM element based on
+    // the p5 mouse position, and sets the eraser tip to visible
     private showEraserTip() {
         const eraserTip = this.p5.select("#eraser-tip")
         eraserTip.style("display", "inline")
