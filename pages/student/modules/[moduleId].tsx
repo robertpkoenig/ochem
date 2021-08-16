@@ -10,11 +10,9 @@ import FirebaseConstants from "../../../model/FirebaseConstants";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import EmptyState from "../../../components/EmptyState";
 
-interface IProps {
-
-}
-
-export default function ModulePage(props: IProps) {
+// This page displays all module content for the student.
+// The student can practice exercises and tick them off.
+export default function ModulePage() {
 
     const [module, setModule] = useState<Module>(null)
     const [loading, setLoading] = useState<boolean>(true)
@@ -24,9 +22,11 @@ export default function ModulePage(props: IProps) {
     const db = getFirestore()
     const router = useRouter()
 
+    // Fetch the module document from Firebase
     async function getData() {
+        // Get the module Id from the URL path
         const moduleId = router.query.moduleId as string
-
+        // Find the 'address' of the module document in firebase
         const moduleDocRef = doc(db, FirebaseConstants.MODULES, moduleId);
         const docSnap = await getDoc(moduleDocRef);
         setModule(docSnap.data() as Module)
@@ -34,6 +34,7 @@ export default function ModulePage(props: IProps) {
         setLoading(false)
     }
 
+    // Runs once when the page loads and the user is logged in
     useEffect(() => {
         if (user) {
             getData()
@@ -41,6 +42,7 @@ export default function ModulePage(props: IProps) {
         }
     }, [user])
 
+    // Updates the module analytics object
     function sendAnalyticsUpdate() {
         
         const moduleId = router.query.moduleId as string
@@ -67,6 +69,7 @@ export default function ModulePage(props: IProps) {
         
     }
 
+    // Sets the reaction to 'checked' in the database
     function toggleReactionInCheckedReactions(reactionId: string) {
 
         const copyOfCheckedReactions = new Set<string>()
@@ -84,6 +87,11 @@ export default function ModulePage(props: IProps) {
         
         setCompletedReactionids(copyOfCheckedReactions)
 
+        // The list of checked reactions is stored in the user.
+        // This could be refactored into multiple documents for each module
+        // the user is party to, however, this is very unlikely to ever
+        // be needed since students will at most be using Ochem for two
+        // modules in their entire life.
         const db = getFirestore()
         const docRef = doc(db, "users", user.userId);
         updateDoc(docRef, {
@@ -96,6 +104,7 @@ export default function ModulePage(props: IProps) {
 
     let sectionList: React.ReactNode = null
 
+    // The list of section cards
     if (module && module.sections && completedReactionIds) {
         const filteredSectionObjects = 
             Object.values(module.sections).filter(section => {

@@ -3,42 +3,26 @@ import Section from "../../../model/SectionListing";
 import Module from "../../../model/Module";
 import SectionCard from "../../../components/editor/SectionCard";
 import { PlusIcon } from "@heroicons/react/solid";
-import PopupBackground from "../../../components/PopupBackground";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
 import { primaryButtonMd } from "../../../styles/common-styles";
-import { GetServerSideProps } from 'next'
-import { doc, getDoc, updateDoc, getFirestore, setDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import FirebaseConstants from "../../../model/FirebaseConstants";
 import { AuthContext } from "../../../context/provider";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import ModuleEditorLayout from "../../../components/editor/ModuleEditorLayout";
 import EmptyState from "../../../components/EmptyState";
+import { useRouter } from "next/router";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-
-    if (!context.params.moduleId) {
-        return {
-            redirect: {
-                destination: '/teacher/modules',
-                permanent: false,
-            },
-        }
-    }
-    
-    return {
-        props: {
-            moduleId: context.params.moduleId
-        },
-    }
-
-}
-
-interface IProps {
-    moduleId: string
-}
-
-export default function ModulePage(props: IProps) {
+// This page allows lecturers to edit modules, which are collections 
+// of reaction exercises organized around a university module.
+// Teachers can:
+// Create, delete, and reorder sections
+// Create, delete, and reorder reactions
+// Preview the module as students would see it
+// Generate the invite link for students
+// Access student engagement analytics
+export default function ModulePage() {
 
     const [dummyBoolean, forceUpdate] = React.useState<boolean>(false);
 
@@ -48,15 +32,20 @@ export default function ModulePage(props: IProps) {
     const [loading, setLoading] = useState<boolean>(true)
 
     const { user } = useContext(AuthContext)
+    const router = useRouter()
     const db = getFirestore()
 
+    // Load module data from Firestore
     async function getData() {
-        const docRef = doc(db, FirebaseConstants.MODULES, props.moduleId);
+        const moduleId: string = router.query.moduleId as string
+        const docRef = doc(db, FirebaseConstants.MODULES, moduleId);
         const docSnap = await getDoc(docRef);
         setModule(docSnap.data() as Module)
         setLoading(false)
     }
 
+    // This is triggered when the page is loaded and the user
+    // context is not empty
     useEffect(() => {
         if (user) {
             getData()
@@ -92,7 +81,7 @@ export default function ModulePage(props: IProps) {
         const moduleRecordDocLocation =
             doc(db,
                 FirebaseConstants.MODULES,
-                props.moduleId,
+                module.uuid,
             )
 
         const sectionRefWithinModule = FirebaseConstants.SECTIONS + "." + sectionId
@@ -104,6 +93,12 @@ export default function ModulePage(props: IProps) {
 
     }
 
+    // The code should be refactored to remove this function.
+    // It is used by components within the page to update the 
+    // UI after the module is updated. This was the best way
+    // found to update the UI when changing nested objects
+    // within the module. However, it is likely that a better,
+    // more react-idiomatic solution exists.
     function resetModule(module: Module) {
         const moduleCopy: Module = Object.assign(module) 
         setModule(moduleCopy)
@@ -114,6 +109,7 @@ export default function ModulePage(props: IProps) {
 
     let sectionList: React.ReactNode
 
+    // Create the list of sections
     if (module && module.sections) {
         const orderedSectionObjects = Object.values(module.sections).sort((a,b) => {
             return a.order - b.order
@@ -140,6 +136,7 @@ export default function ModulePage(props: IProps) {
                 module={module}
             >
 
+                {/* Show the list of sections or an empty state */}
                 <div className="flex flex-col gap-2">
                     {
                     module && Object.keys(module.sections).length > 0

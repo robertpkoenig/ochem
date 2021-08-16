@@ -22,6 +22,8 @@ const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex j
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
 const buttonImage = "w-4 h-4"
 
+// Gets the reaction Id from the URL path when the page
+// is request on the server
 export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
         props: {
@@ -43,6 +45,7 @@ interface IState {
     p5: p5
 }
 
+// This is page where a student uses a reaction exercise
 class StudentReactionPage extends React.Component<IProps, IState> {
 
     db: FirebaseFirestore
@@ -64,6 +67,9 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
     }
    
+    // When the component is loaded into the browser window,
+    // the reaction JSON is retreieved from the database, and
+    // is deserialized to a Reaction object
     async componentDidMount() {
 
         const docRef = doc(this.db, FirebaseConstants.REACTIONS, this.props.reactionId);
@@ -96,6 +102,8 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
     }
 
+    // This is used by the p5 setup function to inject the p5
+    // instance into this component's state
     setP5(p5: p5) {
         this.setState(
             {
@@ -105,6 +113,9 @@ class StudentReactionPage extends React.Component<IProps, IState> {
         )
     }
 
+    // This function is called when this component is removed
+    // from the browser window. It removes the p5 object from
+    // the window, and therefore stops the p5 draw loop.
     componentWillUnmount() {
         this.state.p5.remove()
     }
@@ -178,6 +189,8 @@ class StudentReactionPage extends React.Component<IProps, IState> {
         setTimeout(this.toggleFailureToast.bind(this), 1000)
     }
 
+    // Advances to the next step in the reaction after
+    // an arrow is drawn correctly in the current step
     incrementStep() {
         const currentIndex = this.state.reaction.currentStep.order
         const nextIndex = currentIndex + 1
@@ -185,6 +198,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
         this.forceUpdate()
     }
 
+    // This starts the exercise over
     resetReaction() {
         this.state.reaction.currentStep = this.state.reaction.steps[0]
         this.forceUpdate()
@@ -192,6 +206,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
     render() {
 
+        // The circles which represent the user's progress in the application
         let stepIndicators: React.ReactNode
         if (this.state.reaction) {
             stepIndicators =   
@@ -255,7 +270,6 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                 </a>
                             </Link>
 
-
                             <div className="w-full flex flex-row justify-between mb-3">
                                 <div>
                                     <h1 className="text-2xl font-semibold text-white">
@@ -267,14 +281,6 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                             null
                                         }
                                     </h1>
-                                </div>
-
-                                <div className="flex flex-row gap-6 items-center">
-
-                                    {/* <button onMouseDown={this.arrowDrawnSuccesfully.bind(this)} className="text-sm text-white">
-                                        Something
-                                    </button> */}
-
                                 </div>
                             </div>
 

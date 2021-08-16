@@ -2,6 +2,7 @@ import Head from 'next/head'
 import React from 'react'
 import SignUpCard from '../../components/SignUpCard'
 
+// Page contianing sign up form for teachers
 export default function SignUp() {
     return (
         <div>

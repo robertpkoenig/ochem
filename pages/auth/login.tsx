@@ -1,20 +1,21 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import LogInCard from '../../components/LogInCard'
 import ScreenWithLoading from '../../components/ScreenWithLoading'
 import { AuthContext } from '../../context/provider'
 import redirectUserHome from '../../helper/redirectUserToHome'
-import UserType from '../../p5/model/UserType'
 
+// Page containing login form
 export default function Login() {
 
     const [loading, setLoading] = useState(true)
-    // if the person is already logged in, go to their page
     const { user, loginAttempted } = useContext(AuthContext)
     const router = useRouter()
 
     useEffect(() => {
+        // If the user is already logged in,
+        // redirect them to their home page
         if (loginAttempted) {
             if (user) {
                 redirectUserHome(router, user)

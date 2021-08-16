@@ -6,6 +6,8 @@ interface IProps {
     children: JSX.Element
 }
 
+// Shows the loading screen if the loading prop is true
+// Otherwise it shows the child components (the page content)
 export default function ScreenWithLoading(props: IProps) {
 
     const loadingScreen = <LoadingScreen />

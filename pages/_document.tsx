@@ -1,3 +1,8 @@
+/* 
+    This class extends Next.js built in Document class, 
+    and adds content to the head of each HTML document.
+*/
+
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 
 class MyDocument extends Document {

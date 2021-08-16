@@ -2,7 +2,6 @@ import { Switch } from "@headlessui/react"
 import { ArrowLeftIcon, PlusIcon, XIcon } from "@heroicons/react/solid"
 import { GetServerSideProps } from "next"
 import Link from "next/link"
-import React from "react"
 import { MinusCircle, PlusCircle, RotateCcw, RotateCw } from "react-feather"
 import Constants from "../../../p5/Constants"
 import TeacherController from "../../../p5/controller/teacher/TeacherController"
@@ -18,13 +17,13 @@ import ReactionStepLoader from "../../../p5/utilities/ReactionStepLoader"
 import Utilities from "../../../p5/utilities/Utilities"
 import { doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore"
 import FirebaseConstants from "../../../model/FirebaseConstants"
-import Module from "../../../model/Module"
-import { MinusCircleIcon, PencilAltIcon, PencilIcon, PlusCircleIcon } from "@heroicons/react/outline"
+import { PencilIcon } from "@heroicons/react/outline"
 import PromptPopup from "../../../components/editor/PromptPopup"
 import ReactionRenamePopup from "../../../components/editor/ReactionRenamePopup"
 import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
 import Ion from "../../../p5/model/chemistry/atoms/Ion"
 import p5 from "p5"
+import { Component } from "react"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -32,6 +31,8 @@ const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex j
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
 const buttonImage = "w-4 h-4"
 
+// This function is used within server side rendering to get the 
+// reaction ID from the url path
 export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
         props: {
@@ -62,7 +63,13 @@ interface IState {
     p5: p5
 }
 
-class TeacherReactionPage extends React.Component<IProps, IState> {
+// This is the page where the teacher edits exercises
+// The reaction is loaded from firebase using the reaction
+// Id in the URL path. On each edit action, the reaction is
+// serialized to JSON, and that JSON is sent to Firebase
+// to overwrite the existing reaction document.
+
+class TeacherReactionPage extends Component<IProps, IState> {
 
     db: FirebaseFirestore
 
@@ -92,6 +99,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     }
 
+    // This function is called when this component is loaded in the browser.
     async componentDidMount() {
 
         const docRef = doc(this.db, FirebaseConstants.REACTIONS, this.props.reactionId);
@@ -124,6 +132,8 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     }
 
+    // This is called by the p5 setup function to inject the p5 object
+    // into this component's state
     setP5(p5: p5) {
         this.setState(
             {
@@ -133,10 +143,15 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         )
     }
 
+    // This function is called when this component is removed
+    // from the browser window. It removes the p5 object from
+    // the window, and therefore stops the p5 draw loop.
     componentWillUnmount() {
         this.state.p5.remove()
     }
 
+    // This function toggles whether or not a reaction is visible
+    // to students.
     toggleVisibility() {
         this.state.teacherController.undoManager.addUndoPoint()
         this.state.reaction.visible = !this.state.reaction.visible
@@ -152,7 +167,9 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         // Module doc ref to access the nested reaction listing object
         const moduleDocRef = doc(this.db, FirebaseConstants.MODULES, this.state.reaction.moduleId)
 
-        // Update the reaction listing document in firestore
+        // To update the reaction listing document in firestore,
+        // the string detailing the document's nested location is
+        // constructed here
         const reactionRefWithinSection =
             FirebaseConstants.SECTIONS + "."+ this.state.reaction.sectionId + "."+
             FirebaseConstants.REACTION_LISTINGS + "." + this.state.reaction.uuid + 
@@ -163,6 +180,8 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         updateDoc(moduleDocRef, sectionVisibilityUpdateObject)
     }
 
+    // This shows/hides the popup in which the user can edit
+    // the reaction's prompt text
     togglePromptPopup() {
         this.setState(prevState => {
             return {
@@ -172,6 +191,8 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         })
     }
 
+    // This shows/hides the popup in which the user can
+    // rename the reaction
     toggleReactionRenamePopup() {
         this.setState(prevState => {
             return {
@@ -247,6 +268,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         }    
     }
 
+    // Turns on and off the eraser.
     toggleEraser() {
         this.setState((prevState) => {
             return {
@@ -263,6 +285,10 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     setBondType(bondType: BondType) {
 
+        // If the bond type is already selected, and the user
+        // is pressing this bond type button again, simply set
+        // the bond type to null, as the user is turning off the
+        // bond drawing altogether
         if (this.state.bondType == bondType) {
             this.setState((prevState) => {
                 return {
@@ -290,6 +316,10 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     setArrowType(arrowType: ArrowType) {
 
+        // If the arrow type is already selected, and the user
+        // is pressing this arrow type button again, simply set
+        // the arrow type to null, as the user is turning off the
+        // arrow drawing altogether
         if (this.state.arrowType == arrowType) {
             this.setState((prevState) => {
                 return {
@@ -317,6 +347,10 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     selectIon(ion: Ion) {
 
+        // If the ion type is already selected, and the user
+        // is pressing this ion type button again, simply set
+        // the ion type to null, as the user is turning off the
+        // ion drawing altogether
         if (this.state.selectedIon == ion) {
             this.setState((prevState) => {
                 return {
@@ -356,20 +390,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         })
     }
 
-    toggleAngleControl() {
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                angleControlSelected: !prevState.angleControlSelected,
-                straightArrowSelected: false,
-                eraserOn: false,
-                bondType: null,
-                selectedIon: null,
-                arrowType: null,
-            }
-        })
-    }
-
+    // Sets the step object currently active in the editor canvas
     setCurrentStep(stepId: string) {
         let selectedStep: ReactionStep
         for (const step of this.state.reaction.steps) {
@@ -380,6 +401,8 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
         this.forceUpdate()
     }
 
+    // Copies the contents of the last step in the reaction,
+    // minus the curly arrow, into a new step
     createNewStep() {
         // Copy the last step into a new step
         const steps = this.state.reaction.steps
@@ -443,6 +466,10 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     }
 
+    // This is called by the downstream 'Controller' classe
+    // to associate this component with that controller.
+    // This allows events from this component to be routed
+    // to that controller class
     setController(editorController: TeacherController) {
         this.setState({
             ...this.state,
@@ -462,6 +489,7 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
 
     render() {
 
+        // Creates the list of bond type buttons on the left panel of the screen
         const bondTypeButtons = Object.values(BondType).map(bondType => {
             return (
                 <button 
@@ -478,9 +506,11 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             )
         })
 
+        // Creates the list of atomic elements on the right panel of the screen
         const listOfAtomicElements = Object.values(AtomicElements).map(element => {
             return (
 
+                // Logic around the dummy element should be deleted
                 element.name == "dummy"
                 ?
                 null
@@ -507,6 +537,8 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             )
         })
 
+        // This creates the list of buttons used to display and select
+        // the reaction step currently active in the editor
         let listOfStepButtons: React.ReactNode
         if (this.state.reaction) {
             listOfStepButtons =   this.state.reaction.steps.map(step => (
@@ -535,11 +567,11 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
             listOfStepButtons = "Loading"
         }
                                 
-
         return (
             <ScreenWithLoadingAllRender loading={this.state.loading}>
                 <>
-                {/* Top header above the thin white horizontal rule */}
+                {/* Top header above the thin white horizontal rule
+                    including the reaction name and the back link to the module page */}
                 <header className="bg-indigo-600">
                     <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 ">
                         <div className="flex flex-col justify-left border-b border-indigo-400">
@@ -598,6 +630,8 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                         </div>
                     </div>
                 </header>
+
+                {/* Element containing the reaction prompt and the list of steps */}
                 <div className="min-h-screen bg-gray-100">
                     <div className="bg-indigo-600 pb-32">
                         <div className="py-5">
@@ -652,18 +686,6 @@ class TeacherReactionPage extends React.Component<IProps, IState> {
                                     null
                                     }
                                 </div>
-                                {/* <div className="flex flex-row gap-2">
-                                    <div className="text-indigo-100 text-md">
-                                        Prompt
-                                    </div>
-                                    <input
-                                        type="text"
-                                        name="prompt"
-                                        placeholder="Prompt text for this step (optional)"
-                                        value={this.state.reaction ? this.state.reaction.currentStep.uuid : null}
-                                        className="bg-white border"
-                                    />
-                                </div> */}
                             </div>
                         </div>
                     </div>

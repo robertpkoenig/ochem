@@ -9,10 +9,10 @@ import { collection, getDocs, getFirestore, query, where } from 'firebase/firest
 import FirebaseConstants from '../../../model/FirebaseConstants'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 
-interface IProps {
-}
-
-export default function StudentModules(props: IProps) {
+// This page lists all modules the student has access to.
+// The student never sees this page if they only have access
+// to one module
+export default function StudentModules() {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [moduleListings, setModuleListings] = useState<ModuleListing[]>([])
@@ -20,6 +20,8 @@ export default function StudentModules(props: IProps) {
     const { user } = useContext(AuthContext)
     const db = getFirestore()
 
+    // Gets all module listings whose Id's are in this user's
+    // list of module id's
     async function getData() {
 
         const q = query(
@@ -42,12 +44,15 @@ export default function StudentModules(props: IProps) {
 
     }
 
+    // This function runs once when the page is loaded
+    // and the user is logged in
     useEffect(() => {
         if (user) {
             getData()
         }
     }, [user])
         
+    {/* The list of module cards */}
     const moduleList: React.ReactNode = (
     
         <div className="bg-white border border-gray-300 overflow-hidden rounded-md">

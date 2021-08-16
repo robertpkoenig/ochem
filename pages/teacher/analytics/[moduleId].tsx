@@ -14,6 +14,10 @@ interface DateRecord {
     studentIds: string[]
 }
 
+/*
+     This page displays analytics on student engagement for a given module   
+*/
+
 export default function Analytics() {
 
     const [loading, setLoading] = useState<boolean>(true)
@@ -27,6 +31,11 @@ export default function Analytics() {
     const router = useRouter()
     const { user } = useContext(AuthContext)
 
+    // When a student visits the module page, their student id is added a document
+    // containing all student ID's of students that have visited the module
+    // in a given day. These documents are stored as a sub-collection within
+    // each module analytics record. This logic gets the last 7 module analytics
+    // records from Firebase, ordered by date
     async function getDatesFromFirebase() {
         const db = getFirestore()
         const moduleId = router.query.moduleId as string
@@ -43,10 +52,15 @@ export default function Analytics() {
                 tempDateRecords.push(doc.data() as DateRecord)
             });
             setDateRecords(tempDateRecords)
+            tallyStudentNumbers()
             setDates()
         })
     }
 
+    // When a module is created, a module analytics record is created.
+    // Currently, this stores the number of users who have accepted the
+    // lecturer's module invitation. It also contains a sub collection of
+    // records recording students who have visited each day.
     async function getModuleAnalyticsRecord() {
         const db = getFirestore()
         const moduleId = router.query.moduleId as string
@@ -56,16 +70,20 @@ export default function Analytics() {
         })
     }
 
+    // This is called after the page loads, the user has
+    // been authenticated, and before the data for the line
+    // graph has been generated.
     useEffect(() => {
         if (user && datesForDisplay.length == 0) {
             getDatesFromFirebase()
             getModuleAnalyticsRecord()
-        }
-        
+        } 
     }, [user])
 
-    useEffect(() => {
-        if (!dateRecords) return
+    // This method tallies the number of students who have
+    // accepted the invitation, and  counts the number of students
+    // who have visited the site each day in the last 7 days
+    function tallyStudentNumbers() {
         const tempStudentNumbers: number[] = []
         let tempNumUniquesLastSevenDays = 0
 
@@ -84,14 +102,21 @@ export default function Analytics() {
         setStudentNumbers(tempStudentNumbers)
         setNumUniquesLastSevenDays(tempNumUniquesLastSevenDays)
 
-    }, [dateRecords])
+    }
 
+    // This method stops page load when the module analytics
+    // record has been retrieved from the database
     useEffect(() => {
         if (moduleAnalyticsRecord) {
             setLoading(false)
         }
-    }, [moduleAnalyticsRecord, studentNumbers])
+    }, [moduleAnalyticsRecord])
 
+    // This method creates two lists of strings. The first list
+    // is the list of strings to display in each date slot. The second
+    // list is a list of dates from today to the last seven days, which
+    // are formatted the same as the records in firebase. There may not
+    // be a record in firebase for each day, so instead, each day 
     function setDates() {
 
         const months = [
@@ -134,6 +159,7 @@ export default function Analytics() {
 
     }
 
+    // This data object is formatted as required by the graphic library
     const data = {
         labels: datesForDisplay,
         datasets: [
@@ -146,6 +172,7 @@ export default function Analytics() {
         ],
     };
 
+    // This object defines the formatting parameters for the 
     const options = {
         scales: {
             yAxes: [
@@ -171,7 +198,9 @@ export default function Analytics() {
                 title="Analytics"
                 subtitle={moduleAnalyticsRecord?.moduleName}
             >
+                {/* List if statistic numbers */}
                 <div className="flex flex-row gap-10 ">
+                    {/* Number of total students */}
                     <div>
                         <dt>
                             <div className="absolute bg-indigo-500 rounded-md p-3">
@@ -192,6 +221,7 @@ export default function Analytics() {
                         </dd>
                     </div>
 
+                    {/* Number of students in last seven days */}
                     <div>
                         <dt>
                             <div className="absolute bg-indigo-500 rounded-md p-3">
@@ -207,6 +237,7 @@ export default function Analytics() {
                     </div>
                 </div>
 
+                {/* Line graph of daily unique users over the last seven days */}
                 <p className="mb-2 font-medium text-gray-500">
                     Unique Users
                 </p>

@@ -11,6 +11,9 @@ import Image from 'next/image'
 import FirebaseConstants from '../../../model/FirebaseConstants'
 import ModuleListing from '../../../model/ModuleListing'
 
+// The student uses this page to sign up to Ochem.io.
+// After signing up on this page, the module specified in the
+// URL path will be added to the student's list of modules.
 export default function Invitation() {
 
     const [loading, setLoading] = useState<boolean>(true)
@@ -40,6 +43,8 @@ export default function Invitation() {
 
     const router = useRouter()
 
+    // Get the abridged module document from Firestore
+    // and set loading to false once it is loaded.
     async function getData() {
         const db = getFirestore()
 
@@ -50,6 +55,10 @@ export default function Invitation() {
         setLoading(false)
     }
 
+    // This runs once after the page is loaded and the
+    // auth component has attempted to log the user in.
+    // If the user is logged in, they will be redirected directly to
+    // the module whose Id is in the URL path.
     useEffect(() => {
     if (loginAttempted) {
             if (user) {
@@ -61,6 +70,9 @@ export default function Invitation() {
         }
     }, [loginAttempted])
 
+    // Add an authentication record in firebase for the user,
+    // creat the user object, add the user to the module analytics
+    // record, and add the module to the user's list of modules
     async function onSubmit(event: React.FormEvent) {
         setLoading(true)
         event.preventDefault()
@@ -96,6 +108,7 @@ export default function Invitation() {
         <ScreenWithLoading loading={loading}>
             <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
                 
+                {/* Logo and login link */}
                 <div className="sm:mx-auto ">
                     <img
                         className="mx-auto h-12 w-auto"
@@ -117,6 +130,7 @@ export default function Invitation() {
 
                     <div className="bg-white shadow rounded-lg flex flex-row ">
 
+                        {/* Blue area with module name and author name */}
                         <div className="bg-indigo-600 rounded-tl-lg rounded-bl-lg p-10 text-white flex flex-col justify-between ">
 
                             <div className="flex flex-col gap-2">

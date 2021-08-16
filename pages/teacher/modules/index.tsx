@@ -15,10 +15,9 @@ import ScreenWithLoading from '../../../components/ScreenWithLoading'
 import ModuleAnalyticsRecord from '../../../model/ModuleAnalyticsRecord'
 import EmptyState from '../../../components/EmptyState'
 
-interface IProps {
-}
-
-export default function Modules(props: IProps) {
+// Shows a list of all the modules owned by the lecturer.
+// Teachers can create and delete modules in this page.
+export default function Modules() {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [createModulePopupVisible, setCreateModulePopupVisible] = useState<boolean>(false)
@@ -31,6 +30,8 @@ export default function Modules(props: IProps) {
     const { user } = useContext(AuthContext)
     const db = getFirestore()
 
+    // Loads all module listing documents created by this user
+    // from Firebase
     async function getData() {
 
         const q = query(
@@ -54,9 +55,9 @@ export default function Modules(props: IProps) {
 
     }
 
+    // Called once when the page is loaded and the
+    // user object is not empty (the user is logged in)
     useEffect(() => {
-        console.log("useEffect triggered");
-        
         if (user) {
             getData()
         }
@@ -70,9 +71,12 @@ export default function Modules(props: IProps) {
         setDeleteModulePopupVisible(!deleteModulePopupVisible)
     }
 
+    // Creates the core module record in Firebase
     function createModule(name: string, subtitle: string) {
         const moduleId = uuid()
         const creationDate = Date.now().toString()
+
+        // The core module document
         const newModule: Module = {
             title: name,
             subtitle: subtitle,
@@ -84,6 +88,7 @@ export default function Modules(props: IProps) {
         setDoc(doc(db, FirebaseConstants.MODULES, moduleId), newModule);
         createModuleListing(name, moduleId, creationDate)
 
+        // The analytics record for this module
         const newModuleAnalyticsRecord: ModuleAnalyticsRecord = {
             moduleName: name,
             moduleId: moduleId,
@@ -93,6 +98,7 @@ export default function Modules(props: IProps) {
         setDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), newModuleAnalyticsRecord)
     }
 
+    // Creates the abridged module document
     function createModuleListing(name: string, moduleId: string, creationDate: string) {
         const newModuleListing: ModuleListing = {
             name: name,
@@ -106,7 +112,8 @@ export default function Modules(props: IProps) {
     }
 
     const moduleListEmptyState = <EmptyState text="You don&apos;t have any modules yet" />
-                                    
+           
+    // Create the list of module cards
     const moduleList: ReactNode = (
     
         <div className=" overflow-hidden rounded-md">

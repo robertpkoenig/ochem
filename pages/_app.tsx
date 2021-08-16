@@ -5,6 +5,13 @@ import { AuthProvider } from '../context/provider'
 import '../styles/globals.css'
 import Head from 'next/head'
 
+/* 
+    This is the entry point for the Next.js appliction.
+    An 'AuthProvider' class wraps all components of the
+    application so that authentication state can be
+    shared throughout the application.
+*/
+
 function MyApp({ Component, pageProps }: AppProps) {
     return (
         <>

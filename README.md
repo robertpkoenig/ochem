@@ -1,34 +1,36 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Ochem.io
+## Robert Koenig (robertpkoenig@gmail.com)
 
-## Getting Started
 
-First, run the development server:
+### Technologies
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+- React
+- Next.js
+- Firebase
+- Tailwind CSS
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Usage
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.tsx`.
+Install node
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Within the project directory:
 
-## Learn More
+- Use command 'npm i' to download all node dependencies for the project
+- Use command 'npm run dev' to start the application on local server port 3000
 
-To learn more about Next.js, take a look at the following resources:
+Demo video of the application: https://www.loom.com/share/f9cb6644afcd4545808693d90757ef1a
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Structure
 
-## Deploy on Vercel
+- Each file in the 'pages' directory constitute web pages of the site
+- The file structure within pages matches the URL paths of each page, so the URL path '/teacher/modules' corresponds to the file 'teacher/modules/index.tsx'
+- Page with dynamic data loaded from URL parameters have names wrapped in square brackets, so 'teacher/modules/[moduleId].tsx' corresponds the URL path 'teacher/modules/1234' where '1234' is the unique ID of the module
+- Each 'page' component is a javascript function/class instance which injects html/css/js onto the page, and updates html values upon relevant javascript state changes
+- 'Page' components contain their own html/css/js, and additionally incorporate other child react 'components' which themselves inject html/css/js onto the page
+- Firebase autentication is performed with the React context API, and a React 'provider' component for authentication wraps the entire application in 'pages/_app.tsx'
+- Server side rendering is not used for dynamic content, and instead data is fetched from Firebase on page load
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Copyright Robert Koenig 2021
