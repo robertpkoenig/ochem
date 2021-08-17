@@ -9,6 +9,7 @@ import { arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc } 
 import FirebaseConstants from "../../../firebase/FirebaseConstants";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import EmptyState from "../../../components/EmptyState";
+import UserType from "../../../p5/model/UserType";
 
 // This page displays all module content for the student.
 // The student can practice exercises and tick them off.
@@ -44,28 +45,33 @@ export default function ModulePage() {
 
     // Updates the module analytics object
     function sendAnalyticsUpdate() {
-        
-        const moduleId = router.query.moduleId as string
 
-        const date = new Date()
-        date.setHours(0)
-        date.setMinutes(0)
-        date.setSeconds(0)
-        date.setMilliseconds(0)
-        const dateString = date.toISOString().substring(0, 10)
-
-        const dateRecordDocLocation =
-            doc(db,
-                FirebaseConstants.MODULE_ANALYTICS_RECORDS,
-                moduleId,
-                FirebaseConstants.DATE_RECORDS,
-                dateString
-            )
+        // only do this if the user is a student
+        if (user.type == UserType.STUDENT) {
         
-        setDoc(dateRecordDocLocation, {
-            "date": dateString,
-            "studentIds": arrayUnion(user.userId)
-        }, {merge: true})
+            const moduleId = router.query.moduleId as string
+
+            const date = new Date()
+            date.setHours(0)
+            date.setMinutes(0)
+            date.setSeconds(0)
+            date.setMilliseconds(0)
+            const dateString = date.toISOString().substring(0, 10)
+
+            const dateRecordDocLocation =
+                doc(db,
+                    FirebaseConstants.MODULE_ANALYTICS_RECORDS,
+                    moduleId,
+                    FirebaseConstants.DATE_RECORDS,
+                    dateString
+                )
+                
+            setDoc(dateRecordDocLocation, {
+                date: dateString,
+                studentIds: arrayUnion(user.userId)
+            }, {merge: true})
+
+        }
         
     }
 

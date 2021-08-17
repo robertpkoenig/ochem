@@ -118,7 +118,9 @@ export default function Modules() {
     
         <div className=" overflow-hidden rounded-md">
             <ul className="space-y-4">
-                {moduleListings.map((moduleListing: ModuleListing) => 
+                {moduleListings
+                    .sort(function (a: ModuleListing, b: ModuleListing) {return parseInt(a.creationDate) - parseInt(b.creationDate)})
+                    .map((moduleListing: ModuleListing) => 
                     <li key={moduleListing.uuid} className="px-6 py-4 bg-gray-100 rounded-md">
                         <ModuleCard
                             moduleListing={moduleListing}

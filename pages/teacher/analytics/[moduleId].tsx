@@ -1,4 +1,4 @@
-import { CalendarIcon, ClockIcon, UsersIcon } from "@heroicons/react/outline";
+import { CalendarIcon, UsersIcon } from "@heroicons/react/outline";
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../../components/Layout";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
@@ -22,155 +22,12 @@ export default function Analytics() {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [moduleAnalyticsRecord, setModuleAnalyticsRecord] = useState<ModuleAnalyticsRecord>(null)
-    const [dateRecords, setDateRecords] = useState<DateRecord[]>(null)
-    const [studentNumbers, setStudentNumbers] = useState<number[]>([])
-    const [datesForDataProcessing, setDatesForDataProcessing] = useState<string[]>([])
-    const [datesForDisplay, setDatesForDisplay] = useState<string[]>([])
     const [numUniquesLastSevenDays, setNumUniquesLastSevenDays] = useState<number>(0)
+    // This is the data object used by the graphing library.
+    const [data, setData] = useState(null)
 
     const router = useRouter()
     const { user } = useContext(AuthContext)
-
-    // When a student visits the module page, their student id is added a document
-    // containing all student ID's of students that have visited the module
-    // in a given day. These documents are stored as a sub-collection within
-    // each module analytics record. This logic gets the last 7 module analytics
-    // records from Firebase, ordered by date
-    async function getDatesFromFirebase() {
-        const db = getFirestore()
-        const moduleId = router.query.moduleId as string
-        const dateRecordsCollectionLocation =
-            collection( db,
-                        FirebaseConstants.MODULE_ANALYTICS_RECORDS,
-                        moduleId,
-                        FirebaseConstants.DATE_RECORDS
-            )
-        const q = query(dateRecordsCollectionLocation, orderBy("date", "desc"), limit(7))
-        getDocs(q).then(docs => {
-            const tempDateRecords: DateRecord[] = []
-            docs.forEach((doc) => {
-                tempDateRecords.push(doc.data() as DateRecord)
-            });
-            setDateRecords(tempDateRecords)
-            tallyStudentNumbers()
-            setDates()
-        })
-    }
-
-    // When a module is created, a module analytics record is created.
-    // Currently, this stores the number of users who have accepted the
-    // lecturer's module invitation. It also contains a sub collection of
-    // records recording students who have visited each day.
-    async function getModuleAnalyticsRecord() {
-        const db = getFirestore()
-        const moduleId = router.query.moduleId as string
-        const moduleDocRef = doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId);
-        getDoc(moduleDocRef).then((docSnap) => {
-            setModuleAnalyticsRecord(docSnap.data() as ModuleAnalyticsRecord)
-        })
-    }
-
-    // This is called after the page loads, the user has
-    // been authenticated, and before the data for the line
-    // graph has been generated.
-    useEffect(() => {
-        if (user && datesForDisplay.length == 0) {
-            getDatesFromFirebase()
-            getModuleAnalyticsRecord()
-        } 
-    }, [user])
-
-    // This method tallies the number of students who have
-    // accepted the invitation, and  counts the number of students
-    // who have visited the site each day in the last 7 days
-    function tallyStudentNumbers() {
-        const tempStudentNumbers: number[] = []
-        let tempNumUniquesLastSevenDays = 0
-
-        for (const date of datesForDataProcessing) {
-            
-            let newStudentNumber = 0
-            for (const dateRecord of dateRecords) {
-                if (dateRecord.date == date) {
-                    newStudentNumber += dateRecord.studentIds.length
-                    tempNumUniquesLastSevenDays += dateRecord.studentIds.length    
-                    break
-                }
-            }
-            tempStudentNumbers.push(newStudentNumber)
-        }
-        setStudentNumbers(tempStudentNumbers)
-        setNumUniquesLastSevenDays(tempNumUniquesLastSevenDays)
-
-    }
-
-    // This method stops page load when the module analytics
-    // record has been retrieved from the database
-    useEffect(() => {
-        if (moduleAnalyticsRecord) {
-            setLoading(false)
-        }
-    }, [moduleAnalyticsRecord])
-
-    // This method creates two lists of strings. The first list
-    // is the list of strings to display in each date slot. The second
-    // list is a list of dates from today to the last seven days, which
-    // are formatted the same as the records in firebase. There may not
-    // be a record in firebase for each day, so instead, each day 
-    function setDates() {
-
-        const months = [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec'
-        ]
-
-        // Get the dates for matching to the firebase records
-        const tempDatesForDataProcessing: string[] = []
-        let date = new Date()
-        for (let i = 0 ; i < 7 ; i++) {
-            tempDatesForDataProcessing.push(date.toISOString().substring(0, 10))
-            date.setDate(date.getDate() - 1)
-        }
-        tempDatesForDataProcessing.reverse()
-        setDatesForDataProcessing(tempDatesForDataProcessing)
-
-        console.log(tempDatesForDataProcessing);
-
-        // Get the dates for display
-        const tempDatesForDisplay: string[] = []
-        date = new Date()
-        for (let i = 0 ; i < 7 ; i++) {
-            const dateForDisplay = months[date.getMonth()] + " " + date.getDate()
-            tempDatesForDisplay.push(dateForDisplay)
-            date.setDate(date.getDate() - 1)
-        }
-        tempDatesForDisplay.reverse()
-        setDatesForDisplay(tempDatesForDisplay)
-
-    }
-
-    // This data object is formatted as required by the graphic library
-    const data = {
-        labels: datesForDisplay,
-        datasets: [
-        {
-            data: studentNumbers,
-            fill: false,
-            backgroundColor: 'rgb(79, 70, 229)',
-            borderColor: 'rgba(79, 70, 229, 0.2)',
-        },
-        ],
-    };
 
     // This object defines the formatting parameters for the 
     const options = {
@@ -189,6 +46,172 @@ export default function Analytics() {
                 position: 'top',
             },
         }
+    }
+
+    // This is called after the page loads, the user has
+    // been authenticated, and before the data for the line
+    // graph has been generated.
+    useEffect(() => {
+        if (user) {
+            fetchAndProcessData()
+        } 
+    }, [user])
+
+    async function fetchAndProcessData() {
+
+        getModuleAnalyticsRecord()
+        
+        const firebaseDateRecords = await getFirebaseDateRecords()
+        const datesForLastSevenDaysFormattedLikeFirebase =
+            createListOfDatesForLastSevenDaysFormattedLikeFirebaseDateRecords()
+        const datesFormattedForDisplay = 
+            createListOfDatesFormattedForDisplay()
+        const numberOfStudentsByDayLastSevenDays =
+            tallyStudentNumbers(
+                datesForLastSevenDaysFormattedLikeFirebase,
+                firebaseDateRecords
+            )
+        setDataObjectsRequiredByGraphingLibrary(
+            datesFormattedForDisplay,
+            numberOfStudentsByDayLastSevenDays
+        )
+        setLoading(false)
+    }
+
+    // When a module is created, a module analytics record is created.
+    // Currently, this stores the number of users who have accepted the
+    // lecturer's module invitation. It also contains a sub collection of
+    // records recording students who have visited each day.
+    async function getModuleAnalyticsRecord() {
+        const db = getFirestore()
+        const moduleId = router.query.moduleId as string
+        const moduleDocRef = doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId);
+        getDoc(moduleDocRef).then((docSnap) => {
+            setModuleAnalyticsRecord(docSnap.data() as ModuleAnalyticsRecord)
+        })
+    }
+
+    // When a student visits the module page, their student id is added a document
+    // containing all student ID's of students that have visited the module
+    // in a given day. These documents are stored as a sub-collection within
+    // each module analytics record. This logic gets the last 7 module analytics
+    // records from Firebase, ordered by date
+    async function getFirebaseDateRecords(): Promise<DateRecord[]> {
+        const db = getFirestore()
+        const moduleId = router.query.moduleId as string
+        // This is the syntax for getting a nested sub collection.
+        // You just specify the name of the sub collection after
+        // the location of the parent document
+        const dateRecordsCollectionLocation =
+            collection( db,
+                        FirebaseConstants.MODULE_ANALYTICS_RECORDS,
+                        moduleId,
+                        FirebaseConstants.DATE_RECORDS
+            )
+        const q = query(dateRecordsCollectionLocation, orderBy("date", "desc"), limit(7))
+        // Set the firebase date records to local state
+        const firebaseDateRecords: DateRecord[] = []
+        const docs = await getDocs(q)
+        docs.forEach((doc) => {
+            firebaseDateRecords.push(doc.data() as DateRecord)
+        })      
+        return firebaseDateRecords
+    }
+
+    function createListOfDatesForLastSevenDaysFormattedLikeFirebaseDateRecords(): string[] {
+        const datesForLastSevenDaysFormattedLikeFirebase: string[] = []
+        let date = new Date()
+        for (let i = 0 ; i < 7 ; i++) {
+            datesForLastSevenDaysFormattedLikeFirebase
+                .push(date.toISOString().substring(0, 10))
+            date.setDate(date.getDate() - 1)
+        }
+        datesForLastSevenDaysFormattedLikeFirebase.reverse()
+        return datesForLastSevenDaysFormattedLikeFirebase
+    }
+
+    // This method creates two lists of strings. The first list
+    // is the list of strings to display in each date slot. The second
+    // list is a list of dates from today to the last seven days, which
+    // are formatted the same as the records in firebase. There may not
+    // be a record in firebase for each day, so instead, each day 
+    function createListOfDatesFormattedForDisplay(): string[] {
+
+        const months = [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec'
+        ]
+
+        let date = new Date()
+        const datesFormattedForDisplay: string[] = []
+        date = new Date()
+        for (let i = 0 ; i < 7 ; i++) {
+            const dateForDisplay = months[date.getMonth()] + " " + date.getDate()
+            datesFormattedForDisplay.push(dateForDisplay)
+            date.setDate(date.getDate() - 1)
+        }
+        datesFormattedForDisplay.reverse()
+        return datesFormattedForDisplay
+    }
+
+    // This method tallies the number of students who have
+    // accepted the invitation, and  counts the number of students
+    // who have visited the site each day in the last 7 days
+    function tallyStudentNumbers(
+        datesForLastSevenDaysFormattedLikeFirebase: string[],
+        firebaseDateRecords: DateRecord[]
+    ): number[] {
+        const numberOfStudentsByDayLastSevenDays: number[] = []
+        let tempNumUniquesLastSevenDays = 0
+
+        for (const date of datesForLastSevenDaysFormattedLikeFirebase) {
+            
+            let newStudentNumber = 0
+            for (const dateRecord of firebaseDateRecords) {
+                if (dateRecord.date == date) {
+                    newStudentNumber += dateRecord.studentIds.length
+                    tempNumUniquesLastSevenDays += dateRecord.studentIds.length    
+                    break
+                }
+            }
+            numberOfStudentsByDayLastSevenDays.push(newStudentNumber)
+        }
+
+        // This sets state, and should probably be refactored out
+        setNumUniquesLastSevenDays(tempNumUniquesLastSevenDays)
+
+        return numberOfStudentsByDayLastSevenDays
+    }
+
+    function setDataObjectsRequiredByGraphingLibrary(
+        datesFormattedForDisplay: string[],
+        listOfStudentNumbersByDay: number[]
+    ) {
+        console.log(datesFormattedForDisplay);
+        
+        setData(
+            {
+                labels: datesFormattedForDisplay,
+                datasets: [
+                    {
+                        data: listOfStudentNumbersByDay,
+                        fill: false,
+                        backgroundColor: 'rgb(79, 70, 229)',
+                        borderColor: 'rgba(79, 70, 229, 0.2)',
+                    },
+                ],
+            }
+        )
     }
 
     return (

@@ -1,7 +1,7 @@
 import { FormEvent, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { arrayUnion, doc, DocumentSnapshot, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { arrayUnion, doc, DocumentSnapshot, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
 import { AuthContext } from '../../../context/provider'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
@@ -79,29 +79,37 @@ export default function Invitation() {
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, emailValue, passwordValue)
             .then((userCredential) => {
-                // Signed in 
                 const db = getFirestore()
-                const newUser: User = {
-                    type: UserType.STUDENT,
-                    firstName: firstNameValue,
-                    lastName: lastNameValue,
-                    email: emailValue,
-                    university: "",
-                    moduleIds: [moduleId],
-                    completedReactionIds: [],
-                    userId: userCredential.user.uid
-                }
-                setDoc(doc(db, "users", userCredential.user.uid), newUser).then(() => {
-                    router.push("/student/modules/" + moduleId)
-                })
-                setDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), {
-                    studentIds: arrayUnion(userCredential.user.uid)
-                })
+                const userId = userCredential.user.uid
+                createUserObject(userId, db)
+                addStudentToAnalyticsRecord(userId, db)
             })
             .catch((error) => {
                 setLoading(false)
                 alert(error.message)
             });
+    }
+
+    function createUserObject(userId: string, db: FirebaseFirestore) {
+        const newUser: User = {
+            type: UserType.STUDENT,
+            firstName: firstNameValue,
+            lastName: lastNameValue,
+            email: emailValue,
+            university: "",
+            moduleIds: [moduleId],
+            completedReactionIds: [],
+            userId: userId,
+        }
+        setDoc(doc(db, "users", userId), newUser).then(() => {
+            router.push("/student/modules/" + moduleId)
+        })
+    }
+
+    function addStudentToAnalyticsRecord(userId: string, db: FirebaseFirestore) {
+        updateDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), {
+            studentIds: arrayUnion(userId)
+        })
     }
 
     return (
