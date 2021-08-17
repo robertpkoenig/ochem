@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import * as React from 'react';
 import { useState } from 'react';
-import Module from '../../model/Module';
-import ReactionListing from '../../model/ReactionListing';
-import Section from '../../model/SectionListing';
+import Module from '../../firebase/Module';
+import ReactionListing from '../../firebase/ReactionListing';
+import Section from '../../firebase/SectionListing';
 import { primaryButtonSm, roundEditButtonContainer, secondaryButtonSm } from '../../styles/common-styles';
 import PopupBackground from '../PopupBackground';
 import DeletionPopup from './DeletionPopup';
 import DeleteReactionPopup from './DeleteReactionPopup';
 import { deleteDoc, doc, getFirestore, updateDoc } from 'firebase/firestore';
-import FirebaseConstants from '../../model/FirebaseConstants';
+import FirebaseConstants from '../../firebase/FirebaseConstants';
 import { PencilAltIcon } from '@heroicons/react/outline';
 
 export interface IReactionCardProps {

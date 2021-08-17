@@ -1,4 +1,4 @@
-import ReactionListing from "../../model/ReactionListing"
+import ReactionListing from "../../firebase/ReactionListing"
 import { redButtonMd } from "../../styles/common-styles"
 
 interface IProps {

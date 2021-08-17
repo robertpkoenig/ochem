@@ -4,10 +4,10 @@ import Layout from "../../../components/Layout";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import { Line } from 'react-chartjs-2';
 import { collection, doc, getDoc, getDocs, getFirestore, limit, orderBy, query, where } from "firebase/firestore";
-import FirebaseConstants from "../../../model/FirebaseConstants";
+import FirebaseConstants from "../../../firebase/FirebaseConstants";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../../context/provider";
-import ModuleAnalyticsRecord from "../../../model/ModuleAnalyticsRecord";
+import ModuleAnalyticsRecord from "../../../firebase/ModuleAnalyticsRecord";
 
 interface DateRecord {
     date: string,

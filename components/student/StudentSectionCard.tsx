@@ -1,6 +1,6 @@
-import Module from '../../model/Module';
-import ReactionListing from '../../model/ReactionListing';
-import Section from '../../model/SectionListing';
+import Module from '../../firebase/Module';
+import ReactionListing from '../../firebase/ReactionListing';
+import Section from '../../firebase/SectionListing';
 import StudentReactionCard from './StudentReactionCard';
 
 interface ISectionCardProps {
@@ -12,6 +12,7 @@ interface ISectionCardProps {
 
 interface ISectionCardState {}
 
+// This is the section card in the student module page
 export default function SectionCard(props: ISectionCardProps){
 
     const filteredReactionList =

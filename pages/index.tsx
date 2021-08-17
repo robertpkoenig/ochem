@@ -86,8 +86,8 @@ export default function Example() {
                                         </div>
                                         <div className="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
                                         {navigation.map((item) => (
-                                            <Link href={item.href}>
-                                                <a key={item.name} className="font-medium text-gray-500 hover:text-gray-900">
+                                            <Link key={item.name} href={item.href}>
+                                                <a className="font-medium text-gray-500 hover:text-gray-900">
                                                     {item.name}
                                                 </a>
                                             </Link>

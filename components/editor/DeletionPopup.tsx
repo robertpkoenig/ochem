@@ -1,6 +1,6 @@
-import ModuleListing from "../../model/ModuleListing"
-import ReactionListing from "../../model/ReactionListing"
-import Section from "../../model/SectionListing"
+import ModuleListing from "../../firebase/ModuleListing"
+import ReactionListing from "../../firebase/ReactionListing"
+import Section from "../../firebase/SectionListing"
 import { redButtonMd } from "../../styles/common-styles"
 import PopupBackground from "../PopupBackground"
 

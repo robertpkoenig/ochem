@@ -1,12 +1,12 @@
 
 import Layout from '../../../components/Layout'
 import React, { useContext, useEffect, useState } from 'react'
-import ModuleListing from '../../../model/ModuleListing'
+import ModuleListing from '../../../firebase/ModuleListing'
 import Link from 'next/link'
 import { primaryButtonMd } from '../../../styles/common-styles'
 import { AuthContext } from '../../../context/provider'
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
-import FirebaseConstants from '../../../model/FirebaseConstants'
+import FirebaseConstants from '../../../firebase/FirebaseConstants'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 
 // This page lists all modules the student has access to.

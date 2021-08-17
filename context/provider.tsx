@@ -4,8 +4,14 @@ import firebaseClient from "../firebaseClient";
 import nookies from "nookies"
 import router, { useRouter } from "next/router";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
-import FirebaseNames from "../model/FirebaseConstants";
-import User from "../model/User";
+import FirebaseNames from "../firebase/FirebaseConstants";
+import User from "../firebase/User";
+
+/* 
+Users in the application are authenticated with this component.
+This component wraps all other app components.
+This component also tracks whether or not login has been attempted.
+*/
 
 type authContextType = {
     user: User,

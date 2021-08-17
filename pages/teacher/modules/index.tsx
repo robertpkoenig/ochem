@@ -6,13 +6,13 @@ import ModulePopup from '../../../components/editor/ModulePopup'
 import PopupBackground from '../../../components/PopupBackground'
 import { v4 as uuid } from 'uuid'
 import ModuleCard from '../../../components/editor/ModuleCard'
-import ModuleListing from '../../../model/ModuleListing'
-import Module from '../../../model/Module'
+import ModuleListing from '../../../firebase/ModuleListing'
+import Module from '../../../firebase/Module'
 import { collection, query, where, doc, getDocs, getFirestore, setDoc } from "firebase/firestore";
 import { AuthContext } from '../../../context/provider'
-import FirebaseConstants from '../../../model/FirebaseConstants'
+import FirebaseConstants from '../../../firebase/FirebaseConstants'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
-import ModuleAnalyticsRecord from '../../../model/ModuleAnalyticsRecord'
+import ModuleAnalyticsRecord from '../../../firebase/ModuleAnalyticsRecord'
 import EmptyState from '../../../components/EmptyState'
 
 // Shows a list of all the modules owned by the lecturer.

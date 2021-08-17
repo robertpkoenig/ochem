@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
-import User from "../model/User";
+import User from "../firebase/User";
 import UserType from "../p5/model/UserType";
 import { useRouter } from "next/router";
 
@@ -36,9 +36,12 @@ export default function SignUpCard() {
 
     const router = useRouter()
 
+    // Sign the user up
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault()
         const auth = getAuth();
+        // Create the authentication entry for the user, and use the
+        // resulting user Id to create the user document
         await createUserWithEmailAndPassword(auth, emailValue, passwordValue)
         .then((userCredential) => {
             // Signed in 
@@ -53,13 +56,12 @@ export default function SignUpCard() {
                 completedReactionIds: [],
                 userId: userCredential.user.uid
             }
+            // Create user database document
             setDoc(doc(db, "users", userCredential.user.uid), newUser).then(() => {
                 router.push("/teacher/modules")
             })
         })
         .catch((error) => {
-
-            
             alert(error.message)
         });
 
@@ -185,20 +187,6 @@ export default function SignUpCard() {
                         </div>
                     </div>
 
-                    {/* <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                        <input
-                            id="remember-me"
-                            name="remember-me"
-                            type="checkbox"
-                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                        />
-                        <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                            Remember me
-                        </label>
-                        </div>
-                    </div> */}
-        
                     <div>
                         <button
                             type="submit"

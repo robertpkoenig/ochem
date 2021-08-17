@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { FormEvent, useContext, useState } from "react";
 import { AuthContext } from "../context/provider";
 import redirectUserHome from "../helper/redirectUserToHome";
-import User from "../model/User";
+import User from "../firebase/User";
 import UserType from "../p5/model/UserType";
 import { primaryButtonMd } from "../styles/common-styles";
 import Link from 'next/link'

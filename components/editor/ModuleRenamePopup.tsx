@@ -1,5 +1,5 @@
 import React, { FormEvent, FormEventHandler, MouseEventHandler, SyntheticEvent, useState } from "react";
-import Module from "../../model/Module";
+import Module from "../../firebase/Module";
 import { primaryButtonMd } from "../../styles/common-styles";
 import PopupBackground from "../PopupBackground";
 

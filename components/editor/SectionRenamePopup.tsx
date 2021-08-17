@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Section from "../../model/SectionListing";
+import Section from "../../firebase/SectionListing";
 import { primaryButtonMd } from "../../styles/common-styles";
 import PopupBackground from "../PopupBackground";
 

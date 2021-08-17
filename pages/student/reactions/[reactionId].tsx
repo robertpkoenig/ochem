@@ -9,7 +9,7 @@ import { GetServerSideProps } from 'next'
 import Constants from "../../../p5/Constants"
 import UserType from "../../../p5/model/UserType"
 import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore"
-import FirebaseConstants from "../../../model/FirebaseConstants"
+import FirebaseConstants from "../../../firebase/FirebaseConstants"
 import { findConfigFile } from "typescript"
 import { primaryButtonSm, secondaryButtonSm } from "../../../styles/common-styles"
 import { Transition } from "@headlessui/react"

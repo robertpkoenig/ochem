@@ -1,7 +1,10 @@
-import { NextRouter, useRouter } from "next/router"
-import User from "../model/User"
+import { NextRouter } from "next/router"
+import User from "../firebase/User"
 import UserType from "../p5/model/UserType"
 
+// If the user is a teacher, always redirect to the teacher's modules page.
+// If the user is a student with only only module, redirect to that module,
+// otherwise redirect to the student's modules page.
 export default function redirectUserHome(router: NextRouter, user: User) {
 
     if (user.type == UserType.TEACHER) {

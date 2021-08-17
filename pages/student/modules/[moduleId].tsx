@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import Section from "../../../model/SectionListing";
+import Section from "../../../firebase/SectionListing";
 import { useRouter } from 'next/router'
-import Module from "../../../model/Module";
+import Module from "../../../firebase/Module";
 import Layout from "../../../components/Layout";
 import StudentSectionCard from "../../../components/student/StudentSectionCard";
 import { AuthContext } from "../../../context/provider";
 import { arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
-import FirebaseConstants from "../../../model/FirebaseConstants";
+import FirebaseConstants from "../../../firebase/FirebaseConstants";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import EmptyState from "../../../components/EmptyState";
 

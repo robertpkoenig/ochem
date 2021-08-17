@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import Section from "../../../model/SectionListing";
-import Module from "../../../model/Module";
+import Section from "../../../firebase/SectionListing";
+import Module from "../../../firebase/Module";
 import SectionCard from "../../../components/editor/SectionCard";
 import { PlusIcon } from "@heroicons/react/solid";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
 import { primaryButtonMd } from "../../../styles/common-styles";
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
-import FirebaseConstants from "../../../model/FirebaseConstants";
+import FirebaseConstants from "../../../firebase/FirebaseConstants";
 import { AuthContext } from "../../../context/provider";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import ModuleEditorLayout from "../../../components/editor/ModuleEditorLayout";

@@ -1,13 +1,13 @@
 import Link from "next/link"
 import React, { useState } from "react"
-import ModuleListing from "../../model/ModuleListing"
+import ModuleListing from "../../firebase/ModuleListing"
 import { primaryButtonMd, primaryButtonSm, redButtonMd, redButtonSm, roundEditButtonContainer, secondaryButtonMd, secondaryButtonSm } from "../../styles/common-styles"
 import PopupBackground from "../PopupBackground"
 import DeletionPopup from "./DeletionPopup"
 
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 import firebaseClient from "../../firebaseClient";
-import FirebaseConstants from "../../model/FirebaseConstants"
+import FirebaseConstants from "../../firebase/FirebaseConstants"
 import { XIcon } from "@heroicons/react/solid"
 import { PencilAltIcon } from "@heroicons/react/outline"
 

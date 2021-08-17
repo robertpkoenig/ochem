@@ -6,10 +6,10 @@ import { AuthContext } from '../../../context/provider'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import UserType from '../../../p5/model/UserType'
-import User from '../../../model/User'
+import User from '../../../firebase/User'
 import Image from 'next/image'
-import FirebaseConstants from '../../../model/FirebaseConstants'
-import ModuleListing from '../../../model/ModuleListing'
+import FirebaseConstants from '../../../firebase/FirebaseConstants'
+import ModuleListing from '../../../firebase/ModuleListing'
 
 // The student uses this page to sign up to Ochem.io.
 // After signing up on this page, the module specified in the

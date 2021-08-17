@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import * as React from 'react';
-import Module from '../../model/Module';
-import ReactionListing from '../../model/ReactionListing';
-import Section from '../../model/SectionListing';
+import Module from '../../firebase/Module';
+import ReactionListing from '../../firebase/ReactionListing';
+import Section from '../../firebase/SectionListing';
 import { primaryButtonMd } from '../../styles/common-styles';
 
 export interface IReactionCardProps {
@@ -13,6 +13,7 @@ export interface IReactionCardProps {
     checkAdditionFunction: (reactionId: string) => void
 }
 
+// This is the card for an individual exercise in the student module page
 export default function StudentReactionCard (props: IReactionCardProps) {
 
     const isChecked = props.reactionsChecked.has(props.reactionListing.uuid)

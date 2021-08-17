@@ -1,3 +1,5 @@
+// This is simply a file to store firebase document and field
+// names to avoid spelling mistakes.
 export default class FirebaseConstants {
 
     // Names of the collections

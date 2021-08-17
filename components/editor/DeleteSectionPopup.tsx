@@ -1,4 +1,4 @@
-import Section from "../../model/SectionListing"
+import Section from "../../firebase/SectionListing"
 import { redButtonMd } from "../../styles/common-styles"
 import PopupBackground from "../PopupBackground"
 
