@@ -165,6 +165,21 @@ class TeacherView {
                     bond.atoms[1].circle.pos.x,
                     bond.atoms[1].circle.pos.y)
             }
+
+            if (bond.type == BondType.TRIPLE) {
+                this.p5.strokeWeight(Constants.STROKE_WEIGHT * 5 + Constants.OUTLINE_THICKNESS * 2)
+                this.p5.stroke(color)
+                this.p5.line(bond.atoms[0].circle.pos.x,
+                    bond.atoms[0].circle.pos.y,
+                    bond.atoms[1].circle.pos.x,
+                    bond.atoms[1].circle.pos.y)
+                this.p5.strokeWeight(Constants.STROKE_WEIGHT)
+                this.p5.stroke(255)
+                this.p5.line(bond.atoms[0].circle.pos.x,
+                    bond.atoms[0].circle.pos.y,
+                    bond.atoms[1].circle.pos.x,
+                    bond.atoms[1].circle.pos.y)
+            }
     
         this.p5.pop()
 

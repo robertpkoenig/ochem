@@ -48,8 +48,6 @@ interface IProps {
 interface IState {
     loading: boolean
     reaction: Reaction
-    attractionOn: boolean
-    repulsionOn: boolean
     bondType: BondType
     arrowType: ArrowType
     straightArrowSelected: boolean
@@ -82,8 +80,6 @@ class TeacherReactionPage extends Component<IProps, IState> {
         this.state = {
             loading: true,
             reaction: null,
-            attractionOn: false,
-            repulsionOn: false,
             bondType: null,
             arrowType: null,
             straightArrowSelected: false,
@@ -237,35 +233,6 @@ class TeacherReactionPage extends Component<IProps, IState> {
         if (needToResetOffsets) {
             this.state.teacherController.panelController.setCanvasParent()
         }
-    }
-
-    toggleAttraction() {
-        this.setState((prevState) => {
-            return {
-                ...prevState,
-                attractionOn: !prevState.attractionOn,
-                bondType: null,
-                eraserOn: false,
-                arrowType: null
-            }
-        })        
-    }
-
-    toggleRepulsion() {
-        if (this.state.attractionOn) {
-            this.setState((prevState) => {
-                return {
-                    ...prevState,
-                    repulsionOn: !prevState.repulsionOn,
-                    bondType: null,
-                    eraserOn: false,
-                    arrowType: null
-                }
-            }) 
-        }   
-        else {
-            alert("you must have attraction on to enable repulsion")
-        }    
     }
 
     // Turns on and off the eraser.
@@ -706,13 +673,8 @@ class TeacherReactionPage extends Component<IProps, IState> {
                                     >
                                         <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
                                     </button>
-                                    {/* Single curly arrow */}
-                                    <button
-                                        className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
-                                        onMouseDown={() => this.setArrowType(ArrowType.SINGLE)}
-                                    >
-                                        <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
-                                    </button>
+
+                                    <hr className="my-2"></hr>
 
                                     {/* Straight arrow */}
                                     <button
@@ -742,17 +704,6 @@ class TeacherReactionPage extends Component<IProps, IState> {
 
                                     <hr className="my-2"></hr>
 
-                                    {/* Angle control */}
-                                    {/* <button
-                                        className={this.state.angleControlSelected ? selectedButton : squareButton}
-                                        onMouseDown={() => this.toggleAngleControl()}
-                                    >
-                                        <img className={buttonImage} src="/assets/images/angle-control.svg" alt="eraser" />
-                                    </button>
-
-                                    <hr className="my-2"></hr> */}
-
-                                    {/* Eraser */}
                                     <button
                                         className={this.state.eraserOn ? selectedButton : squareButton}
                                         onMouseDown={() => this.toggleEraser()}
@@ -779,46 +730,8 @@ class TeacherReactionPage extends Component<IProps, IState> {
                                 </div>
                             {/* p5 canvas */}
                             <div id={Constants.CANVAS_PARENT_NAME} className=" h-700 bg-white rounded-lg shadow flex-grow">
-                                <div className=" p-5 absolute flex flex-row items-center gap-2 text-sm text-gray-500">
-                                    Attraction
-                                    <Switch
-                                        checked={this.state.attractionOn}
-                                        onChange={() => this.toggleAttraction()}
-                                        className={
-                                            (this.state.attractionOn ? 'bg-indigo-600 ' : 'bg-gray-200 ') +
-                                            'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
-                                        }
-                                        >
-                                        <span className="sr-only">Toggle attraction</span>
-                                        <span
-                                            aria-hidden="true"
-                                            className={
-                                                (this.state.attractionOn ? 'translate-x-5 ' : 'translate-x-0 ') +
-                                                'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                                            }
-                                    />
-                                    </Switch>
-
-                                    Repulsion
-                                    <Switch
-                                        checked={this.state.repulsionOn}
-                                        onChange={() => this.toggleRepulsion()}
-                                        className={
-                                            (this.state.repulsionOn ? 'bg-indigo-600 ' : 'bg-gray-200 ') +
-                                            'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
-                                        }
-                                        >
-                                        <span className="sr-only">Toggle repulsion</span>
-                                        <span
-                                            aria-hidden="true"
-                                            className={
-                                                (this.state.repulsionOn ? 'translate-x-5 ' : 'translate-x-0 ') +
-                                                'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                                            }
-                                    />
-                                    </Switch>
-                                </div>
                             </div>
+                            
                             {/* atomic elements */}
                             <div className="bg-white p-5 rounded-lg shadow flex flex-col gap-2 h-full">
                                 {listOfAtomicElements}

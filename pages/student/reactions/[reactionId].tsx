@@ -58,7 +58,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
         this.state = {
             reaction: null,
-            arrowType: null,
+            arrowType: ArrowType.DOUBLE,
             loading: true,
             successToastVis: false,
             failureToastVis: false,
@@ -212,9 +212,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
             stepIndicators =   
                 <div className="flex flex-row gap-3 ">
                     <div className="text-xs font-medium">
-                        Step 
-                        {" " + (this.state.reaction.currentStep.order + 1)} of 
-                            {" " + this.state.reaction.steps.length}
+                        Progress
                     </div>
                     <ol className="rounded-md flex gap-2 text-indigo-400 ">
                         {
@@ -342,23 +340,6 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                                 </div>
                                             </div>
                                         </Transition>
-                                    </div>
-                                    <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
-                                        {/* Double curly arrow */}
-                                        <button
-                                            className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
-                                            onMouseDown={() => this.setArrowType(ArrowType.DOUBLE)}
-                                        >
-                                            <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
-                                        </button>
-
-                                        {/* Single curly arrow */}
-                                        <button
-                                            className={this.state.arrowType == ArrowType.SINGLE ? selectedButton : squareButton}
-                                            onMouseDown={() => this.setArrowType(ArrowType.SINGLE)}
-                                        >
-                                            <img className={buttonImage} src="/assets/images/curly_arrows/single.svg" alt="single curly arrow" />
-                                        </button>
                                     </div>
                                 </div>
 

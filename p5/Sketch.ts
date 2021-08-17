@@ -51,13 +51,7 @@ function createP5Context(
 
             reaction.update()
     
-            if (controller.teacherController?.teacherReactionPage.state.repulsionOn) { 
-                physicsEngine.applyBodyRepulsionWithinMolecules()
-            }
-            if (controller.teacherController?.teacherReactionPage.state.attractionOn
-                || controller.studentController != null) {
-                physicsEngine.makeBondLengthCorrect()
-            }
+            physicsEngine.makeBondLengthCorrect()
             physicsEngine.applyAllForces()
 
             controller.process()
