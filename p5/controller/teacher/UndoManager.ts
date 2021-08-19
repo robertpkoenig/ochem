@@ -1,6 +1,7 @@
 import Reaction from "../../model/Reaction"
 import ReactionLoader from "../../utilities/ReactionLoader"
 import Utilities from "../../utilities/Utilities"
+import ReactionSaver from "./ReactionSaver"
 import TeacherController from "./TeacherController"
 
 class UndoManager {
@@ -41,6 +42,7 @@ class UndoManager {
             this.addRedoPoint()
             const previousModel: Reaction = ReactionLoader.loadReactionFromJSON(previousModelJSON)
             this.editorController.reaction.replaceWithNewModel(previousModel)
+            ReactionSaver.saveReaction(previousModel)
         }
     }
 
@@ -54,6 +56,7 @@ class UndoManager {
             this.undoStack.push(currentModelJSON)
             const previousModel: Reaction = ReactionLoader.loadReactionFromJSON(reactionStateToRestore)
             this.editorController.reaction.replaceWithNewModel(previousModel)
+            ReactionSaver.saveReaction(previousModel)
         }
 
     }
