@@ -19,13 +19,13 @@ interface dropDownOption {
 
 export default function BlueNavBar() {
 
-    const { user } = useContext(AuthContext)
-    const { setUser } = useContext(AuthContext)
+    const { user, setUser, setLoginAttempted } = useContext(AuthContext)
     const router = useRouter()
 
     function signOut() {
         const auth = getAuth()
         setUser(null)
+        setLoginAttempted(false)
         auth.signOut()
         router.push("/")
     }
@@ -95,7 +95,7 @@ export default function BlueNavBar() {
                         >
                             <Menu.Items
                                 static
-                                className="origin-top-right absolute right-0 mt-2 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                className="origin-top-right absolute w-24 right-0 mt-2 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                             >
                             {dropDownOptions.map((option) => (
                                 <Menu.Item key={option.optionText}>
