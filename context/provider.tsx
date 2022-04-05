@@ -1,8 +1,7 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 import firebaseClient from "../firebaseClient";
-import nookies from "nookies"
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import FirebaseNames from "../firebase/FirebaseConstants";
 import User from "../firebase/User";

@@ -3,7 +3,7 @@ import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { FormEvent, useContext, useState } from "react";
 import { AuthContext } from "../context/provider";
-import redirectUserHome from "../helper/redirectUserToHome";
+import redirectUserHome from "../functions/redirectUserToHome";
 import User from "../firebase/User";
 import UserType from "../p5/model/UserType";
 import { primaryButtonMd } from "../styles/common-styles";

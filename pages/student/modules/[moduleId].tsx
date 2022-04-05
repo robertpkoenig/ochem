@@ -127,11 +127,11 @@ export default function ModulePage() {
             <div className="flex flex-col gap-5 ">
                 {filteredSectionObjects.map((sectionListing: Section) => 
                     <div key={sectionListing.order}>
-                    <StudentSectionCard
-                            section={sectionListing}
-                            module={module}
-                            completedReactionIds={completedReactionIds}
-                            checkAdditionFunction={toggleReactionInCheckedReactions}
+                        <StudentSectionCard
+                                section={sectionListing}
+                                module={module}
+                                completedReactionIds={completedReactionIds}
+                                checkAdditionFunction={toggleReactionInCheckedReactions}
                         />
                     </div>
                 )}

@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react'
 import LogInCard from '../../components/LogInCard'
 import ScreenWithLoading from '../../components/ScreenWithLoading'
 import { AuthContext } from '../../context/provider'
-import redirectUserHome from '../../helper/redirectUserToHome'
+import redirectUserHome from '../../functions/redirectUserToHome'
 
 // Page containing login form
 export default function Login() {
