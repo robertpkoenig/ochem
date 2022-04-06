@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { AuthContext } from "../context/provider"
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import UserType from "../p5/model/UserType"
+import UserType from "../canvas/model/UserType"
 import { useRouter } from "next/router"
 import { getAuth } from "firebase/auth"
 

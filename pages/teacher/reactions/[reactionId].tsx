@@ -3,25 +3,25 @@ import { ArrowLeftIcon, PlusIcon, XIcon } from "@heroicons/react/solid"
 import { GetServerSideProps } from "next"
 import Link from "next/link"
 import { MinusCircle, PlusCircle, RotateCcw, RotateCw } from "react-feather"
-import Constants from "../../../p5/Constants"
-import TeacherController from "../../../p5/controller/teacher/TeacherController"
-import ReactionSaver from "../../../p5/controller/teacher/ReactionSaver"
-import { AtomicElements } from "../../../p5/model/chemistry/atoms/elements"
-import BondType from "../../../p5/model/chemistry/bonds/BondType"
-import { ArrowType } from "../../../p5/model/chemistry/CurlyArrow"
-import Reaction from "../../../p5/model/Reaction"
-import ReactionStep from "../../../p5/model/ReactionStep"
-import UserType from "../../../p5/model/UserType"
-import ReactionLoader from "../../../p5/utilities/ReactionLoader"
-import ReactionStepLoader from "../../../p5/utilities/ReactionStepLoader"
-import Utilities from "../../../p5/utilities/Utilities"
+import Constants from "../../../canvas/Constants"
+import TeacherController from "../../../canvas/controller/teacher/TeacherController"
+import ReactionSaver from "../../../canvas/controller/teacher/ReactionSaver"
+import { AtomicElements } from "../../../canvas/model/chemistry/atoms/elements"
+import BondType from "../../../canvas/model/chemistry/bonds/BondType"
+import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
+import Reaction from "../../../canvas/model/Reaction"
+import ReactionStep from "../../../canvas/model/ReactionStep"
+import UserType from "../../../canvas/model/UserType"
+import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
+import ReactionStepLoader from "../../../canvas/utilities/ReactionStepLoader"
+import Utilities from "../../../canvas/utilities/Utilities"
 import { doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore"
 import FirebaseConstants from "../../../firebase/FirebaseConstants"
 import { PencilIcon } from "@heroicons/react/outline"
 import PromptPopup from "../../../components/editor/PromptPopup"
 import ReactionRenamePopup from "../../../components/editor/ReactionRenamePopup"
 import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
-import Ion from "../../../p5/model/chemistry/atoms/Ion"
+import Ion from "../../../canvas/model/chemistry/atoms/Ion"
 import p5 from "p5"
 import { Component } from "react"
 
@@ -113,7 +113,7 @@ class TeacherReactionPage extends Component<IProps, IState> {
         // Create the p5 element
         if (window) {
             
-            const createP5Context = (await import("../../../p5/Sketch")).default
+            const createP5Context = (await import("../../../canvas/Sketch")).default
             
             if (!reaction) throw new Error("reaction not loaded")
             createP5Context(this, UserType.TEACHER, reaction)

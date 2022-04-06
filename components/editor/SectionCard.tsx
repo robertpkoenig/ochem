@@ -9,8 +9,8 @@ import ReactionCard from './ReactionCard';
 import ReactionCreationPopup from './ReactionPopup';
 import { v4 as uuid } from 'uuid'
 import DeletionPopup from './DeletionPopup';
-import Reaction from '../../p5/model/Reaction';
-import ReactionStep from '../../p5/model/ReactionStep';
+import Reaction from '../../canvas/model/Reaction';
+import ReactionStep from '../../canvas/model/ReactionStep';
 import { arrayUnion, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 import { AuthContext } from '../../context/provider';
 import FirebaseConstants from '../../firebase/FirebaseConstants';

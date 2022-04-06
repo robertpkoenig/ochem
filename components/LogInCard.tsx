@@ -5,7 +5,7 @@ import { FormEvent, useContext, useState } from "react";
 import { AuthContext } from "../context/provider";
 import redirectUserHome from "../functions/redirectUserToHome";
 import User from "../firebase/User";
-import UserType from "../p5/model/UserType";
+import UserType from "../canvas/model/UserType";
 import { primaryButtonMd } from "../styles/common-styles";
 import Link from 'next/link'
 

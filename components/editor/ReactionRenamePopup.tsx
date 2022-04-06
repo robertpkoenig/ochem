@@ -1,5 +1,5 @@
 import React, { FormEvent, FormEventHandler, MouseEventHandler, SyntheticEvent, useState } from "react";
-import Reaction from "../../p5/model/Reaction";
+import Reaction from "../../canvas/model/Reaction";
 import { primaryButtonMd } from "../../styles/common-styles";
 import PopupBackground from "../PopupBackground";
 

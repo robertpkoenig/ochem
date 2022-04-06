@@ -1,35 +1,66 @@
-# Ochem.io
-## Robert Koenig (robertpkoenig@gmail.com)
+Ochemo
+=======================================================================================
+
+[Ochem.io](ochem.io) is a web application for organic chemistry teachers to create interactive [arrow pushing](https://en.wikipedia.org/wiki/Arrow_pushing) excercises. Teachers can group these excercises to match the progression of lecture content. Students can use these exercises to reinforce critical concepts learned in lectures.
+
+[Demo video](https://www.loom.com/share/f9cb6644afcd4545808693d90757ef1a?t=0)
+
+Technologies
+---------------------------------------------------------------------------------------
+
+- Typescript    
+- [P5.js](p5js.org)   
+- Next.js              
+- Firebase              
+- Tailwind CSS          
 
 
-### Technologies
+Local Usage
+---------------------------------------------------------------------------------------
 
-- React
-- Next.js
-- Firebase
-- Tailwind CSS
+Install [node](https://nodejs.org/en/)
 
-
-### Usage
-
-Install node
-
-Within the project directory:
+Navigate to the project directory in terminal:
 
 - Use command 'npm i' to download all node dependencies for the project
 - Use command 'npm run dev' to start the application on local server port 3000
+- Open http://localhost:3000/ in your browser
 
-Demo video of the application: https://www.loom.com/share/f9cb6644afcd4545808693d90757ef1a
+
+Structure
+---------------------------------------------------------------------------------------
+
+    ochem
+    ├── canvas/             // Code for the molecule interaction canvas
+    │   ├── Sketch.ts       // P5 setup, the central 'game loop', and event listeners
+    │   ├── Constants.ts    // Defines object sizes, colors, and physics constants
+    │   ├── model/          // Classes and interfaces defining application state
+    │   ├── view/           // Functions to draw objects on the canvas
+    │   ├── controller/     // Functions to update state upon user input
+    ├── components/         // React components
+    │   ├── editor/         // React components for the teacher pages
+    │   ├── student/        // React components for the student pages
+    │   ├── common/         // React components common across teacher and student pages       
+    ├── context/            // Global state for the react application (not the canvas)
+    │   ├── Context.ts      // Interface defining fields within the global react state
+    │   ├── Provider.ts     // React wrapper to inject state into children
+    ├── model/              // Interfaces for state, both in-memory and NoSQL persisted
+    │   ├──  Firebase.ts    // Names of document types persisted in Firebase
+    │   ├── ...
+    ├── functions/          // Thematically grouped functions used by React components
+    ├── pages/              // Web pages defined with the next.js pattern
+    │   ├── index.tsx       // The home page
+    │   ├── student/        // Pages with url prefix ochem.io/student/...
+    │   ├── teacher/        // Pages with url prefix ochem.io/teacher/...  
+    │   ├── teacher/        // Pages with url prefix ochem.io/teacher/...  
+    ├── public/             // Files exposed through the base url
+    ├── styles/             // Injects tree-shaken tailwind classes into document CSS
+    ├── firebaseClient.js   // Config and setup for firebase
+    └── ...                 // Project setup
 
 
-### Structure
-
-- Each file in the 'pages' directory constitute web pages of the site
-- The file structure within pages matches the URL paths of each page, so the URL path '/teacher/modules' corresponds to the file 'teacher/modules/index.tsx'
-- Page with dynamic data loaded from URL parameters have names wrapped in square brackets, so 'teacher/modules/[moduleId].tsx' corresponds the URL path 'teacher/modules/1234' where '1234' is the unique ID of the module
-- Each 'page' component is a javascript function/class instance which injects html/css/js onto the page, and updates html values upon relevant javascript state changes
-- 'Page' components contain their own html/css/js, and additionally incorporate other child react 'components' which themselves inject html/css/js onto the page
-- Firebase autentication is performed with the React context API, and a React 'provider' component for authentication wraps the entire application in 'pages/_app.tsx'
+- Web pages are defined using the [next.js structure](https://nextjs.org/docs/basic-features/pages)
+- React essentially consists of nested javascript functions that each wrap the HTML, CSS, and JS for a given component on the page, like a form or button
 - Server side rendering is not used for dynamic content, and instead data is fetched from Firebase on page load
 
 

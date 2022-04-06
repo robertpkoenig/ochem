@@ -1,13 +1,13 @@
 import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid"
 import Link from "next/link"
 import React from "react"
-import { ArrowType } from "../../../p5/model/chemistry/CurlyArrow"
-import Reaction from "../../../p5/model/Reaction"
-import ReactionStep from "../../../p5/model/ReactionStep"
-import ReactionLoader from "../../../p5/utilities/ReactionLoader"
+import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
+import Reaction from "../../../canvas/model/Reaction"
+import ReactionStep from "../../../canvas/model/ReactionStep"
+import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
 import { GetServerSideProps } from 'next'
-import Constants from "../../../p5/Constants"
-import UserType from "../../../p5/model/UserType"
+import Constants from "../../../canvas/Constants"
+import UserType from "../../../canvas/model/UserType"
 import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore"
 import FirebaseConstants from "../../../firebase/FirebaseConstants"
 import { findConfigFile } from "typescript"
@@ -88,7 +88,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
         // Create the p5 element
         let createP5StudentContext
         if (window) {
-            const createP5Context = (await import("../../../p5/Sketch")).default
+            const createP5Context = (await import("../../../canvas/Sketch")).default
             createP5Context(this, UserType.STUDENT, reaction)
 
             if (!reaction)

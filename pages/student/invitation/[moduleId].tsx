@@ -5,7 +5,7 @@ import { arrayUnion, doc, DocumentSnapshot, FirebaseFirestore, getDoc, getFirest
 import { AuthContext } from '../../../context/provider'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
-import UserType from '../../../p5/model/UserType'
+import UserType from '../../../canvas/model/UserType'
 import User from '../../../firebase/User'
 import Image from 'next/image'
 import FirebaseConstants from '../../../firebase/FirebaseConstants'

@@ -9,7 +9,7 @@ import { arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc } 
 import FirebaseConstants from "../../../firebase/FirebaseConstants";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import EmptyState from "../../../components/EmptyState";
-import UserType from "../../../p5/model/UserType";
+import UserType from "../../../canvas/model/UserType";
 
 // This page displays all module content for the student.
 // The student can practice exercises and tick them off.

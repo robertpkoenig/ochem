@@ -1,4 +1,4 @@
-import UserType from "../p5/model/UserType";
+import UserType from "../canvas/model/UserType";
 
 interface User {
 
