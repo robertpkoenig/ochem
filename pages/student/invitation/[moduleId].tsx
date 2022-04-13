@@ -3,12 +3,12 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { arrayUnion, doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
 import { AuthContext } from '../../../context/provider'
-import ScreenWithLoading from '../../../components/ScreenWithLoading'
+import ScreenWithLoading from '../../../components/common/ScreenWithLoading'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import UserType from '../../../canvas/model/UserType'
-import User from '../../../firebase/User'
-import ModuleListing from '../../../firebase/ModuleListing'
-import { MODULE_ANALYTICS_RECORDS, MODULE_LISTINGS } from '../../../firebase/FirebaseConstants'
+import User from '../../../persistence-model/User'
+import ModuleListing from '../../../persistence-model/ModuleListing'
+import { MODULE_ANALYTICS_RECORDS, MODULE_LISTINGS } from '../../../persistence-model/FirebaseConstants'
 
 // The student uses this page to sign up to Ochem.io.
 // After signing up on this page, the module specified in the

@@ -1,18 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
-import Section from "../../../firebase/SectionListing";
-import Module from "../../../firebase/Module";
+import Section from "../../../persistence-model/SectionListing";
+import Module from "../../../persistence-model/Module";
 import SectionCard from "../../../components/editor/SectionCard";
 import { PlusIcon } from "@heroicons/react/solid";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { AuthContext } from "../../../context/provider";
-import ScreenWithLoading from "../../../components/ScreenWithLoading";
+import ScreenWithLoading from "../../../components/common/ScreenWithLoading";
 import ModuleEditorLayout from "../../../components/editor/ModuleEditorLayout";
-import EmptyState from "../../../components/EmptyState";
+import EmptyState from "../../../components/common/EmptyState";
 import { useRouter } from "next/router";
 import Button from "../../../components/common/buttons/Button";
-import { MODULES, SECTIONS } from "../../../firebase/FirebaseConstants";
+import { MODULES, SECTIONS } from "../../../persistence-model/FirebaseConstants";
 
 // This page allows lecturers to edit modules, which are collections 
 // of reaction exercises organized around a university module.
@@ -158,14 +158,11 @@ export default function ModulePage() {
 
                 {/* Toggle the section popup */}
                 {
-                    sectionCreationPopupVis 
-                    ?
+                    sectionCreationPopupVis &&
                     <SectionPopup
                         popupCloseFunction={toggleSectionCreationPopup} 
                         sectionAdditionFunction={createSection} 
                     />
-                    :
-                    ''
                 }
 
             </ModuleEditorLayout>

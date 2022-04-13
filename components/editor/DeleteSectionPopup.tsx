@@ -1,6 +1,6 @@
-import Section from "../../firebase/SectionListing"
+import Section from "../../persistence-model/SectionListing"
 import Button from "../common/buttons/Button"
-import PopupBackground from "../PopupBackground"
+import PopupBackground from "../common/PopupBackground"
 
 interface IProps {
     section: Section

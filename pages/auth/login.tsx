@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import LogInCard from '../../components/LogInCard'
-import ScreenWithLoading from '../../components/ScreenWithLoading'
+import LogInCard from '../../components/auth/LogInCard'
+import ScreenWithLoading from '../../components/common/ScreenWithLoading'
 import { AuthContext } from '../../context/provider'
-import redirectUserHome from '../../functions/redirectUserToHome'
+import redirectUserHome from '../../helper-functions/redirectUserToHome'
 
 // Page containing login form
 export default function Login() {

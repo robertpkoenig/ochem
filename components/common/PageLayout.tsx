@@ -9,7 +9,7 @@ export interface LayoutProps {
 }
 
 // This wraps each page in the application
-export default function Layout(props: LayoutProps) {
+export default function PageLayout(props: LayoutProps) {
 
     const subtitle = props.subtitle ?
         <p className="text-l font-regular text-white opacity-60">{props.subtitle}</p>
@@ -18,6 +18,7 @@ export default function Layout(props: LayoutProps) {
     return (
         <div className="min-h-screen bg-gray-100">
             <div className="bg-indigo-600 pb-32">
+
                 <BlueNavBar />
 
                 {/* Title and subtitle */}
@@ -29,15 +30,18 @@ export default function Layout(props: LayoutProps) {
                         </div>
                     </div>
                 </header>
+
             </div>
         
+            {/* Container for the main content of the page */}
             <main className="-mt-32">
-                    <div className="max-w-5xl mx-auto pb-12 px-4 sm:px-6 lg:px-8">
-                        <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
-                                {props.children}
-                        </div>
+                <div className="max-w-5xl mx-auto pb-12 px-4 sm:px-6 lg:px-8">
+                    <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
+                            {props.children}
                     </div>
+                </div>
             </main>
+
         </div>
       )
 }

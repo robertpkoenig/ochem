@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import * as React from 'react';
-import Module from '../../firebase/Module';
-import ReactionListing from '../../firebase/ReactionListing';
-import Section from '../../firebase/SectionListing';
+import Module from '../../persistence-model/Module';
+import ReactionListing from '../../persistence-model/ReactionListing';
+import Section from '../../persistence-model/SectionListing';
 import Button from '../common/buttons/Button';
 
 export interface IReactionCardProps {
@@ -18,26 +17,28 @@ export default function StudentReactionCard (props: IReactionCardProps) {
 
     const isChecked = props.reactionsChecked.has(props.reactionListing.uuid)
 
-    const link =<div className="flex flex-row gap-2">
-                    <Link href={"/student/reactions/" + props.reactionListing.uuid}>
-                        <a>
-                            <Button 
-                                size={'small'} 
-                                importance={'primary'} 
-                                text={'Practice'} 
-                                icon={null}
-                                onClick={null}
-                                extraClasses={''}
-                            />
-                        </a>
-                    </Link>
-                </div>
+    const link =
+        <div className="flex flex-row gap-2">
+            <Link href={"/student/reactions/" + props.reactionListing.uuid}>
+                <a>
+                    <Button 
+                        size={'small'} 
+                        importance={'primary'} 
+                        text={'Practice'} 
+                        icon={null}
+                        onClick={null}
+                        extraClasses={''}
+                    />
+                </a>
+            </Link>
+        </div>
     
 
     return (
         <div className="flex flex-row items-center justify-between ">
 
             <div className="flex flex-row items-center gap-3">
+
                 <div className="flex items-center h-5">
                     <input
                         id="comments"
@@ -49,9 +50,11 @@ export default function StudentReactionCard (props: IReactionCardProps) {
                         onChange={() => props.checkAdditionFunction(props.reactionListing.uuid)}
                     />
                 </div>
+
                 <span>
                     {props.reactionListing.name}
                 </span>
+
             </div>
 
             <div className="flex flex-row justify-center content-center items-center gap-4">

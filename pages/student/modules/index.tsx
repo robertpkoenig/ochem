@@ -1,13 +1,13 @@
 
-import Layout from '../../../components/Layout'
+import PageLayout from '../../../components/common/PageLayout'
 import React, { useContext, useEffect, useState } from 'react'
-import ModuleListing from '../../../firebase/ModuleListing'
+import ModuleListing from '../../../persistence-model/ModuleListing'
 import Link from 'next/link'
 import { AuthContext } from '../../../context/provider'
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
-import ScreenWithLoading from '../../../components/ScreenWithLoading'
+import ScreenWithLoading from '../../../components/common/ScreenWithLoading'
 import Button from '../../../components/common/buttons/Button'
-import { MODULE_LISTINGS, UUID } from '../../../firebase/FirebaseConstants'
+import { MODULE_LISTINGS, UUID } from '../../../persistence-model/FirebaseConstants'
 
 // This page lists all modules the student has access to.
 // The student never sees this page if they only have access
@@ -90,12 +90,12 @@ export default function StudentModules() {
 
     return (
         <ScreenWithLoading loading={loading}>
-            <Layout
+            <PageLayout
                 title="My modules"
                 subtitle=""
             >
                 {moduleList}
-            </Layout>
+            </PageLayout>
         </ScreenWithLoading>
     )
 

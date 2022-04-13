@@ -1,21 +1,21 @@
 import { PlusIcon, ChevronDownIcon, ChevronUpIcon, XIcon } from '@heroicons/react/solid';
-import Module from '../../firebase/Module';
-import ReactionListing from '../../firebase/ReactionListing';
-import Section from '../../firebase/SectionListing';
+import Module from '../../persistence-model/Module';
+import ReactionListing from '../../persistence-model/ReactionListing';
+import Section from '../../persistence-model/SectionListing';
 import ReactionCard from './ReactionCard';
 import ReactionCreationPopup from './ReactionPopup';
 import { v4 as uuid } from 'uuid'
-import DeletionPopup from './DeletionPopup';
+import DeleteReactionPopup from './DeleteReactionPopup';
 import Reaction from '../../canvas/model/Reaction';
 import ReactionStep from '../../canvas/model/ReactionStep';
 import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 import { PencilIcon } from '@heroicons/react/outline';
 import SectionRenamePopup from './SectionRenamePopup';
-import EmptyState from '../EmptyState';
+import EmptyState from '../common/EmptyState';
 import { useState } from 'react';
 import Button from '../common/buttons/Button';
 import RoundButton from '../common/buttons/RoundButton';
-import { MODULES, REACTION_LISTINGS, SECTIONS } from '../../firebase/FirebaseConstants';
+import { MODULES, REACTION_LISTINGS, SECTIONS } from '../../persistence-model/FirebaseConstants';
 
 interface IProps {
     userId: string
@@ -100,9 +100,6 @@ export default function SectionCard(props: IProps) {
 
         // Filter out the section to delete
         delete props.module.sections[props.section.uuid]
-        // props.module.sections = props.module.sections.filter(section => {
-        //     return section.uuid != props.section.uuid
-        // })
 
         // Reset the model on the parent page
         props.setModuleFunction(props.module)
@@ -283,41 +280,32 @@ export default function SectionCard(props: IProps) {
 
                     {/* Toggle the delete section popup */}
                     {           
-                    sectionDeletePopupVis
-                    ?
-                    <DeletionPopup
-                        thing={props.section}
-                        thingType="section"
-                        deletionFunction={deleteThisSection}
-                        togglePopupFunction = {toggleSectionDeletePopup}
-                    />
-                    :
-                    ''
+                        sectionDeletePopupVis &&
+                        <DeleteReactionPopup
+                            thing={props.section}
+                            thingType="section"
+                            deletionFunction={deleteThisSection}
+                            togglePopupFunction = {toggleSectionDeletePopup}
+                        />
                     }
 
                     {/* Toggle the reaction popup */}
                     {           
-                    reactionCreationPopupVis 
-                    ?
-                    <ReactionCreationPopup
-                        popupCloseFunction={toggleReactionCreationPopup} 
-                        createReactionFunction={createReaction} 
-                    />
-                    :
-                    ''
+                        reactionCreationPopupVis &&
+                        <ReactionCreationPopup
+                            popupCloseFunction={toggleReactionCreationPopup} 
+                            createReactionFunction={createReaction} 
+                        />
                     }
 
                     {/* Section rename */}
                     {
-                        sectionRenamePopupVis
-                        ?
+                        sectionRenamePopupVis &&
                         <SectionRenamePopup 
                             section={props.section}
                             popupCloseFunction={toggleSectionRenamePopup}
                             sectionRenameFunction={renameSection}
                         />
-                        :
-                        null
                     }
 
             </div>

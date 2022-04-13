@@ -1,7 +1,7 @@
 import { CheckCircleIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
 import { useState } from "react";
 import Button from "../common/buttons/Button";
-import PopupBackground from "../PopupBackground";
+import PopupBackground from "../common/PopupBackground";
 
 interface IProps {
     popupCloseFunction: () => void
@@ -13,10 +13,6 @@ export default function SharePopup(props: IProps) {
     const [copyConfirmVis, setCopyConfirmVis] = useState(false)
 
     function copyLinkText() {
-        // const linkText: HTMLInputElement = document.getElementById("linkText") as HTMLInputElement
-        // linkText.select()
-        // linkText.setSelectionRange(0, 9999)
-        // document.execCommand("copy")
         navigator.clipboard.writeText(window.location.hostname + "/student/invitation/" + props.moduleId)
         setCopyConfirmVis(true)
         setTimeout(function() {
@@ -30,28 +26,29 @@ export default function SharePopup(props: IProps) {
     return (
         <PopupBackground popupCloseFunction={props.popupCloseFunction}>
             <div className="shadow rounded-md flex flex-col gap-3 px-6 py-6 bg-white">
+
                 <div className="flex flex-row justify-between items-center gap-1 font-bold text-lg text-indigo-600">
                     <div>
                         Share
                     </div>
+                    
                     <div className="text-green-500 text-sm font-normal flex gap-1 items-center">
                         {
-                            copyConfirmVis
-                            ?
+                            copyConfirmVis &&
                             <>
                                 <CheckCircleIcon className="w-4 h-4" />
                                 Copied
                             </>
-                            :
-                            null
                         }
                     </div>
                 </div>
+
                 <div>
                     <p className="font-light text-gray-500">
                         Send this link to students. They can then access the module.
                     </p>
                 </div>
+
                 <div className="flex flex-row gap-2 ">
                     <input
                         onChange={doNothing}
@@ -61,6 +58,8 @@ export default function SharePopup(props: IProps) {
                         value={window.location.hostname + "/student/invitation/" + props.moduleId}
                     />
                     <Button
+                        size={"medium"}
+                        importance={"primary"}
                         text={"Copy Link"}
                         icon={ClipboardCopyIcon}
                         onClick={copyLinkText}

@@ -3,14 +3,14 @@ import { createContext, useContext, ReactNode, useState, useEffect } from "react
 import firebaseClient from "../firebaseClient";
 import { useRouter } from "next/router";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
-import FirebaseNames from "../firebase/FirebaseConstants";
-import User from "../firebase/User";
+import User from "../persistence-model/User";
+import { USERS } from "../persistence-model/FirebaseConstants";
 
-/* 
-Users in the application are authenticated with this component.
-This component wraps all other app components.
-This component also tracks whether or not login has been attempted.
-*/
+/**
+ * Users in the application are authenticated with this component.
+ * This component wraps all other app components.
+ * This component also tracks whether or not login has been attempted.
+ */
 
 type authContextType = {
     user: User,
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: Props) {
                 }
 
                 if (loggedInUser) {
-                    const docRef = doc(db, FirebaseNames.USERS, loggedInUser.uid);
+                    const docRef = doc(db, USERS, loggedInUser.uid);
                     getDoc(docRef).then(docSnap => {
                         const dbUser = docSnap.data()
                         setUser(dbUser as User)

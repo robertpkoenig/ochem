@@ -1,13 +1,13 @@
 import { CalendarIcon, UsersIcon } from "@heroicons/react/outline";
 import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../components/Layout";
-import ScreenWithLoading from "../../../components/ScreenWithLoading";
+import PageLayout from "../../../components/common/PageLayout";
+import ScreenWithLoading from "../../../components/common/ScreenWithLoading";
 import { Line } from 'react-chartjs-2';
 import { collection, doc, getDoc, getDocs, getFirestore, limit, orderBy, query, where } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../../context/provider";
-import ModuleAnalyticsRecord from "../../../firebase/ModuleAnalyticsRecord";
-import { DATE_RECORDS, MODULE_ANALYTICS_RECORDS } from "../../../firebase/FirebaseConstants";
+import ModuleAnalyticsRecord from "../../../persistence-model/ModuleAnalyticsRecord";
+import { DATE_RECORDS, MODULE_ANALYTICS_RECORDS } from "../../../persistence-model/FirebaseConstants";
 
 interface DateRecord {
     date: string,
@@ -217,7 +217,7 @@ export default function Analytics() {
     return (
 
         <ScreenWithLoading loading={loading} >
-            <Layout
+            <PageLayout
                 title="Analytics"
                 subtitle={moduleAnalyticsRecord?.moduleName}
             >
@@ -268,7 +268,7 @@ export default function Analytics() {
                     <Line height={100} data={data} options={options} />
                 </div>
 
-            </Layout>
+            </PageLayout>
         </ScreenWithLoading>
 
     )

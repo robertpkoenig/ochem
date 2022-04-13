@@ -2,11 +2,11 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { FormEvent, useContext, useState } from "react";
-import { AuthContext } from "../context/provider";
-import redirectUserHome from "../functions/redirectUserToHome";
-import User from "../firebase/User";
+import { AuthContext } from "../../context/provider";
+import redirectUserHome from "../../helper-functions/redirectUserToHome";
+import User from "../../persistence-model/User";
 import Link from 'next/link'
-import FormSubmitButton from "./common/buttons/FormSubmitButton";
+import FormSubmitButton from "../common/buttons/FormSubmitButton";
 
 export default function LogInCard() {
 

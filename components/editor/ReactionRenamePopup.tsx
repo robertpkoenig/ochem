@@ -1,7 +1,7 @@
 import React, { FormEvent, SyntheticEvent, useState } from "react";
 import Reaction from "../../canvas/model/Reaction";
 import FormSubmitButton from "../common/buttons/FormSubmitButton";
-import PopupBackground from "../PopupBackground";
+import PopupBackground from "../common/PopupBackground";
 
 interface IProps {
     reaction: Reaction

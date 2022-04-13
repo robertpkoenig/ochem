@@ -9,11 +9,11 @@ import { GetServerSideProps } from 'next'
 import UserType from "../../../canvas/model/UserType"
 import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore"
 import { Transition } from "@headlessui/react"
-import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
+import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
 import p5 from "p5"
 import Button from "../../../components/common/buttons/Button"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
-import { REACTIONS } from "../../../firebase/FirebaseConstants"
+import { REACTIONS } from "../../../persistence-model/FirebaseConstants"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`

@@ -1,4 +1,4 @@
-import PopupBackground from "./PopupBackground";
+import PopupBackground from "../common/PopupBackground";
 
 interface IProps {
     popupCloseFunction: () => void

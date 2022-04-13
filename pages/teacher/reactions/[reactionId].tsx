@@ -18,15 +18,13 @@ import { doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from 
 import { PencilIcon } from "@heroicons/react/outline"
 import PromptPopup from "../../../components/editor/PromptPopup"
 import ReactionRenamePopup from "../../../components/editor/ReactionRenamePopup"
-import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
+import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
 import Ion from "../../../canvas/model/chemistry/atoms/Ion"
 import p5 from "p5"
 import { Component } from "react"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
-import { MODULES, NAME, REACTIONS, REACTION_LISTINGS, SECTIONS, VISIBLE } from "../../../firebase/FirebaseConstants"
+import { MODULES, NAME, REACTIONS, REACTION_LISTINGS, SECTIONS, VISIBLE } from "../../../persistence-model/FirebaseConstants"
 
-const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
-const buttonGrid = `flex flex-row gap-2`
 const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
 const buttonImage = "w-4 h-4"

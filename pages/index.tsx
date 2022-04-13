@@ -1,7 +1,7 @@
 // Landing page for Ochem.io
 
 import React, { useState } from 'react'
-import VideoPopup from '../components/VideoPopup'
+import VideoPopup from '../components/landing-page/VideoPopup'
 import { NextPage } from 'next'
 import TopPanel from '../components/landing-page/top-panel.tsx/TopPanel'
 import HowItWorks from '../components/landing-page/HowItWorks'

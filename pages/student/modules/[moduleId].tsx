@@ -1,15 +1,15 @@
 import { useContext, useEffect, useState } from "react";
-import Section from "../../../firebase/SectionListing";
+import Section from "../../../persistence-model/SectionListing";
 import { useRouter } from 'next/router'
-import Module from "../../../firebase/Module";
-import Layout from "../../../components/Layout";
+import Module from "../../../persistence-model/Module";
+import PageLayout from "../../../components/common/PageLayout";
 import StudentSectionCard from "../../../components/student/StudentSectionCard";
 import { AuthContext } from "../../../context/provider";
 import { arrayUnion, doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
-import ScreenWithLoading from "../../../components/ScreenWithLoading";
-import EmptyState from "../../../components/EmptyState";
+import ScreenWithLoading from "../../../components/common/ScreenWithLoading";
+import EmptyState from "../../../components/common/EmptyState";
 import UserType from "../../../canvas/model/UserType";
-import { DATE_RECORDS, MODULES, MODULE_ANALYTICS_RECORDS } from "../../../firebase/FirebaseConstants";
+import { DATE_RECORDS, MODULES, MODULE_ANALYTICS_RECORDS } from "../../../persistence-model/FirebaseConstants";
 
 // This page displays all module content for the student.
 // The student can practice exercises and tick them off.
@@ -141,12 +141,12 @@ export default function ModulePage() {
 
     return (
         <ScreenWithLoading loading={loading} >
-            <Layout
+            <PageLayout
                 title={module?.title}
                 subtitle={module?.subtitle ? module.subtitle : null}
             >
                 {module && module.sections ? sectionList : sectionListEmptyState}
-            </Layout>
+            </PageLayout>
         </ScreenWithLoading>
     )
 

@@ -1,6 +1,6 @@
 import { createElement } from "react"
-import classNames from "../../../functions/classNames"
-import { iconSizeStyle, Importance, importanceStyles, Size, sizeStyles } from "./styling";
+import classNames from "../../../helper-functions/classNames"
+import { iconSizeStyle, Importance, importanceStyles, Size, sizeStyles } from "./buttonStyling";
 
 interface IProps {
     size: Size,

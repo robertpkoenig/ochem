@@ -2,8 +2,8 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
-import User from "../firebase/User";
-import UserType from "../canvas/model/UserType";
+import User from "../../persistence-model/User";
+import UserType from "../../canvas/model/UserType";
 import { useRouter } from "next/router";
 
 export default function SignUpCard() {

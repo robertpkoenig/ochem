@@ -1,6 +1,6 @@
-import Module from '../../firebase/Module';
-import ReactionListing from '../../firebase/ReactionListing';
-import Section from '../../firebase/SectionListing';
+import Module from '../../persistence-model/Module';
+import ReactionListing from '../../persistence-model/ReactionListing';
+import Section from '../../persistence-model/SectionListing';
 import StudentReactionCard from './StudentReactionCard';
 
 interface ISectionCardProps {
@@ -9,8 +9,6 @@ interface ISectionCardProps {
     completedReactionIds: Set<string>
     checkAdditionFunction: (reactionId: string) => void
 }
-
-interface ISectionCardState {}
 
 // This is the section card in the student module page
 export default function SectionCard(props: ISectionCardProps){
@@ -25,21 +23,21 @@ export default function SectionCard(props: ISectionCardProps){
         })
 
     const reactionList = 
-            <div className=" border border-gray-300 overflow-hidden rounded-md ">
-                <ul className="divide-y divide-gray-300">
-                    {filteredReactionList.map((reactionListing: ReactionListing) => 
-                    <li key={reactionListing.uuid} className="px-6 py-4">
-                        <StudentReactionCard
-                            reactionListing={reactionListing}
-                            section={props.section}
-                            module={props.module}
-                            reactionsChecked={props.completedReactionIds}
-                            checkAdditionFunction={props.checkAdditionFunction}
-                        />
-                    </li>
-                    )}
-                </ul>
-            </div>
+        <div className=" border border-gray-300 overflow-hidden rounded-md ">
+            <ul className="divide-y divide-gray-300">
+                {filteredReactionList.map((reactionListing: ReactionListing) => 
+                <li key={reactionListing.uuid} className="px-6 py-4">
+                    <StudentReactionCard
+                        reactionListing={reactionListing}
+                        section={props.section}
+                        module={props.module}
+                        reactionsChecked={props.completedReactionIds}
+                        checkAdditionFunction={props.checkAdditionFunction}
+                    />
+                </li>
+                )}
+            </ul>
+        </div>
     
     
     return (

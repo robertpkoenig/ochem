@@ -1,17 +1,16 @@
 import Link from 'next/link';
-import * as React from 'react';
 import { useState } from 'react';
-import Module from '../../firebase/Module';
-import ReactionListing from '../../firebase/ReactionListing';
-import Section from '../../firebase/SectionListing';
-import PopupBackground from '../PopupBackground';
-import DeletionPopup from './DeletionPopup';
+import Module from '../../persistence-model/Module';
+import ReactionListing from '../../persistence-model/ReactionListing';
+import Section from '../../persistence-model/SectionListing';
+import PopupBackground from '../common/PopupBackground';
+import DeleteReactionPopup from './DeleteReactionPopup';
 import { deleteDoc, doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { PencilAltIcon } from '@heroicons/react/outline';
 import Button from '../common/buttons/Button';
 import RoundButton from '../common/buttons/RoundButton';
 import { ChevronDownIcon, ChevronUpIcon, XIcon } from '@heroicons/react/solid';
-import { REACTIONS, REACTION_LISTINGS, SECTIONS } from '../../firebase/FirebaseConstants';
+import { REACTIONS, REACTION_LISTINGS, SECTIONS } from '../../persistence-model/FirebaseConstants';
 
 export interface IReactionCardProps {
     reactionListing: ReactionListing
@@ -22,9 +21,7 @@ export interface IReactionCardProps {
 
 export default function ReactionCard (props: IReactionCardProps) {
 
-    const [deleteReactionPopupVisible, setReactionDeletionVisibility] =
-        useState(false)
-    const [reactionListing, setReactionListing] = useState(props.reactionListing)
+    const [deleteReactionPopupVisible, setDeleteReactionPopupVisible] = useState(false)
         
     const db = getFirestore()
 
@@ -93,7 +90,7 @@ export default function ReactionCard (props: IReactionCardProps) {
     }
 
     function toggleReactionDeletionPopup() {
-        setReactionDeletionVisibility(!deleteReactionPopupVisible)
+        setDeleteReactionPopupVisible(!deleteReactionPopupVisible)
     }
 
     function deleteReaction() {
@@ -212,22 +209,19 @@ export default function ReactionCard (props: IReactionCardProps) {
 
             </div>
 
-            {/* Put the delete popup here */}
+            {/* Delete popup */}
             {
-                deleteReactionPopupVisible
-                ?
+                deleteReactionPopupVisible &&
                 <PopupBackground
                     popupCloseFunction={toggleReactionDeletionPopup} 
                 >
-                    <DeletionPopup 
+                    <DeleteReactionPopup 
                         thing={props.reactionListing} 
                         thingType="reaction"
                         deletionFunction={deleteReaction}
                         togglePopupFunction={toggleReactionDeletionPopup}
                     />
                 </PopupBackground>
-                :
-                ''
             }
 
         </div>

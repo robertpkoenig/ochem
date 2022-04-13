@@ -1,19 +1,19 @@
 
-import Layout from '../../../components/Layout'
+import PageLayout from '../../../components/common/PageLayout'
 import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import { PlusIcon } from '@heroicons/react/solid'
 import ModulePopup from '../../../components/editor/ModulePopup'
-import PopupBackground from '../../../components/PopupBackground'
+import PopupBackground from '../../../components/common/PopupBackground'
 import { v4 as uuid } from 'uuid'
 import ModuleCard from '../../../components/editor/ModuleCard'
-import ModuleListing from '../../../firebase/ModuleListing'
-import Module from '../../../firebase/Module'
+import ModuleListing from '../../../persistence-model/ModuleListing'
+import Module from '../../../persistence-model/Module'
 import { collection, query, where, doc, getDocs, getFirestore, setDoc } from "firebase/firestore";
 import { AuthContext } from '../../../context/provider'
-import ScreenWithLoading from '../../../components/ScreenWithLoading'
-import ModuleAnalyticsRecord from '../../../firebase/ModuleAnalyticsRecord'
-import EmptyState from '../../../components/EmptyState'
-import { AUTHOR_ID, MODULES, MODULE_ANALYTICS_RECORDS, MODULE_LISTINGS } from '../../../firebase/FirebaseConstants'
+import ScreenWithLoading from '../../../components/common/ScreenWithLoading'
+import ModuleAnalyticsRecord from '../../../persistence-model/ModuleAnalyticsRecord'
+import EmptyState from '../../../components/common/EmptyState'
+import { AUTHOR_ID, MODULES, MODULE_ANALYTICS_RECORDS, MODULE_LISTINGS } from '../../../persistence-model/FirebaseConstants'
 
 // Shows a list of all the modules owned by the lecturer.
 // Teachers can create and delete modules in this page.
@@ -137,7 +137,7 @@ export default function Modules() {
     return (
 
         <ScreenWithLoading loading={loading} >
-            <Layout
+            <PageLayout
                 title="Modules"
                 subtitle="Create collections for modules you teach"
             >
@@ -161,19 +161,17 @@ export default function Modules() {
                     New module
                 </button>
 
-                {createModulePopupVisible 
-                    ?
+                {
+                    createModulePopupVisible &&
                     <PopupBackground popupCloseFunction={toggleCreateModulePopup}>
                         <ModulePopup
                             popupCloseFunction={toggleCreateModulePopup} 
                             moduleAdditionFunction={createModule} 
                         />
                     </PopupBackground>
-                    :
-                    ''
                 }
 
-            </Layout>
+            </PageLayout>
         </ScreenWithLoading>
 
     )

@@ -1,5 +1,5 @@
 import { NextRouter } from "next/router"
-import User from "../firebase/User"
+import User from "../persistence-model/User"
 import UserType from "../canvas/model/UserType"
 
 // If the user is a teacher, always redirect to the teacher's modules page.

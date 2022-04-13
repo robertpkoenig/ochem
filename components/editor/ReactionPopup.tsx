@@ -1,6 +1,6 @@
 import React, { FormEvent, SyntheticEvent, useState } from "react";
 import FormSubmitButton from "../common/buttons/FormSubmitButton";
-import PopupBackground from "../PopupBackground";
+import PopupBackground from "../common/PopupBackground";
 
 interface IProps {
     popupCloseFunction: () => void

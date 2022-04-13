@@ -1,6 +1,6 @@
 import { ChartBarIcon, FolderIcon, PencilAltIcon } from "@heroicons/react/outline"
 import React from "react"
-import classNames from "../../functions/classNames"
+import classNames from "../../helper-functions/classNames"
 
 const features = [
     {   
