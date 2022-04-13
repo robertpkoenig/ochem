@@ -5,14 +5,14 @@ import SectionCard from "../../../components/editor/SectionCard";
 import { PlusIcon } from "@heroicons/react/solid";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
-import { primaryButtonMd } from "../../../styles/common-styles";
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
-import FirebaseConstants from "../../../firebase/FirebaseConstants";
 import { AuthContext } from "../../../context/provider";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import ModuleEditorLayout from "../../../components/editor/ModuleEditorLayout";
 import EmptyState from "../../../components/EmptyState";
 import { useRouter } from "next/router";
+import Button from "../../../components/common/buttons/Button";
+import { MODULES, SECTIONS } from "../../../firebase/FirebaseConstants";
 
 // This page allows lecturers to edit modules, which are collections 
 // of reaction exercises organized around a university module.
@@ -38,7 +38,7 @@ export default function ModulePage() {
     // Load module data from Firestore
     async function getData() {
         const moduleId: string = router.query.moduleId as string
-        const docRef = doc(db, FirebaseConstants.MODULES, moduleId);
+        const docRef = doc(db, MODULES, moduleId);
         const docSnap = await getDoc(docRef);
         setModule(docSnap.data() as Module)
         setLoading(false)
@@ -80,11 +80,11 @@ export default function ModulePage() {
         // Create the section record in the module's nested collection of sections
         const moduleRecordDocLocation =
             doc(db,
-                FirebaseConstants.MODULES,
+                MODULES,
                 module.uuid,
             )
 
-        const sectionRefWithinModule = FirebaseConstants.SECTIONS + "." + sectionId
+        const sectionRefWithinModule = SECTIONS + "." + sectionId
 
         const newSectionUpdateObject: any = {}
         newSectionUpdateObject[sectionRefWithinModule] = newSection
@@ -147,14 +147,14 @@ export default function ModulePage() {
                     }
                 </div>
 
-                <button
-                    type="button"
-                    className={primaryButtonMd + "mt-5"}
-                    onClick={() => toggleSectionCreationPopup()}
-                >
-                    <PlusIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-                    New section
-                </button>
+                <Button
+                    text={"New Section"}
+                    icon={PlusIcon}
+                    onClick={toggleSectionCreationPopup}
+                    extraClasses={"mt-5"}
+                    size={"small"}
+                    importance={"primary"}
+                />
 
                 {/* Toggle the section popup */}
                 {

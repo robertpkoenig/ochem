@@ -1,14 +1,12 @@
 import p5 from "p5"
-import { User } from "react-feather"
-import Constants from "../Constants"
 import { Controller } from "../controller/Controller"
-import BondType from "../model/chemistry/bonds/BondType"
 import Reaction from "../model/Reaction"
 import UserType from "../model/UserType"
 import ArrowViewer from "./ArrowViewer"
 import TeacherView from "./TeacherView"
 import MoleculeViewer from "./MoleculeViewer"
 import StudentView from "./StudentView"
+import { ARROW_STROKE_WEIGHT, STROKE_WEIGHT } from "../Constants"
 
 class View {
 
@@ -60,7 +58,7 @@ class View {
         this.p5.textAlign(this.p5.CENTER, this.p5.CENTER)
         this.p5.textSize(17)
         this.p5.imageMode(this.p5.CENTER)
-        this.p5.strokeWeight(Constants.STROKE_WEIGHT)
+        this.p5.strokeWeight(STROKE_WEIGHT)
         this.p5.frameRate(30)
         this.p5.textFont("Poppins")
     }
@@ -108,7 +106,7 @@ class View {
         if (straightArrow) {
             this.p5.push()
             this.p5.stroke(0)
-            this.p5.strokeWeight(Constants.ARROW_STROKE_WEIGHT)
+            this.p5.strokeWeight(ARROW_STROKE_WEIGHT)
                 this.p5.line(
                     straightArrow.startVector.x,
                     straightArrow.startVector.y,

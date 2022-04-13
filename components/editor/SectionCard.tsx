@@ -1,22 +1,21 @@
-import { PlusIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid';
-import * as React from 'react';
+import { PlusIcon, ChevronDownIcon, ChevronUpIcon, XIcon } from '@heroicons/react/solid';
 import Module from '../../firebase/Module';
 import ReactionListing from '../../firebase/ReactionListing';
 import Section from '../../firebase/SectionListing';
-import { roundEditButtonContainer, secondaryButtonSm } from '../../styles/common-styles';
-import PopupBackground from '../PopupBackground';
 import ReactionCard from './ReactionCard';
 import ReactionCreationPopup from './ReactionPopup';
 import { v4 as uuid } from 'uuid'
 import DeletionPopup from './DeletionPopup';
 import Reaction from '../../canvas/model/Reaction';
 import ReactionStep from '../../canvas/model/ReactionStep';
-import { arrayUnion, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
-import { AuthContext } from '../../context/provider';
-import FirebaseConstants from '../../firebase/FirebaseConstants';
+import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 import { PencilIcon } from '@heroicons/react/outline';
 import SectionRenamePopup from './SectionRenamePopup';
 import EmptyState from '../EmptyState';
+import { useState } from 'react';
+import Button from '../common/buttons/Button';
+import RoundButton from '../common/buttons/RoundButton';
+import { MODULES, REACTION_LISTINGS, SECTIONS } from '../../firebase/FirebaseConstants';
 
 interface IProps {
     userId: string
@@ -28,11 +27,11 @@ interface IProps {
 export default function SectionCard(props: IProps) {
 
     const [sectionDeletePopupVis, setSectionDeletePopupVis]
-        = React.useState<boolean>(false)
+        = useState<boolean>(false)
     const [sectionRenamePopupVis, setSectionRenamePopupVis]
-        = React.useState<boolean>(false)
+        = useState<boolean>(false)
     const [reactionCreationPopupVis, setReactionCreationPopupVis]
-        = React.useState<boolean>(false)
+        = useState<boolean>(false)
 
     const db = getFirestore()
 
@@ -158,8 +157,8 @@ export default function SectionCard(props: IProps) {
         props.setModuleFunction(props.module)
 
         const reactionRefWithinSection =
-            FirebaseConstants.SECTIONS + "."+ props.section.uuid + "."+
-            FirebaseConstants.REACTION_LISTINGS + "." + reactionId
+            SECTIONS + "."+ props.section.uuid + "."+
+            REACTION_LISTINGS + "." + reactionId
 
         const newSectionUpdateObject: any = {}
         newSectionUpdateObject[reactionRefWithinSection] = newReactionListing
@@ -167,7 +166,7 @@ export default function SectionCard(props: IProps) {
         // Create the new nested reaction listing document
         // in the module's section document's reaction listings collection
         const sectionRecordDocLocation =
-            doc(db, FirebaseConstants.MODULES, props.module.uuid)
+            doc(db, MODULES, props.module.uuid)
         updateDoc(sectionRecordDocLocation, newSectionUpdateObject)
 
         // Create a new full reaction object
@@ -239,26 +238,22 @@ export default function SectionCard(props: IProps) {
                         </div>
 
                         <div className="flex flex-row content-center gap-1">
-                            <button
-                                className={roundEditButtonContainer}
-                                onClick={incrementSectionOrder}
-                            >
-                                <ChevronDownIcon className="stroke-2 w-4 h-4 hover:text-gray-600" />
-                            </button>
-                            <button
-                                className={roundEditButtonContainer}
-                                onClick={decrementSectionOrder}
-                            >
-                                <ChevronUpIcon className="stroke-2 w-4 h-4 hover:text-gray-600" />
-                            </button>
-                            <button
-                                className={roundEditButtonContainer}
-                                onClick={toggleSectionDeletePopup}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
+
+                            <RoundButton
+                                icon={ChevronDownIcon}
+                                onClick={incrementSectionOrder}                    
+                            />
+
+                            <RoundButton
+                                icon={ChevronUpIcon}
+                                onClick={decrementSectionOrder}                    
+                            />
+
+                            <RoundButton
+                                icon={XIcon}
+                                onClick={toggleSectionDeletePopup}                    
+                            />
+                           
                         </div>
 
                 </div>
@@ -276,14 +271,14 @@ export default function SectionCard(props: IProps) {
                     </div>
 
                     <div>
-                        <button
+                        <Button
+                            size={'small'}
+                            importance={'secondary'}
+                            text={'New reaction'}
+                            icon={PlusIcon}
                             onClick={toggleReactionCreationPopup}
-                            type="button"
-                            className={ secondaryButtonSm }
-                        >
-                            <PlusIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-                            New reaction
-                        </button>
+                            extraClasses={''}
+                        />
                     </div>
 
                     {/* Toggle the delete section popup */}

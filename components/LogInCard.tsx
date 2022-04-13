@@ -5,9 +5,8 @@ import { FormEvent, useContext, useState } from "react";
 import { AuthContext } from "../context/provider";
 import redirectUserHome from "../functions/redirectUserToHome";
 import User from "../firebase/User";
-import UserType from "../canvas/model/UserType";
-import { primaryButtonMd } from "../styles/common-styles";
 import Link from 'next/link'
+import FormSubmitButton from "./common/buttons/FormSubmitButton";
 
 export default function LogInCard() {
 
@@ -117,19 +116,7 @@ export default function LogInCard() {
                         </div>
             
                         <div>
-                            {/* <button
-
-                                type="submit"
-                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                            >
-                            Sign in
-                            </button> */}
-                            <input
-                                type="submit"
-                                name="submit"
-                                value="Log in"
-                                className={primaryButtonMd + "w-full flex justify-center cursor-pointer"}
-                            />
+                            <FormSubmitButton value={"Log in"} class={"w-full"} />
                         </div>
                     </form>
                 </div>

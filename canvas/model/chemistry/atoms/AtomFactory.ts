@@ -1,4 +1,3 @@
-import ReactionStep from "../../ReactionStep"
 import { Atom } from "./Atom"
 import { AtomicElements, IAtomicElement } from "./elements"
 

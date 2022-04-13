@@ -1,23 +1,19 @@
-// This is simply a file to store firebase document and field
-// names to avoid spelling mistakes.
-export default class FirebaseConstants {
+// Firebase document and field names
 
-    // Names of the collections
-    public static MODULES = "modules"
-    public static MODULE_LISTINGS = "moduleListings"
-    public static REACTIONS = "reactions"
-    public static SECTIONS = "sections"
-    public static REACTION_LISTINGS = "reactionListings"
-    public static USERS = "users"
-    public static MODULE_ANALYTICS_RECORDS = "moduleAnalyticsRecords"
+// Collections
+export const MODULES = "modules"
+export const MODULE_LISTINGS = "moduleListings"
+export const REACTIONS = "reactions"
+export const SECTIONS = "sections"
+export const REACTION_LISTINGS = "reactionListings"
+export const USERS = "users"
+export const MODULE_ANALYTICS_RECORDS = "moduleAnalyticsRecords"
 
-    // Field names
-    public static AUTHOR_ID = "authorId"
-    public static UUID = "uuid"
-    public static COMPLETED_REACTION_IDS = "completedReactionIds"
-    public static DATE_RECORDS = "dateRecords"
-    public static STUDENT_IDS = "studentIds"
-    public static VISIBLE = "visible"
-    public static NAME = "name"
-
-}
+// Fields
+export const AUTHOR_ID = "authorId"
+export const UUID = "uuid"
+export const COMPLETED_REACTION_IDS = "completedReactionIds"
+export const DATE_RECORDS = "dateRecords"
+export const STUDENT_IDS = "studentIds"
+export const VISIBLE = "visible"
+export const NAME = "name"

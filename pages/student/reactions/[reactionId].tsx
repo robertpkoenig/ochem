@@ -6,15 +6,14 @@ import Reaction from "../../../canvas/model/Reaction"
 import ReactionStep from "../../../canvas/model/ReactionStep"
 import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
 import { GetServerSideProps } from 'next'
-import Constants from "../../../canvas/Constants"
 import UserType from "../../../canvas/model/UserType"
 import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore"
-import FirebaseConstants from "../../../firebase/FirebaseConstants"
-import { findConfigFile } from "typescript"
-import { primaryButtonSm, secondaryButtonSm } from "../../../styles/common-styles"
 import { Transition } from "@headlessui/react"
 import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAllRender"
 import p5 from "p5"
+import Button from "../../../components/common/buttons/Button"
+import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
+import { REACTIONS } from "../../../firebase/FirebaseConstants"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -72,7 +71,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
     // is deserialized to a Reaction object
     async componentDidMount() {
 
-        const docRef = doc(this.db, FirebaseConstants.REACTIONS, this.props.reactionId);
+        const docRef = doc(this.db, REACTIONS, this.props.reactionId);
         const docSnap = await getDoc(docRef);
 
         const rawReactionObject = docSnap.data()
@@ -309,7 +308,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                         <div className="w-1200 h-700 mx-auto pb-12 flex flex-row gap-5">
 
                             {/* p5 canvas */}
-                            <div id={Constants.CANVAS_PARENT_NAME} className="bg-white h-700 rounded-lg shadow flex-grow relative">
+                            <div id={CANVAS_PARENT_NAME} className="bg-white h-700 rounded-lg shadow flex-grow relative">
                                 {
                                     this.state.reaction &&
                                     this.state.reaction.currentStep.order == this.state.reaction.steps.length - 1
@@ -376,15 +375,29 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                             </div>
                                         </div>
                                         <div className="flex flex-row gap-4">
-                                            <button className={secondaryButtonSm} onMouseDown={this.resetReaction.bind(this)}>
-                                                Retry
-                                            </button>
+    
+                                            <Button
+                                                size={'small'}
+                                                importance={'secondary'}
+                                                text={'Retry'}
+                                                icon={null}
+                                                onClick={this.resetReaction.bind(this)}
+                                                extraClasses={''}
+                                            />
 
                                             <Link href={"/student/modules/" + this.state.reaction?.moduleId}>
-                                                <a className={primaryButtonSm}>
-                                                    Back To Module
+                                                <a>
+                                                    <Button 
+                                                        size={'small'} 
+                                                        importance={'primary'} 
+                                                        text={'Back to module'} 
+                                                        icon={null}
+                                                        onClick={null}
+                                                        extraClasses={''}
+                                                    />
                                                 </a>
                                             </Link>
+
                                         </div>
                                     </div>
                                     :

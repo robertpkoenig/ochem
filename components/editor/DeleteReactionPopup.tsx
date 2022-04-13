@@ -1,5 +1,5 @@
 import ReactionListing from "../../firebase/ReactionListing"
-import { redButtonMd } from "../../styles/common-styles"
+import Button from "../common/buttons/Button"
 
 interface IProps {
     reactionListing: ReactionListing
@@ -26,13 +26,14 @@ function DeleteReactionPopup(props: IProps) {
             <p>Once you delete it, it will be permenantly lost</p>
             </div>
             <div className="mt-5">
-            <button
-                onClick={() => deleteReactionAndClosePopup()}
-                type="button"
-                className={redButtonMd}
-            >
-                Delete reaction
-            </button>
+                <Button
+                    size={"small"}
+                    importance={"caution"}
+                    text={"Delete"}
+                    icon={null}
+                    onClick={deleteReactionAndClosePopup}
+                    extraClasses={""} 
+                />
             </div>
         </div>
         </div>

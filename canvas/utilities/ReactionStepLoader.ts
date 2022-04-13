@@ -1,5 +1,5 @@
 import { Vector } from "sat"
-import Constants from "../Constants"
+import { BOND_DISTANCE } from "../Constants"
 import { Atom } from "../model/chemistry/atoms/Atom"
 import { AtomFactory } from "../model/chemistry/atoms/AtomFactory"
 import { Bond } from "../model/chemistry/bonds/Bond"
@@ -9,6 +9,7 @@ import StraightArrow from "../model/chemistry/StraightArrow"
 import ReactionStep from "../model/ReactionStep"
 import Utilities from "./Utilities"
 
+/** De-serializes a single step in a reaction */
 class ReactionStepLoader {
 
     public static loadReactionStepFromPlainObject(reactionStepPlainObject: any): ReactionStep {
@@ -37,7 +38,7 @@ class ReactionStepLoader {
                     const atomTwo = Utilities.getAtomWithinMoleculeByID(newMolecule, savedBond["atomTwo"])
                     const type = savedBond.type
                     const uuid = savedBond.uuid
-                    const newBond = new Bond(atomOne, atomTwo, Constants.BOND_DISTANCE, type, uuid)
+                    const newBond = new Bond(atomOne, atomTwo, BOND_DISTANCE, type, uuid)
                     newMolecule.bonds.push(newBond)
                     atomOne.bonds.push(newBond)
                     atomTwo.bonds.push(newBond)
@@ -107,8 +108,6 @@ class ReactionStepLoader {
                     restoredCurlyArrow.endObject = object
                 }
             }
-
-            // restoredCurlyArrow.update()
 
             restoredReactionStep.curlyArrow = restoredCurlyArrow
 

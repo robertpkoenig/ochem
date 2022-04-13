@@ -3,11 +3,10 @@ import { ChartBarIcon, EyeIcon, PaperAirplaneIcon, PencilIcon } from "@heroicons
 import { doc, getFirestore, updateDoc } from "firebase/firestore"
 import Link from "next/link"
 import React, { useState } from "react"
-import { stringify } from "uuid"
-import FirebaseConstants from "../../firebase/FirebaseConstants"
+import { MODULES } from "../../firebase/FirebaseConstants"
 import Module from "../../firebase/Module"
-import { primaryButtonSm, secondaryButtonSm } from "../../styles/common-styles"
 import BlueNavBar from "../BlueNavBar"
+import Button from "../common/buttons/Button"
 import ModuleRenamePopup from "./ModuleRenamePopup"
 import SharePopup from "./SharePopup"
 
@@ -31,7 +30,7 @@ export default function ModuleEditorLayout(props: LayoutProps) {
 
         const moduleRecordDocLocation =
             doc(db,
-                FirebaseConstants.MODULES,
+                MODULES,
                 props.module.uuid,
             )
 
@@ -57,26 +56,38 @@ export default function ModuleEditorLayout(props: LayoutProps) {
         <div className="bg-white rounded-lg shadow px-4 py-3 flex flex-row gap-2">
 
             <Link href={"/teacher/analytics/" + props.module?.uuid}>
-                <a className={secondaryButtonSm}>
-                    <ChartBarIcon className="-ml-0.5 h-4 w-4" aria-hidden="true" />
-                    Analytics
+                <a>
+                    <Button
+                        size={"small"}
+                        importance={"primary"}
+                        text={"Analytics"}
+                        icon={ChartBarIcon}
+                        onClick={null}
+                        extraClasses={""} />
                 </a>
             </Link>
             
             <Link href={"/student/modules/" + props.module?.uuid}>
-                <a className={secondaryButtonSm}>
-                    <EyeIcon className="-ml-0.5 h-4 w-4" aria-hidden="true" />
-                    Preview
+                <a>
+                    <Button
+                        size={"small"}
+                        importance={"primary"}
+                        text={"Preview"}
+                        icon={EyeIcon}
+                        onClick={null}
+                        extraClasses={""} />
                 </a>
             </Link>
-            <button
-            type="button"
-            className={primaryButtonSm}
-            onClick={() => toggleSharePopup()}
-            >
-                <PaperAirplaneIcon className="-ml-0.5 h-4 w-4" aria-hidden="true" />
-                Invite Students
-            </button>
+
+            <Button
+                size="small"
+                importance="secondary"
+                text="Invite Students"
+                icon={PaperAirplaneIcon}
+                onClick={toggleSharePopup}
+                extraClasses=""
+            />
+
         </div>
     )
 

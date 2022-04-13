@@ -1,6 +1,6 @@
 import React, { FormEvent, FormEventHandler, MouseEventHandler, SyntheticEvent, useState } from "react";
 import Module from "../../firebase/Module";
-import { primaryButtonMd } from "../../styles/common-styles";
+import FormSubmitButton from "../common/buttons/FormSubmitButton";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
@@ -44,7 +44,7 @@ export default function ModuleRenamePopup(props: IProps) {
 
                     <div className="w-96">
                         <h2 className="w-full text-center font-bold mb-4">
-                            New Module
+                            Edit Title and Subtitle 
                         </h2>
                         <label htmlFor="module-name" className="block text-sm font-medium text-gray-700">
                             Title
@@ -75,13 +75,7 @@ export default function ModuleRenamePopup(props: IProps) {
                 </div>
                 </div>
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
-                <input
-                    type="submit"
-                    name="submit"
-                    value="Save"
-                    placeholder="Type module name here"
-                    className={primaryButtonMd + "cursor-pointer"}
-                />
+                <FormSubmitButton value={"Save"} class={""} />
                 </div>
             </div>
             </form>

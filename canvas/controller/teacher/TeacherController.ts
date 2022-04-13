@@ -1,19 +1,19 @@
 import Reaction from "../../model/Reaction"
-import SingleAtomMoleculeCreator from "./AtomCreator"
-import BondCreator from "./BondCreator"
-import PanelController from "./PanelController"
+import SingleAtomMoleculeCreator from "./helper/AtomCreator"
+import BondCreator from "./helper/BondCreator"
+import PanelController from "./helper/PanelController"
 import { Vector } from "sat"
 import CollisionDetector from "../../view/CollisinDetector"
-import UndoManager from "./UndoManager"
-import HoverDetector from "./HoverDetector"
-import Eraser from "./Eraser"
+import UndoManager from "./helper/UndoManager"
+import HoverDetector from "./helper/HoverDetector"
+import Eraser from "./helper/Eraser"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import p5 from "p5"
 import TeacherReactionPage from "../../../pages/teacher/reactions/[reactionId]"
 import UserType from "../../model/UserType"
 import BodyMover from "../BodyMover"
-import IonCreator from "./IonCreator"
-import StraightArrowCreator from "./StraightArrowCreator"
+import IonCreator from "./helper/IonCreator"
+import StraightArrowCreator from "./helper/StraightArrowCreator"
 
 class TeacherController {
 
@@ -66,7 +66,7 @@ class TeacherController {
     }
 
     process() {
-        this.panelController.moveElementIfSelected()
+        this.panelController.moveSelectedElementIfOneIsSelected()
         this.updateMouseStyle()
         if (this.straightArrowCreator.draftArrow) {
             this.straightArrowCreator.draftArrow.update(this.p5)

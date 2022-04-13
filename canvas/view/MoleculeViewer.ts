@@ -1,5 +1,5 @@
 import p5 from "p5"
-import Constants from "../Constants"
+import { ION_ORBIT_RADIUS, ION_RADIUS, STROKE_WEIGHT } from "../Constants"
 import { Atom } from "../model/chemistry/atoms/Atom"
 import BondType from "../model/chemistry/bonds/BondType"
 import Reaction from "../model/Reaction"
@@ -37,8 +37,8 @@ class MoleculeViewer {
     }
 
     private renderIon(atom: Atom) {
-        const x = atom.getPosVector().x + Constants.ION_ORBIT_RADIUS 
-        const y = atom.getPosVector().y - Constants.ION_ORBIT_RADIUS
+        const x = atom.getPosVector().x + ION_ORBIT_RADIUS 
+        const y = atom.getPosVector().y - ION_ORBIT_RADIUS
 
         this.p5.push()
 
@@ -46,7 +46,7 @@ class MoleculeViewer {
             this.p5.stroke(0)
             this.p5.strokeWeight(1)
             this.p5.fill(255)
-            this.p5.ellipse(x, y, Constants.ION_RADIUS)
+            this.p5.ellipse(x, y, ION_RADIUS)
 
             // cation bounding circle
             this.p5.noStroke()
@@ -69,11 +69,11 @@ class MoleculeViewer {
                 }
 
                 if (bond.type == BondType.DOUBLE) {
-                    this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3)
+                    this.p5.strokeWeight(STROKE_WEIGHT * 3)
                     this.p5.stroke(0)
                     this.p5.line(bond.atoms[0].circle.pos.x, bond.atoms[0].circle.pos.y,
                                  bond.atoms[1].circle.pos.x, bond.atoms[1].circle.pos.y)
-                    this.p5.strokeWeight(Constants.STROKE_WEIGHT)
+                    this.p5.strokeWeight(STROKE_WEIGHT)
                     this.p5.stroke(255)
                     this.p5.line(bond.atoms[0].circle.pos.x, bond.atoms[0].circle.pos.y,
                                  bond.atoms[1].circle.pos.x, bond.atoms[1].circle.pos.y)
@@ -81,17 +81,17 @@ class MoleculeViewer {
 
                 if (bond.type == BondType.TRIPLE) {
 
-                    this.p5.strokeWeight(Constants.STROKE_WEIGHT * 5)
+                    this.p5.strokeWeight(STROKE_WEIGHT * 5)
                     this.p5.stroke(0)
                     this.p5.line(bond.atoms[0].circle.pos.x, bond.atoms[0].circle.pos.y,
                                  bond.atoms[1].circle.pos.x, bond.atoms[1].circle.pos.y)
 
-                    this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3)
+                    this.p5.strokeWeight(STROKE_WEIGHT * 3)
                     this.p5.stroke(255)
                     this.p5.line(bond.atoms[0].circle.pos.x, bond.atoms[0].circle.pos.y,
                                  bond.atoms[1].circle.pos.x, bond.atoms[1].circle.pos.y)
 
-                    this.p5.strokeWeight(Constants.STROKE_WEIGHT)
+                    this.p5.strokeWeight(STROKE_WEIGHT)
                     this.p5.stroke(0)
                     this.p5.line(bond.atoms[0].circle.pos.x, bond.atoms[0].circle.pos.y,
                                  bond.atoms[1].circle.pos.x, bond.atoms[1].circle.pos.y)

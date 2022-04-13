@@ -4,10 +4,10 @@ import Layout from "../../../components/Layout";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import { Line } from 'react-chartjs-2';
 import { collection, doc, getDoc, getDocs, getFirestore, limit, orderBy, query, where } from "firebase/firestore";
-import FirebaseConstants from "../../../firebase/FirebaseConstants";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../../context/provider";
 import ModuleAnalyticsRecord from "../../../firebase/ModuleAnalyticsRecord";
+import { DATE_RECORDS, MODULE_ANALYTICS_RECORDS } from "../../../firebase/FirebaseConstants";
 
 interface DateRecord {
     date: string,
@@ -85,7 +85,7 @@ export default function Analytics() {
     async function getModuleAnalyticsRecord() {
         const db = getFirestore()
         const moduleId = router.query.moduleId as string
-        const moduleDocRef = doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId);
+        const moduleDocRef = doc(db, MODULE_ANALYTICS_RECORDS, moduleId);
         getDoc(moduleDocRef).then((docSnap) => {
             setModuleAnalyticsRecord(docSnap.data() as ModuleAnalyticsRecord)
         })
@@ -104,9 +104,9 @@ export default function Analytics() {
         // the location of the parent document
         const dateRecordsCollectionLocation =
             collection( db,
-                        FirebaseConstants.MODULE_ANALYTICS_RECORDS,
+                        MODULE_ANALYTICS_RECORDS,
                         moduleId,
-                        FirebaseConstants.DATE_RECORDS
+                        DATE_RECORDS
             )
         const q = query(dateRecordsCollectionLocation, orderBy("date", "desc"), limit(7))
         // Set the firebase date records to local state

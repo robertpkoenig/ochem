@@ -77,6 +77,7 @@ class CurlyArrow {
 
     }
 
+    /** Sets the coordinates of the points of the triangle at the end of the curly arrow */
     setTrianglePoints(p5: p5) {
 
         // Find the coordinates of the triangle tip
@@ -113,6 +114,11 @@ class CurlyArrow {
 
     }
 
+    /** 
+     * Curly arrow collision detection works by super-imposing invisible straight lines
+     * over the curl, and detecting collisions with any of these line segments.
+     * This method creates the points defining each line segment.
+     */
     setCollisionPoints(p5: p5) {
 
         this.points = []

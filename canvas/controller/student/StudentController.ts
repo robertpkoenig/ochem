@@ -5,8 +5,9 @@ import CollisionDetector from "../../view/CollisinDetector"
 import Reaction from "../../model/Reaction"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import BodyMover from "../BodyMover"
-import HoverDetector from "../teacher/HoverDetector"
+import HoverDetector from "../teacher/helper/HoverDetector"
 
+/** Handles student input in canvas */
 class StudentController {
 
     // Upstream objects
@@ -52,6 +53,7 @@ class StudentController {
         }
     }
 
+    // Updates the mouse style based on what the mouse is hovering
     updateMouseStyle() {
 
         const currentlyOverAtom = this.hoverDetector.atomCurrentlyHovered != null
@@ -93,6 +95,7 @@ class StudentController {
 
     }
 
+    /** Once the student draws their arrow, test that it is correct */
     testStudentArrowIfCompleted() {
         this.arrowCreator.completeStudentArrowIfReleasedOverObject()
         if (this.arrowCreator.draftArrow != null &&

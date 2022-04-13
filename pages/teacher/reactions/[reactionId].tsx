@@ -3,9 +3,8 @@ import { ArrowLeftIcon, PlusIcon, XIcon } from "@heroicons/react/solid"
 import { GetServerSideProps } from "next"
 import Link from "next/link"
 import { MinusCircle, PlusCircle, RotateCcw, RotateCw } from "react-feather"
-import Constants from "../../../canvas/Constants"
 import TeacherController from "../../../canvas/controller/teacher/TeacherController"
-import ReactionSaver from "../../../canvas/controller/teacher/ReactionSaver"
+import ReactionSaver from "../../../canvas/controller/teacher/helper/ReactionSaver"
 import { AtomicElements } from "../../../canvas/model/chemistry/atoms/elements"
 import BondType from "../../../canvas/model/chemistry/bonds/BondType"
 import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
@@ -16,7 +15,6 @@ import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
 import ReactionStepLoader from "../../../canvas/utilities/ReactionStepLoader"
 import Utilities from "../../../canvas/utilities/Utilities"
 import { doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore"
-import FirebaseConstants from "../../../firebase/FirebaseConstants"
 import { PencilIcon } from "@heroicons/react/outline"
 import PromptPopup from "../../../components/editor/PromptPopup"
 import ReactionRenamePopup from "../../../components/editor/ReactionRenamePopup"
@@ -24,6 +22,8 @@ import ScreenWithLoadingAllRender from "../../../components/ScreenWithLoadingAll
 import Ion from "../../../canvas/model/chemistry/atoms/Ion"
 import p5 from "p5"
 import { Component } from "react"
+import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
+import { MODULES, NAME, REACTIONS, REACTION_LISTINGS, SECTIONS, VISIBLE } from "../../../firebase/FirebaseConstants"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -98,7 +98,7 @@ class TeacherReactionPage extends Component<IProps, IState> {
     // This function is called when this component is loaded in the browser.
     async componentDidMount() {
 
-        const docRef = doc(this.db, FirebaseConstants.REACTIONS, this.props.reactionId);
+        const docRef = doc(this.db, REACTIONS, this.props.reactionId);
         const docSnap = await getDoc(docRef);
 
         const rawReactionObject = docSnap.data()
@@ -155,21 +155,21 @@ class TeacherReactionPage extends Component<IProps, IState> {
         ReactionSaver.saveReaction(this.state.reaction)
 
         // Update the core reaction document in firestore
-        const reactionDocRef = doc(this.db, FirebaseConstants.REACTIONS, this.props.reactionId)
+        const reactionDocRef = doc(this.db, REACTIONS, this.props.reactionId)
         updateDoc(reactionDocRef, {
             visible: this.state.reaction.visible
         })
         
         // Module doc ref to access the nested reaction listing object
-        const moduleDocRef = doc(this.db, FirebaseConstants.MODULES, this.state.reaction.moduleId)
+        const moduleDocRef = doc(this.db, MODULES, this.state.reaction.moduleId)
 
         // To update the reaction listing document in firestore,
         // the string detailing the document's nested location is
         // constructed here
         const reactionRefWithinSection =
-            FirebaseConstants.SECTIONS + "."+ this.state.reaction.sectionId + "."+
-            FirebaseConstants.REACTION_LISTINGS + "." + this.state.reaction.uuid + 
-            "." + FirebaseConstants.VISIBLE
+            SECTIONS + "."+ this.state.reaction.sectionId + "."+
+            REACTION_LISTINGS + "." + this.state.reaction.uuid + 
+            "." + VISIBLE
 
         const sectionVisibilityUpdateObject: any = {}
         sectionVisibilityUpdateObject[reactionRefWithinSection] = this.state.reaction.visible
@@ -201,19 +201,19 @@ class TeacherReactionPage extends Component<IProps, IState> {
     renameReaction(newName: string) {
         this.state.reaction.name = newName
         this.forceUpdate()
-        const reactionRef = doc(this.db, FirebaseConstants.REACTIONS, this.state.reaction.uuid)
+        const reactionRef = doc(this.db, REACTIONS, this.state.reaction.uuid)
         updateDoc(reactionRef, {
             name: newName
         })
 
         // Module doc ref to access the nested reaction listing object
-        const moduleDocRef = doc(this.db, FirebaseConstants.MODULES, this.state.reaction.moduleId)
+        const moduleDocRef = doc(this.db, MODULES, this.state.reaction.moduleId)
 
         // Update the reaction listing document in firestore
         const reactionRefWithinSection =
-            FirebaseConstants.SECTIONS + "."+ this.state.reaction.sectionId + "."+
-            FirebaseConstants.REACTION_LISTINGS + "." + this.state.reaction.uuid + 
-            "." + FirebaseConstants.NAME
+            SECTIONS + "."+ this.state.reaction.sectionId + "."+
+            REACTION_LISTINGS + "." + this.state.reaction.uuid + 
+            "." + NAME
 
         const sectionVisibilityUpdateObject: any = {}
         sectionVisibilityUpdateObject[reactionRefWithinSection] = newName
@@ -728,8 +728,9 @@ class TeacherReactionPage extends Component<IProps, IState> {
                                     </button>
 
                                 </div>
+                                
                             {/* p5 canvas */}
-                            <div id={Constants.CANVAS_PARENT_NAME} className=" h-700 bg-white rounded-lg shadow flex-grow">
+                            <div id={CANVAS_PARENT_NAME} className=" h-700 bg-white rounded-lg shadow flex-grow">
                             </div>
                             
                             {/* atomic elements */}

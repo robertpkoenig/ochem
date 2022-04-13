@@ -3,9 +3,9 @@ import StudentReactionPage from "../../pages/student/reactions/[reactionId]"
 import TeacherReactionPage from "../../pages/teacher/reactions/[reactionId]"
 import { CurlyArrow } from "../model/chemistry/CurlyArrow"
 import Reaction from "../model/Reaction"
-import HoverDetector from "./teacher/HoverDetector"
-import ReactionSaver from "./teacher/ReactionSaver"
-import UndoManager from "./teacher/UndoManager"
+import HoverDetector from "./teacher/helper/HoverDetector"
+import ReactionSaver from "./teacher/helper/ReactionSaver"
+import UndoManager from "./teacher/helper/UndoManager"
 
 class CurlyArrowCreator {
 
@@ -15,6 +15,7 @@ class CurlyArrowCreator {
     undoManager: UndoManager
     page: TeacherReactionPage | StudentReactionPage
 
+    // properties
     draftArrow: CurlyArrow
 
     constructor(

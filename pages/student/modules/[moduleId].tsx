@@ -5,11 +5,11 @@ import Module from "../../../firebase/Module";
 import Layout from "../../../components/Layout";
 import StudentSectionCard from "../../../components/student/StudentSectionCard";
 import { AuthContext } from "../../../context/provider";
-import { arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
-import FirebaseConstants from "../../../firebase/FirebaseConstants";
+import { arrayUnion, doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import ScreenWithLoading from "../../../components/ScreenWithLoading";
 import EmptyState from "../../../components/EmptyState";
 import UserType from "../../../canvas/model/UserType";
+import { DATE_RECORDS, MODULES, MODULE_ANALYTICS_RECORDS } from "../../../firebase/FirebaseConstants";
 
 // This page displays all module content for the student.
 // The student can practice exercises and tick them off.
@@ -28,7 +28,7 @@ export default function ModulePage() {
         // Get the module Id from the URL path
         const moduleId = router.query.moduleId as string
         // Find the 'address' of the module document in firebase
-        const moduleDocRef = doc(db, FirebaseConstants.MODULES, moduleId);
+        const moduleDocRef = doc(db, MODULES, moduleId);
         const docSnap = await getDoc(moduleDocRef);
         setModule(docSnap.data() as Module)
         setCompletedReactionids(new Set<string>(user.completedReactionIds))
@@ -60,9 +60,9 @@ export default function ModulePage() {
 
             const dateRecordDocLocation =
                 doc(db,
-                    FirebaseConstants.MODULE_ANALYTICS_RECORDS,
+                    MODULE_ANALYTICS_RECORDS,
                     moduleId,
-                    FirebaseConstants.DATE_RECORDS,
+                    DATE_RECORDS,
                     dateString
                 )
                 

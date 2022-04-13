@@ -1,15 +1,14 @@
 import { FormEvent, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { arrayUnion, doc, DocumentSnapshot, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
+import { arrayUnion, doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
 import { AuthContext } from '../../../context/provider'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import UserType from '../../../canvas/model/UserType'
 import User from '../../../firebase/User'
-import Image from 'next/image'
-import FirebaseConstants from '../../../firebase/FirebaseConstants'
 import ModuleListing from '../../../firebase/ModuleListing'
+import { MODULE_ANALYTICS_RECORDS, MODULE_LISTINGS } from '../../../firebase/FirebaseConstants'
 
 // The student uses this page to sign up to Ochem.io.
 // After signing up on this page, the module specified in the
@@ -50,7 +49,7 @@ export default function Invitation() {
 
         const moduleIdParam = router.query.moduleId as string
         setModuleId(moduleIdParam)
-        const moduleDoc = await getDoc(doc(db, FirebaseConstants.MODULE_LISTINGS, moduleIdParam))
+        const moduleDoc = await getDoc(doc(db, MODULE_LISTINGS, moduleIdParam))
         setModuleListing(moduleDoc.data() as ModuleListing)
         setLoading(false)
     }
@@ -107,7 +106,7 @@ export default function Invitation() {
     }
 
     function addStudentToAnalyticsRecord(userId: string, db: FirebaseFirestore) {
-        updateDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), {
+        updateDoc(doc(db, MODULE_ANALYTICS_RECORDS, moduleId), {
             studentIds: arrayUnion(userId)
         })
     }

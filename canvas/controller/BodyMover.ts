@@ -3,6 +3,7 @@ import SAT from "sat";
 import { Atom } from "../model/chemistry/atoms/Atom";
 import Reaction from "../model/Reaction";
 
+/** Logic to move atoms or other objects in canvas */
 class BodyMover {
 
 	p5: p5

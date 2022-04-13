@@ -1,5 +1,5 @@
 import p5 from "p5"
-import Constants from "../Constants"
+import { BLUE_OUTLINE_COLOR, OUTLINE_THICKNESS, STROKE_WEIGHT } from "../Constants"
 import { Controller } from "../controller/Controller"
 import { Atom } from "../model/chemistry/atoms/Atom"
 import { Bond } from "../model/chemistry/bonds/Bond"
@@ -24,7 +24,7 @@ class StudentView {
     decorateAtomIfHovered() {
         const hoveredAtom = this.controller.hoverDetector.atomCurrentlyHovered
         if (hoveredAtom != null) {
-            this.drawAtomOutline(hoveredAtom, Constants.BLUE_OUTLINE_COLOR)
+            this.drawAtomOutline(hoveredAtom, BLUE_OUTLINE_COLOR)
         }
     }
 
@@ -32,10 +32,10 @@ class StudentView {
         this.p5.push()
             this.p5.noFill()
             this.p5.stroke(color)
-            this.p5.strokeWeight(Constants.OUTLINE_THICKNESS)
+            this.p5.strokeWeight(OUTLINE_THICKNESS)
             this.p5.ellipse(atom.circle.pos.x,
                             atom.circle.pos.y,
-                            atom.radius * 2 + Constants.OUTLINE_THICKNESS)
+                            atom.radius * 2 + OUTLINE_THICKNESS)
         this.p5.pop()
     }
 
@@ -47,7 +47,7 @@ class StudentView {
             console.log("hello");
             
             if (this.controller.page.state.arrowType != null) {
-                this.drawBondOutline(hoveredBond, Constants.BLUE_OUTLINE_COLOR)
+                this.drawBondOutline(hoveredBond, BLUE_OUTLINE_COLOR)
             }
         }
 
@@ -59,7 +59,7 @@ class StudentView {
 
             if (bond.type == BondType.SINGLE) {
             this.p5.stroke(color)
-            this.p5.strokeWeight(Constants.STROKE_WEIGHT + Constants.OUTLINE_THICKNESS * 2)
+            this.p5.strokeWeight(STROKE_WEIGHT + OUTLINE_THICKNESS * 2)
             this.p5.line(bond.atoms[0].circle.pos.x,
                 bond.atoms[0].circle.pos.y,
                 bond.atoms[1].circle.pos.x,
@@ -68,13 +68,13 @@ class StudentView {
             }
 
             if (bond.type == BondType.DOUBLE) {
-                this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3 + Constants.OUTLINE_THICKNESS * 2)
+                this.p5.strokeWeight(STROKE_WEIGHT * 3 + OUTLINE_THICKNESS * 2)
                 this.p5.stroke(color)
                 this.p5.line(bond.atoms[0].circle.pos.x,
                     bond.atoms[0].circle.pos.y,
                     bond.atoms[1].circle.pos.x,
                     bond.atoms[1].circle.pos.y)
-                this.p5.strokeWeight(Constants.STROKE_WEIGHT)
+                this.p5.strokeWeight(STROKE_WEIGHT)
                 this.p5.stroke(255)
                 this.p5.line(bond.atoms[0].circle.pos.x,
                     bond.atoms[0].circle.pos.y,

@@ -2,6 +2,10 @@ import Reaction from "../model/Reaction"
 import ReactionStep from "../model/ReactionStep"
 import ReactionStepLoader from "./ReactionStepLoader"
 
+/** 
+ * De-serializes a reaction from JSON.
+ * This is complicated because molecules are a graph with circular references.
+ */
 class ReactionLoader {
 
     public static loadReactionFromJSON(reactionJSON: string): Reaction {

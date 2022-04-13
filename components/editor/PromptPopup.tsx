@@ -1,5 +1,5 @@
-import React, { FormEvent, FormEventHandler, MouseEventHandler, SyntheticEvent, useState } from "react";
-import { primaryButtonMd } from "../../styles/common-styles";
+import React, { FormEvent, SyntheticEvent, useState } from "react";
+import FormSubmitButton from "../common/buttons/FormSubmitButton";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
@@ -54,13 +54,7 @@ export default function PromptPopup(props: IProps) {
                     </div>
                     </div>
                     <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
-                    <input
-                        type="submit"
-                        name="submit"
-                        value="Save"
-                        placeholder="Type module name here"
-                        className={primaryButtonMd + "cursor-pointer"}
-                    />
+                    <FormSubmitButton value={"Save"} class={""} />
                     </div>
                 </div>
             </form>

@@ -1,5 +1,5 @@
-import React, { FormEvent, FormEventHandler, MouseEventHandler, SyntheticEvent, useState } from "react";
-import { primaryButtonMd } from "../../styles/common-styles";
+import React, { FormEvent, SyntheticEvent, useState } from "react";
+import FormSubmitButton from "../common/buttons/FormSubmitButton";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
@@ -39,7 +39,7 @@ export default function ReactionCreationPopup(props: IProps) {
                     <div className="flex flex-col gap-6">
                     <div className="w-96">
                         <label htmlFor="module-name" className="block text-sm font-medium text-gray-700">
-                        Reaction name
+                            Reaction name
                         </label>
                         <input
                         type="text"
@@ -54,11 +54,7 @@ export default function ReactionCreationPopup(props: IProps) {
                     </div>
                 </div>
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
-                    <input
-                    type="submit"
-                    value="Create reaction"
-                    className={primaryButtonMd + "cursor-pointer"}
-                    />
+                    <FormSubmitButton value={"Create reaction"} class={""} />
                 </div>
                 </div>
             </form>

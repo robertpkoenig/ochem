@@ -1,7 +1,7 @@
 import ModuleListing from "../../firebase/ModuleListing"
 import ReactionListing from "../../firebase/ReactionListing"
 import Section from "../../firebase/SectionListing"
-import { redButtonMd } from "../../styles/common-styles"
+import Button from "../common/buttons/Button"
 import PopupBackground from "../PopupBackground"
 
 interface IProps {
@@ -36,13 +36,14 @@ function DeletionPopup(props: IProps) {
                         <p>Once you delete it, it will be permenantly lost</p>
                     </div>
                     <div className="mt-5">
-                        <button
-                            onClick={() => deleteReactionAndClosePopup()}
-                            type="button"
-                            className={redButtonMd}
-                        >
-                            Delete {props.thingType}
-                        </button>
+                        <Button
+                            size={"small"}
+                            importance={"caution"}
+                            text={"Delete"}
+                            icon={null}
+                            onClick={deleteReactionAndClosePopup}
+                            extraClasses={""} 
+                        />
                     </div>
                 </div>
             </div>

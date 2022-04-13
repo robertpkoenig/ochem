@@ -1,15 +1,15 @@
 import Link from "next/link"
 import React, { useState } from "react"
 import ModuleListing from "../../firebase/ModuleListing"
-import { primaryButtonMd, primaryButtonSm, redButtonMd, redButtonSm, roundEditButtonContainer, secondaryButtonMd, secondaryButtonSm } from "../../styles/common-styles"
 import PopupBackground from "../PopupBackground"
 import DeletionPopup from "./DeletionPopup"
 
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
-import firebaseClient from "../../firebaseClient";
-import FirebaseConstants from "../../firebase/FirebaseConstants"
 import { XIcon } from "@heroicons/react/solid"
 import { PencilAltIcon } from "@heroicons/react/outline"
+import Button from "../common/buttons/Button"
+import RoundButton from "../common/buttons/RoundButton"
+import { MODULE_LISTINGS } from "../../firebase/FirebaseConstants"
 
 const cardStyling = `flex flex-row space-between`
 
@@ -44,7 +44,7 @@ function ModuleCard(props: IProps) {
         props.updateModuleListings(moduleListCopy)
         
         // Remove module listing from the "module_listings" collection
-        deleteDoc(doc(db, FirebaseConstants.MODULE_LISTINGS, props.moduleListing.uuid))
+        deleteDoc(doc(db, MODULE_LISTINGS, props.moduleListing.uuid))
 
         // TODO Remove the module from the modules collection
         deleteDoc(doc(db, "modules", props.moduleListing.uuid))
@@ -66,23 +66,24 @@ function ModuleCard(props: IProps) {
 
                 <div className="flex flex-row items-center gap-4">
 
-                    <button
+                    <RoundButton
+                        icon={XIcon}
                         onClick={toggleDeleteModulePopup}
-                        className={roundEditButtonContainer} 
-                    >
-                        <XIcon className="w-3 h-3" />
-                    </button>
-
-                    {/* <Link href={"/student/modules/" + props.moduleListing.uuid}>
-                        <a className={ secondaryButtonSm }>Preview</a>
-                    </Link> */}
+                    />
 
                     <Link href={"/teacher/modules/" + props.moduleListing.uuid}>
-                        <a className={ primaryButtonSm }>
-                            <PencilAltIcon className="w-3 h-3" />
-                            Edit
+                        <a>
+                            <Button 
+                                size={"small"}
+                                importance={"primary"}
+                                text={"Edit"}
+                                icon={PencilAltIcon}
+                                extraClasses={""}
+                                onClick={null}                            
+                            />
                         </a>
                     </Link>
+                
                 </div>
 
             </div>

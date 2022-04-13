@@ -1,6 +1,6 @@
 import { CheckCircleIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
 import { useState } from "react";
-import { primaryButtonMd } from "../../styles/common-styles";
+import Button from "../common/buttons/Button";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
@@ -60,13 +60,12 @@ export default function SharePopup(props: IProps) {
                         type="text"
                         value={window.location.hostname + "/student/invitation/" + props.moduleId}
                     />
-                    <button
-                        className={primaryButtonMd + "w-auto"}
+                    <Button
+                        text={"Copy Link"}
+                        icon={ClipboardCopyIcon}
                         onClick={copyLinkText}
-                    >
-                        <ClipboardCopyIcon className="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-                        Copy link
-                    </button>
+                        extraClasses={"w-auto"}
+                    />
                 </div>
 
             </div>

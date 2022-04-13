@@ -1,6 +1,6 @@
-import React, { FormEvent, FormEventHandler, MouseEventHandler, SyntheticEvent, useState } from "react";
+import React, { FormEvent, SyntheticEvent, useState } from "react";
 import Reaction from "../../canvas/model/Reaction";
-import { primaryButtonMd } from "../../styles/common-styles";
+import FormSubmitButton from "../common/buttons/FormSubmitButton";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
@@ -56,11 +56,7 @@ export default function ReactionRenamePopup(props: IProps) {
                     </div>
                 </div>
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
-                    <input
-                    type="submit"
-                    value="Save"
-                    className={primaryButtonMd + "cursor-pointer"}
-                    />
+                    <FormSubmitButton value={"Save"} class={""} />
                 </div>
                 </div>
             </form>

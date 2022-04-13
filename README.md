@@ -1,11 +1,11 @@
-Ochemo
+OCHEM
 =======================================================================================
 
 [Ochem.io](ochem.io) is a web application for organic chemistry teachers to create interactive [arrow pushing](https://en.wikipedia.org/wiki/Arrow_pushing) excercises. Teachers can group these excercises to match the progression of lecture content. Students can use these exercises to reinforce critical concepts learned in lectures.
 
 [Demo video](https://www.loom.com/share/f9cb6644afcd4545808693d90757ef1a?t=0)
 
-Technologies
+TECHNOLOGIES
 ---------------------------------------------------------------------------------------
 
 - Typescript    
@@ -15,7 +15,7 @@ Technologies
 - Tailwind CSS          
 
 
-Local Usage
+LOCAL USAGE
 ---------------------------------------------------------------------------------------
 
 Install [node](https://nodejs.org/en/)
@@ -27,7 +27,7 @@ Navigate to the project directory in terminal:
 - Open http://localhost:3000/ in your browser
 
 
-Structure
+STRUCTURE
 ---------------------------------------------------------------------------------------
 
     ochem
@@ -37,10 +37,7 @@ Structure
     │   ├── model/          // Classes and interfaces defining application state
     │   ├── view/           // Functions to draw objects on the canvas
     │   ├── controller/     // Functions to update state upon user input
-    ├── components/         // React components
-    │   ├── editor/         // React components for the teacher pages
-    │   ├── student/        // React components for the student pages
-    │   ├── common/         // React components common across teacher and student pages       
+    ├── components/         // React components    
     ├── context/            // Global state for the react application (not the canvas)
     │   ├── Context.ts      // Interface defining fields within the global react state
     │   ├── Provider.ts     // React wrapper to inject state into children
@@ -61,7 +58,6 @@ Structure
 
 - Web pages are defined using the [next.js structure](https://nextjs.org/docs/basic-features/pages)
 - React essentially consists of nested javascript functions that each wrap the HTML, CSS, and JS for a given component on the page, like a form or button
-- Server side rendering is not used for dynamic content, and instead data is fetched from Firebase on page load
 
 
 Copyright Robert Koenig 2021

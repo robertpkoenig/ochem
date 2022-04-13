@@ -1,10 +1,6 @@
-import Constants from "../Constants";
 import { Atom } from "../model/chemistry/atoms/Atom";
-import { AtomFactory } from "../model/chemistry/atoms/AtomFactory";
-import { Bond } from "../model/chemistry/bonds/Bond";
 import Molecule from "../model/chemistry/Molecule";
 import Reaction from "../model/Reaction";
-import ReactionStep from "../model/ReactionStep";
 import { v4 as uuid } from 'uuid'
 
 class Utilities {
@@ -24,7 +20,6 @@ class Utilities {
 
         console.log(JSON.stringify(reaction));
         
-
     }
 
     public static getAtomWithinMoleculeByID(molecule: Molecule, targetAtomId: string): Atom {

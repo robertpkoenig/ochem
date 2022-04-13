@@ -1,8 +1,7 @@
 import { Vector } from "sat"
-import Constants from "../../Constants"
+import { ATOM_REPULSION_FACTOR } from "../../Constants"
 import { Atom } from "../chemistry/atoms/Atom"
 import Reaction from "../Reaction"
-import { Body } from "./Body"
 
 // Based on this code
 // https://editor.p5js.org/JeromePaddick/sketches/bjA_UOPip
@@ -23,8 +22,7 @@ class PhysicsEngine {
     }
 
     applyBodyRepulsionWithinMolecules() {
-        // For each particle, apply a force equal to the opposite of the distance from the
-        // other particles
+        // For each body (atom etc.), apply repulsion force from all other bodies
         for (const molecule of this.reaction.currentStep.molecules) {
             const atoms = molecule.atoms
             for (let i = 0 ; i < atoms.length ; i++) {                
@@ -51,9 +49,9 @@ class PhysicsEngine {
 
         // I think I have to limit this force to be the max of this, or the pull force
         const xForce =
-            (distanceVector.x / magnitudeSquared) * Constants.ATOM_REPULSION_FACTOR * massProduct
+            (distanceVector.x / magnitudeSquared) * ATOM_REPULSION_FACTOR * massProduct
         const yForce = 
-            (distanceVector.y / magnitudeSquared) * Constants.ATOM_REPULSION_FACTOR * massProduct
+            (distanceVector.y / magnitudeSquared) * ATOM_REPULSION_FACTOR * massProduct
 
         const forceVector = new Vector(xForce, yForce)
 
@@ -84,33 +82,10 @@ class PhysicsEngine {
             
             const lengthDifAsPercentOfCurrentLength = difBetweenDesiredAndCurrentLength / currentBondLength
 
-            // if (lengthDifAsPercentOfCurrentLength < 0.01) return
-
             const distanceVectorScaledToDifference = distanceVector.scale(lengthDifAsPercentOfCurrentLength / 4)
 
             bond.atoms[0].force.add(distanceVectorScaledToDifference)
             bond.atoms[1].force.add(distanceVectorScaledToDifference.reverse())
-
-            // const posOne = bond.atoms[0].circle.pos
-            // const posTwo = bond.atoms[1].circle.pos
-            // const distanceVector = posOne.clone().sub(posTwo)
-            // const normalizedDistance = distanceVector.clone().normalize()
-            
-            // const magnitude = distanceVector.len()
-
-            // let distance = bond.distance
-
-            // const bondStretch = distance - magnitude
-
-            // const xForce =
-            //     (normalizedDistance.x * bondStretch / Constants.BOND_PULL_FACTOR)
-            // const yForce = 
-            //     (normalizedDistance.y * bondStretch / Constants.BOND_PULL_FACTOR)
-
-            // const forceVector = new Vector(xForce, yForce)
-
-            // bond.atoms[0].force.add(forceVector)
-            // bond.atoms[1].force.add(forceVector.reverse())
 
         }
 

@@ -1,5 +1,5 @@
 import Section from "../../firebase/SectionListing"
-import { redButtonMd } from "../../styles/common-styles"
+import Button from "../common/buttons/Button"
 import PopupBackground from "../PopupBackground"
 
 interface IProps {
@@ -30,13 +30,14 @@ function DeleteSectionPopup(props: IProps) {
                         <p>Once you delete it, it will be permenantly lost</p>
                     </div>
                     <div className="mt-5">
-                        <button
-                            onClick={() => deleteSectionAndClosePopup()}
-                            type="button"
-                            className={redButtonMd}
-                        >
-                            Delete section
-                        </button>
+                        <Button
+                            size={"small"}
+                            importance={"caution"}
+                            text={"Delete section"}
+                            icon={null}
+                            onClick={deleteSectionAndClosePopup}
+                            extraClasses={""} 
+                        />
                     </div>
                 </div>
             </div>

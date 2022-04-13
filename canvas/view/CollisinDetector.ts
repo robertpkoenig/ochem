@@ -4,8 +4,8 @@ import { Bond } from "../model/chemistry/bonds/Bond"
 import p5 from "p5"
 import { CurlyArrow } from "../model/chemistry/CurlyArrow"
 import { Atom } from "../model/chemistry/atoms/Atom"
-import Constants from "../Constants"
 import StraightArrow from "../model/chemistry/StraightArrow"
+import { ION_ORBIT_RADIUS, ION_RADIUS } from "../Constants"
 
 // Contains methods for checking if various elements
 // visually overlap. It utilizes an open source collision
@@ -33,10 +33,10 @@ class CollisionDetector {
 
     mouseHoveredOverIon(atom: Atom) {
         const mouseVector = new Vector(this.p5.mouseX, this.p5.mouseY)
-        const ionX = atom.getPosVector().x + Constants.ION_ORBIT_RADIUS
-        const ionY = atom.getPosVector().y - Constants.ION_ORBIT_RADIUS
+        const ionX = atom.getPosVector().x + ION_ORBIT_RADIUS
+        const ionY = atom.getPosVector().y - ION_ORBIT_RADIUS
         const ionCoordinateVector = new Vector(ionX, ionY)
-        const ionCircle = new SAT.Circle(ionCoordinateVector, Constants.ION_RADIUS / 2)
+        const ionCircle = new SAT.Circle(ionCoordinateVector, ION_RADIUS / 2)
         return SAT.pointInCircle(mouseVector, ionCircle)
     }
 

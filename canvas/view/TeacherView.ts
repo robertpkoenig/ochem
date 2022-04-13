@@ -1,4 +1,3 @@
-import Constants from "../Constants";
 import TeacherController from "../controller/teacher/TeacherController";
 import { Atom } from "../model/chemistry/atoms/Atom";
 import { Bond } from "../model/chemistry/bonds/Bond";
@@ -8,7 +7,9 @@ import CollisionDetector from "./CollisinDetector";
 import p5 from "p5";
 import { CurlyArrow } from "../model/chemistry/CurlyArrow";
 import StraightArrow from "../model/chemistry/StraightArrow";
+import { ARROW_STROKE_WEIGHT, BLUE_OUTLINE_COLOR, ION_ORBIT_RADIUS, ION_RADIUS, OUTLINE_THICKNESS, RED_OUTLINE_COLOR, STROKE_WEIGHT } from "../Constants";
 
+/** Performs teacher-specific rendering tasks */
 class TeacherView {
 
     p5: p5
@@ -61,13 +62,13 @@ class TeacherView {
     }
 
     private drawIonOutline(atom: Atom) {
-        const x = atom.getPosVector().x + Constants.ION_ORBIT_RADIUS
-        const y = atom.getPosVector().y - Constants.ION_ORBIT_RADIUS
+        const x = atom.getPosVector().x + ION_ORBIT_RADIUS
+        const y = atom.getPosVector().y - ION_ORBIT_RADIUS
         this.p5.push()
             this.p5.noFill()
-            this.p5.stroke(Constants.RED_OUTLINE_COLOR)
-            this.p5.strokeWeight(Constants.OUTLINE_THICKNESS)
-            this.p5.ellipse(x, y, Constants.ION_RADIUS + Constants.OUTLINE_THICKNESS)
+            this.p5.stroke(RED_OUTLINE_COLOR)
+            this.p5.strokeWeight(OUTLINE_THICKNESS)
+            this.p5.ellipse(x, y, ION_RADIUS + OUTLINE_THICKNESS)
         this.p5.pop()
     }
 
@@ -78,11 +79,11 @@ class TeacherView {
         if (hoveredAtom != null) {
 
             if (this.teacherController.teacherReactionPage.state.eraserOn) {
-                this.drawAtomOutline(hoveredAtom, Constants.RED_OUTLINE_COLOR)
+                this.drawAtomOutline(hoveredAtom, RED_OUTLINE_COLOR)
                 this.showEraserTip()
             }
             else {
-                this.drawAtomOutline(hoveredAtom, Constants.BLUE_OUTLINE_COLOR)
+                this.drawAtomOutline(hoveredAtom, BLUE_OUTLINE_COLOR)
             }
 
         }
@@ -93,10 +94,10 @@ class TeacherView {
         this.p5.push()
             this.p5.noFill()
             this.p5.stroke(color)
-            this.p5.strokeWeight(Constants.OUTLINE_THICKNESS)
+            this.p5.strokeWeight(OUTLINE_THICKNESS)
             this.p5.ellipse(atom.circle.pos.x,
                             atom.circle.pos.y,
-                            atom.radius * 2 + Constants.OUTLINE_THICKNESS)
+                            atom.radius * 2 + OUTLINE_THICKNESS)
         this.p5.pop()
     }
 
@@ -126,12 +127,12 @@ class TeacherView {
 
         if (hoveredBond != null) {
             if (this.teacherController.teacherReactionPage.state.eraserOn) {
-                this.drawBondOutline(hoveredBond, Constants.RED_OUTLINE_COLOR)
+                this.drawBondOutline(hoveredBond, RED_OUTLINE_COLOR)
                 this.showEraserTip()
                 this.eraserTipVisible = true
             }
             if (this.teacherController.teacherReactionPage.state.arrowType != null) {
-                this.drawBondOutline(hoveredBond, Constants.BLUE_OUTLINE_COLOR)
+                this.drawBondOutline(hoveredBond, BLUE_OUTLINE_COLOR)
             }
         }
 
@@ -143,7 +144,7 @@ class TeacherView {
 
             if (bond.type == BondType.SINGLE || bond.type == null) {
             this.p5.stroke(color)
-            this.p5.strokeWeight(Constants.STROKE_WEIGHT + Constants.OUTLINE_THICKNESS * 2)
+            this.p5.strokeWeight(STROKE_WEIGHT + OUTLINE_THICKNESS * 2)
             this.p5.line(bond.atoms[0].circle.pos.x,
                 bond.atoms[0].circle.pos.y,
                 bond.atoms[1].circle.pos.x,
@@ -152,13 +153,13 @@ class TeacherView {
             }
 
             if (bond.type == BondType.DOUBLE) {
-                this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3 + Constants.OUTLINE_THICKNESS * 2)
+                this.p5.strokeWeight(STROKE_WEIGHT * 3 + OUTLINE_THICKNESS * 2)
                 this.p5.stroke(color)
                 this.p5.line(bond.atoms[0].circle.pos.x,
                     bond.atoms[0].circle.pos.y,
                     bond.atoms[1].circle.pos.x,
                     bond.atoms[1].circle.pos.y)
-                this.p5.strokeWeight(Constants.STROKE_WEIGHT)
+                this.p5.strokeWeight(STROKE_WEIGHT)
                 this.p5.stroke(255)
                 this.p5.line(bond.atoms[0].circle.pos.x,
                     bond.atoms[0].circle.pos.y,
@@ -167,13 +168,13 @@ class TeacherView {
             }
 
             if (bond.type == BondType.TRIPLE) {
-                this.p5.strokeWeight(Constants.STROKE_WEIGHT * 5 + Constants.OUTLINE_THICKNESS * 2)
+                this.p5.strokeWeight(STROKE_WEIGHT * 5 + OUTLINE_THICKNESS * 2)
                 this.p5.stroke(color)
                 this.p5.line(bond.atoms[0].circle.pos.x,
                     bond.atoms[0].circle.pos.y,
                     bond.atoms[1].circle.pos.x,
                     bond.atoms[1].circle.pos.y)
-                this.p5.strokeWeight(Constants.STROKE_WEIGHT)
+                this.p5.strokeWeight(STROKE_WEIGHT)
                 this.p5.stroke(255)
                 this.p5.line(bond.atoms[0].circle.pos.x,
                     bond.atoms[0].circle.pos.y,
@@ -202,13 +203,13 @@ class TeacherView {
                 }
 
                 if (this.teacherController.teacherReactionPage.state.bondType == BondType.DOUBLE) {
-                    this.p5.strokeWeight(Constants.STROKE_WEIGHT * 3)
+                    this.p5.strokeWeight(STROKE_WEIGHT * 3)
                     this.p5.stroke(0)
                     this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
                         this.teacherController.bondCreator.startAtom.circle.pos.y,
                         this.p5.mouseX,
                         this.p5.mouseY)
-                    this.p5.strokeWeight(Constants.STROKE_WEIGHT)
+                    this.p5.strokeWeight(STROKE_WEIGHT)
                     this.p5.stroke(255)
                     this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
                         this.teacherController.bondCreator.startAtom.circle.pos.y,
@@ -227,7 +228,7 @@ class TeacherView {
         const arrow = this.teacherController.hoverDetector.curlyArrowCurrentlyHovered
         
         if (arrow != null && this.teacherController.teacherReactionPage.state.eraserOn) {
-            this.drawArrowOutline(arrow, Constants.RED_OUTLINE_COLOR)
+            this.drawArrowOutline(arrow, RED_OUTLINE_COLOR)
             this.showEraserTip()
         }
 
@@ -241,8 +242,8 @@ class TeacherView {
             this.p5.stroke(color)
 
             this.p5.strokeWeight(
-                Constants.ARROW_STROKE_WEIGHT +
-                Constants.OUTLINE_THICKNESS * 2
+                ARROW_STROKE_WEIGHT +
+                OUTLINE_THICKNESS * 2
             )
 
             this.p5.bezier(
@@ -266,7 +267,7 @@ class TeacherView {
     public renderStraightArrow(arrow: StraightArrow) {
         this.p5.push()
         this.p5.stroke(0)
-        this.p5.strokeWeight(Constants.ARROW_STROKE_WEIGHT)
+        this.p5.strokeWeight(ARROW_STROKE_WEIGHT)
         this.p5.line(arrow.startVector.x, arrow.startVector.y, arrow.endVector.x, arrow.endVector.y)
         this.p5.fill(0)
         this.p5.triangle(
@@ -284,7 +285,7 @@ class TeacherView {
         const straightArrow =
             this.teacherController.hoverDetector.straightArrowCurrentlyHovered
         if (straightArrow != null && this.teacherController.teacherReactionPage.state.eraserOn) {
-            this.decorateStraightArrow(straightArrow, Constants.RED_OUTLINE_COLOR)
+            this.decorateStraightArrow(straightArrow, RED_OUTLINE_COLOR)
             this.showEraserTip()
         }
 
@@ -298,8 +299,8 @@ class TeacherView {
             this.p5.stroke(color)
 
             this.p5.strokeWeight(
-                Constants.ARROW_STROKE_WEIGHT +
-                Constants.OUTLINE_THICKNESS * 2
+                ARROW_STROKE_WEIGHT +
+                OUTLINE_THICKNESS * 2
             )
 
             this.p5.line(arrow.startVector.x,

@@ -9,7 +9,7 @@ import Reaction from './model/Reaction'
 import TeacherReactionPage from '../pages/teacher/reactions/[reactionId]'
 import StudentReactionPage from '../pages/student/reactions/[reactionId]'
 import UserType from './model/UserType'
-import Constants from './Constants'
+import { CANVAS_PARENT_NAME } from './Constants'
 
 function createP5Context(
     page: TeacherReactionPage | StudentReactionPage,
@@ -28,11 +28,11 @@ function createP5Context(
         // Contains the setup logic for the p5 instance
         p5.setup = () => {
 
-            const canvasParent = document.getElementById(Constants.CANVAS_PARENT_NAME)
+            const canvasParent = document.getElementById(CANVAS_PARENT_NAME)
             const canvasParentRect = canvasParent.getBoundingClientRect()
             const canvas = p5.createCanvas(canvasParentRect.width, 700)
             canvas.style("border-radius", "0.5rem")
-            canvas.parent(Constants.CANVAS_PARENT_NAME)
+            canvas.parent(CANVAS_PARENT_NAME)
 
             collisionDetector = new CollisionDetector(p5, reaction)
             physicsEngine = new PhysicsEngine(reaction)

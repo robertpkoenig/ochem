@@ -16,7 +16,6 @@ class Atom extends Body {
         this.element = element
         this.uuid = uuid()
 
-        // initialize cation/anion to false and fill in after instantiation
         this.ionSymbol = null
     }
 

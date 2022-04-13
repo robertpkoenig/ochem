@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Section from "../../firebase/SectionListing";
-import { primaryButtonMd } from "../../styles/common-styles";
+import FormSubmitButton from "../common/buttons/FormSubmitButton";
 import PopupBackground from "../PopupBackground";
 
 interface IProps {
@@ -47,11 +47,7 @@ export function SectionPopup(props: IProps) {
                     </div>
                 </div>
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
-                    <input
-                    type="submit"
-                    value="Save"
-                    className={primaryButtonMd + "cursor-pointer"}
-                    />
+                    <FormSubmitButton value={"Save"} class={""} />
                 </div>
                 </div>
             </form>

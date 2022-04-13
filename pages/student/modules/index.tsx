@@ -3,11 +3,11 @@ import Layout from '../../../components/Layout'
 import React, { useContext, useEffect, useState } from 'react'
 import ModuleListing from '../../../firebase/ModuleListing'
 import Link from 'next/link'
-import { primaryButtonMd } from '../../../styles/common-styles'
 import { AuthContext } from '../../../context/provider'
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
-import FirebaseConstants from '../../../firebase/FirebaseConstants'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
+import Button from '../../../components/common/buttons/Button'
+import { MODULE_LISTINGS, UUID } from '../../../firebase/FirebaseConstants'
 
 // This page lists all modules the student has access to.
 // The student never sees this page if they only have access
@@ -25,8 +25,8 @@ export default function StudentModules() {
     async function getData() {
 
         const q = query(
-            collection(db, FirebaseConstants.MODULE_LISTINGS),
-            where(FirebaseConstants.UUID, "in", user.moduleIds)
+            collection(db, MODULE_LISTINGS),
+            where(UUID, "in", user.moduleIds)
         )
 
         const querySnapshot = await getDocs(q)
@@ -67,7 +67,16 @@ export default function StudentModules() {
 
                             <div className="flex flex-row gap-2">
                                 <Link href={"/student/modules/" + moduleListing.uuid}>
-                                    <a className={ primaryButtonMd }>View</a>
+                                    <a>
+                                        <Button 
+                                            size={'small'} 
+                                            importance={'primary'} 
+                                            text={'Practice'} 
+                                            icon={null}
+                                            onClick={null}
+                                            extraClasses={''}
+                                        />
+                                    </a>
                                 </Link>
                             </div>
 

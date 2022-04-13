@@ -3,7 +3,7 @@ import * as React from 'react';
 import Module from '../../firebase/Module';
 import ReactionListing from '../../firebase/ReactionListing';
 import Section from '../../firebase/SectionListing';
-import { primaryButtonMd } from '../../styles/common-styles';
+import Button from '../common/buttons/Button';
 
 export interface IReactionCardProps {
     reactionListing: ReactionListing
@@ -20,7 +20,16 @@ export default function StudentReactionCard (props: IReactionCardProps) {
 
     const link =<div className="flex flex-row gap-2">
                     <Link href={"/student/reactions/" + props.reactionListing.uuid}>
-                        <button className={ primaryButtonMd }>Practice</button>
+                        <a>
+                            <Button 
+                                size={'small'} 
+                                importance={'primary'} 
+                                text={'Practice'} 
+                                icon={null}
+                                onClick={null}
+                                extraClasses={''}
+                            />
+                        </a>
                     </Link>
                 </div>
     

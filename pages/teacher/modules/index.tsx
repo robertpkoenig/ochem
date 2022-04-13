@@ -10,10 +10,10 @@ import ModuleListing from '../../../firebase/ModuleListing'
 import Module from '../../../firebase/Module'
 import { collection, query, where, doc, getDocs, getFirestore, setDoc } from "firebase/firestore";
 import { AuthContext } from '../../../context/provider'
-import FirebaseConstants from '../../../firebase/FirebaseConstants'
 import ScreenWithLoading from '../../../components/ScreenWithLoading'
 import ModuleAnalyticsRecord from '../../../firebase/ModuleAnalyticsRecord'
 import EmptyState from '../../../components/EmptyState'
+import { AUTHOR_ID, MODULES, MODULE_ANALYTICS_RECORDS, MODULE_LISTINGS } from '../../../firebase/FirebaseConstants'
 
 // Shows a list of all the modules owned by the lecturer.
 // Teachers can create and delete modules in this page.
@@ -35,8 +35,8 @@ export default function Modules() {
     async function getData() {
 
         const q = query(
-            collection(db, FirebaseConstants.MODULE_LISTINGS),
-            where(FirebaseConstants.AUTHOR_ID, "==", user.userId)
+            collection(db, MODULE_LISTINGS),
+            where(AUTHOR_ID, "==", user.userId)
         )
     
         const querySnapshot = await getDocs(q)
@@ -85,7 +85,7 @@ export default function Modules() {
             sections: {},
             uuid: moduleId
         }
-        setDoc(doc(db, FirebaseConstants.MODULES, moduleId), newModule);
+        setDoc(doc(db, MODULES, moduleId), newModule);
         createModuleListing(name, moduleId, creationDate)
 
         // The analytics record for this module
@@ -95,7 +95,7 @@ export default function Modules() {
             studentIds: []
         }
 
-        setDoc(doc(db, FirebaseConstants.MODULE_ANALYTICS_RECORDS, moduleId), newModuleAnalyticsRecord)
+        setDoc(doc(db, MODULE_ANALYTICS_RECORDS, moduleId), newModuleAnalyticsRecord)
     }
 
     // Creates the abridged module document
@@ -107,7 +107,7 @@ export default function Modules() {
             authorName: user.firstName + " " + user.lastName,
             uuid: moduleId
         }
-        setDoc(doc(db, FirebaseConstants.MODULE_LISTINGS, moduleId), newModuleListing);
+        setDoc(doc(db, MODULE_LISTINGS, moduleId), newModuleListing);
         setModuleListings([newModuleListing, ...moduleListings])
     }
 

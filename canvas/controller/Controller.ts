@@ -8,11 +8,11 @@ import TeacherReactionPage from "../../pages/teacher/reactions/[reactionId]"
 import StudentReactionPage from "../../pages/student/reactions/[reactionId]"
 import UserType from "../model/UserType"
 import CurlyArrowCreator from "./CurlyArrowCreator"
-import HoverDetector from "./teacher/HoverDetector"
+import HoverDetector from "./teacher/helper/HoverDetector"
 import StudentController from "./student/StudentController"
 import TeacherController from "./teacher/TeacherController"
 
-
+/** Handles user input in the canvas. */
 class Controller {
 
     // upstream collaborating objects
@@ -79,11 +79,12 @@ class Controller {
 
     }
 
+    // Logic triggered each frame to update model
     process() {
-        if (this.reaction.currentStep.curlyArrow) {
+        if (this.reaction.currentStep.curlyArrow) { // if there is a curly arrow present
             this.reaction.currentStep.curlyArrow.update(this.p5)
         }
-        // I think I should change this update function to sit with the arrowCreator?
+        // TODO change this update function to sit with the arrowCreator
         if (this.arrowCreator.draftArrow != null) {
             this.arrowCreator.draftArrow.update(this.p5)
         }
@@ -97,6 +98,7 @@ class Controller {
         this.hoverDetector.detectHovering()
     }
 
+    // Routes mouse press to different handlers based on program state
     routeMousePressed(mouseVector: Vector) {
         if (this.teacherController) {
             this.teacherController.routeMousePressed(mouseVector)
@@ -109,6 +111,7 @@ class Controller {
         }
     }
 
+    // Routes mouse release to different handlers based on program state
     routeMouseReleased(mouseVector: Vector) {
         if (this.teacherController) {
             this.teacherController.routeMouseReleased(mouseVector)
