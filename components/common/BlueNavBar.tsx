@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { AuthContext } from "../../context/provider"
+import { AuthContext } from "../../context/authContext"
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import UserType from "../../canvas/model/UserType"

@@ -9,7 +9,7 @@ import ModuleCard from '../../../components/editor/ModuleCard'
 import ModuleListing from '../../../persistence-model/ModuleListing'
 import Module from '../../../persistence-model/Module'
 import { collection, query, where, doc, getDocs, getFirestore, setDoc } from "firebase/firestore";
-import { AuthContext } from '../../../context/provider'
+import { AuthContext } from '../../../context/authContext'
 import ScreenWithLoading from '../../../components/common/ScreenWithLoading'
 import ModuleAnalyticsRecord from '../../../persistence-model/ModuleAnalyticsRecord'
 import EmptyState from '../../../components/common/EmptyState'

@@ -15,7 +15,7 @@ type IconSizeStyle = {
 }
 
 const iconSizeStyle: IconSizeStyle = {
-    small: "-ml-0.5 h-4 w-4",
+    small: "-ml-0.5 mr-1 h-4 w-4",
     medium: "-ml-0.5 mr-2 h-5 w-5"
 }
 

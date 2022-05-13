@@ -1,5 +1,5 @@
 import { createElement } from "react"
-import classNames from "../../../helper-functions/classNames"
+import classNames from "../../../functions/helper/classNames"
 import { iconSizeStyle, Importance, importanceStyles, Size, sizeStyles } from "./buttonStyling";
 
 interface IProps {

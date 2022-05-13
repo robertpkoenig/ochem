@@ -3,8 +3,8 @@ import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import LogInCard from '../../components/auth/LogInCard'
 import ScreenWithLoading from '../../components/common/ScreenWithLoading'
-import { AuthContext } from '../../context/provider'
-import redirectUserHome from '../../helper-functions/redirectUserToHome'
+import { AuthContext } from '../../context/authContext'
+import redirectUserHome from '../../functions/helper/redirectUserToHome'
 
 // Page containing login form
 export default function Login() {

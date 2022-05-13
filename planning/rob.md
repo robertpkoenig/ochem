@@ -5,7 +5,7 @@
 - change color per steve's directions (0.5)
 - add tooltip for each editor button (2)
 - bulk atom moves with shift select or click drag (8)
-- zoom if that's relatively easy (2)
+- zoom if that's relatively easy (2 )
 - add option for contextual information / question for each step (5)
 - option to add lone pairs (8)
 - R group dummy element / atom (0.5)
@@ -14,3 +14,10 @@
 
 Total time estimate: roughly a week
 
+
+split up reaction page
+
+- header
+- steps
+- editor panel
+- elements list

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Module from "../../../persistence-model/Module";
 import PageLayout from "../../../components/common/PageLayout";
 import StudentSectionCard from "../../../components/student/StudentSectionCard";
-import { AuthContext } from "../../../context/provider";
+import { AuthContext } from "../../../context/authContext";
 import { arrayUnion, doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import ScreenWithLoading from "../../../components/common/ScreenWithLoading";
 import EmptyState from "../../../components/common/EmptyState";

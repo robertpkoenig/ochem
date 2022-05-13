@@ -1,4 +1,4 @@
-import classNames from "../../../helper-functions/classNames"
+import classNames from "../../../functions/helper/classNames"
 
 interface IProps {
     value: string,

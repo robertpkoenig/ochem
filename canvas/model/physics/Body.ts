@@ -18,7 +18,7 @@ class Body {
         radius: number
     ) {
         this.bonds = []
-        this.circle = new Circle(new Vector(), radius)
+        this.circle = new Circle(new Vector(), radius) // dictates x/y position
         this.force = new Vector(0, 0)
         this.mass = mass
         this.radius = radius

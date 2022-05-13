@@ -1,7 +1,7 @@
 import 'tailwindcss/tailwind.css'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { AuthProvider } from '../context/provider'
+import { AuthProvider } from '../context/authContext'
 import '../styles/globals.css'
 import Head from 'next/head'
 

@@ -6,7 +6,7 @@ import { PlusIcon } from "@heroicons/react/solid";
 import SectionPopup from "../../../components/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
-import { AuthContext } from "../../../context/provider";
+import { AuthContext } from "../../../context/authContext";
 import ScreenWithLoading from "../../../components/common/ScreenWithLoading";
 import ModuleEditorLayout from "../../../components/editor/ModuleEditorLayout";
 import EmptyState from "../../../components/common/EmptyState";

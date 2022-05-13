@@ -75,6 +75,22 @@ class Reaction {
         Object.assign(this, newReaction)
     }
 
+    copy() {
+        return new Reaction(
+            this.name,
+            this.uuid,
+            this.moduleId,
+            this.moduleName,
+            this.sectionId,
+            this.sectionName,
+            this.authorId,
+            this.visible,
+            this.steps,
+            this.currentStep,
+            this.prompt
+        )
+    }
+
 }
 
 export default Reaction

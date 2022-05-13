@@ -2,8 +2,8 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { FormEvent, useContext, useState } from "react";
-import { AuthContext } from "../../context/provider";
-import redirectUserHome from "../../helper-functions/redirectUserToHome";
+import { AuthContext } from "../../context/authContext";
+import redirectUserHome from "../../functions/helper/redirectUserToHome";
 import User from "../../persistence-model/User";
 import Link from 'next/link'
 import FormSubmitButton from "../common/buttons/FormSubmitButton";

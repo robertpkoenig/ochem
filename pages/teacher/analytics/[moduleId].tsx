@@ -5,7 +5,7 @@ import ScreenWithLoading from "../../../components/common/ScreenWithLoading";
 import { Line } from 'react-chartjs-2';
 import { collection, doc, getDoc, getDocs, getFirestore, limit, orderBy, query, where } from "firebase/firestore";
 import { useRouter } from "next/router";
-import { AuthContext } from "../../../context/provider";
+import { AuthContext } from "../../../context/authContext";
 import ModuleAnalyticsRecord from "../../../persistence-model/ModuleAnalyticsRecord";
 import { DATE_RECORDS, MODULE_ANALYTICS_RECORDS } from "../../../persistence-model/FirebaseConstants";
 

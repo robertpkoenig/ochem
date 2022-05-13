@@ -59,6 +59,8 @@ interface IState {
     p5: p5
 }
 
+// *** This NEEDS to be a class component :( otherwise p5 will not work ***
+
 // This is the page where the teacher edits exercises
 // The reaction is loaded from firebase using the reaction
 // Id in the URL path. On each edit action, the reaction is
@@ -96,13 +98,11 @@ class TeacherReactionPage extends Component<IProps, IState> {
     // This function is called when this component is loaded in the browser.
     async componentDidMount() {
 
+        // Load reaction from db
         const docRef = doc(this.db, REACTIONS, this.props.reactionId);
         const docSnap = await getDoc(docRef);
-
         const rawReactionObject = docSnap.data()
-
         const reaction = ReactionLoader.loadReactionFromObject(rawReactionObject)
-
         this.setState({
             ...this.state,
             reaction: reaction
@@ -152,12 +152,6 @@ class TeacherReactionPage extends Component<IProps, IState> {
         this.forceUpdate()
         ReactionSaver.saveReaction(this.state.reaction)
 
-        // Update the core reaction document in firestore
-        const reactionDocRef = doc(this.db, REACTIONS, this.props.reactionId)
-        updateDoc(reactionDocRef, {
-            visible: this.state.reaction.visible
-        })
-        
         // Module doc ref to access the nested reaction listing object
         const moduleDocRef = doc(this.db, MODULES, this.state.reaction.moduleId)
 
