@@ -8,12 +8,12 @@ interface IAtomicElement {
     radius: number
 }
 
-interface IAtomicElements {
+interface IElements {
     [key: string]: IAtomicElement
 }
 
 // Note that none of the valence electrons are right
-const AtomicElements: IAtomicElements = {
+const Elements: IElements = {
 
     "carbon": {
         name: "carbon",
@@ -114,5 +114,5 @@ const AtomicElements: IAtomicElements = {
     
 }
 
-export { AtomicElements }
+export { Elements }
 export type { IAtomicElement }

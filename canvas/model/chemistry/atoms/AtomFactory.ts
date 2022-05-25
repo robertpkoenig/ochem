@@ -1,5 +1,5 @@
 import { Atom } from "./Atom"
-import { AtomicElements, IAtomicElement } from "./elements"
+import { Elements, IAtomicElement } from "./elements"
 
 class AtomFactory {
     
@@ -11,7 +11,7 @@ class AtomFactory {
 
     private static createAtomFromElement(name: string): Atom {
 
-        const element: IAtomicElement = AtomicElements[name]
+        const element: IAtomicElement = Elements[name]
         if (!element) throw new Error("Attempted to get nonexistent element")
 
         return new Atom(

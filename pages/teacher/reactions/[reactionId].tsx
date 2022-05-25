@@ -1,11 +1,8 @@
-import { Switch } from "@headlessui/react"
-import { ArrowLeftIcon, PlusIcon, XIcon } from "@heroicons/react/solid"
+import { PlusIcon, XIcon } from "@heroicons/react/solid"
 import { GetServerSideProps } from "next"
-import Link from "next/link"
 import { MinusCircle, PlusCircle, RotateCcw, RotateCw } from "react-feather"
 import TeacherController from "../../../canvas/controller/teacher/TeacherController"
 import ReactionSaver from "../../../canvas/controller/teacher/helper/ReactionSaver"
-import { AtomicElements } from "../../../canvas/model/chemistry/atoms/elements"
 import BondType from "../../../canvas/model/chemistry/bonds/BondType"
 import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
 import Reaction from "../../../canvas/model/Reaction"
@@ -25,6 +22,7 @@ import { Component } from "react"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
 import { MODULES, NAME, REACTIONS, REACTION_LISTINGS, SECTIONS, VISIBLE } from "../../../persistence-model/FirebaseConstants"
 import EditorTopPanel from "../../../components/editor/EditorTopPanel"
+import AtomicElements from "../../../components/editor/AtomicElements"
 
 const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
@@ -466,37 +464,6 @@ class TeacherReactionPage extends Component<IProps, IState> {
             )
         })
 
-        // Creates the list of atomic elements on the right panel of the screen
-        const listOfAtomicElements = Object.values(AtomicElements).map(element => {
-            return (
-
-                // Logic around the dummy element should be deleted
-                element.name == "dummy"
-                ?
-                null
-                :
-                // This is the background to the atom which acts as the empty state
-                // when the element is dragged onto the canvas
-                <div 
-                    className="rounded-full w-40 h-40 bg-gray-200"
-                    key={element.abbreviation}
-                >
-
-                    <button
-                        id={element.name}
-                        onMouseDown={() => this.state.teacherController.panelController.selectElement(element.name)}
-                        onMouseUp={() => this.state.teacherController.panelController.dropElement()}
-                        style={{backgroundColor: element.color, cursor: "grab"}}
-                        className="rounded-full w-40 h-40 text-white font-semibold text-md flex items-center justify-center z-10"
-                    >
-                        {element.abbreviation}
-                    </button>
-
-                </div>
-
-            )
-        })
-
         // This creates the list of buttons used to display and select
         // the reaction step currently active in the editor
         let listOfStepButtons: React.ReactNode
@@ -674,9 +641,7 @@ class TeacherReactionPage extends Component<IProps, IState> {
                             </div>
                             
                             {/* atomic elements */}
-                            <div className="bg-white p-5 rounded-lg shadow flex flex-col gap-2 h-full">
-                                {listOfAtomicElements}
-                            </div>
+                            <AtomicElements teacherController={this.state.teacherController} />
                 
                         </div>
                         {/* <!-- Eraser highlight --> */}
