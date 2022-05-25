@@ -71,9 +71,6 @@ class ReactionLoader {
         restoredReaction.steps = restoredSteps
         restoredReaction.currentStep = currentStep
 
-
-        console.log(restoredReaction);
-        
         return restoredReaction
 
     }
