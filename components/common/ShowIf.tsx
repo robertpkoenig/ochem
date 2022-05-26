@@ -5,7 +5,7 @@ interface IProps {
     children: ReactNode
 }
 
-function ShowIfTrue(props: IProps) {
+function ShowIf(props: IProps) {
     return (
         <>
             {props.condition && props.children}
@@ -13,4 +13,4 @@ function ShowIfTrue(props: IProps) {
     )
 }
 
-export default ShowIfTrue
+export default ShowIf
