@@ -447,23 +447,6 @@ class TeacherReactionPage extends Component<IProps, IState> {
 
     render() {
 
-        // Creates the list of bond type buttons on the left panel of the screen
-        const bondTypeButtons = Object.values(BondType).map(bondType => {
-            return (
-                <button 
-                    className={this.state.bondType == bondType ? selectedButton : squareButton}
-                    onMouseDown={() => this.setBondType(bondType)}
-                    key={bondType}
-                >
-                    <img 
-                        src={"/assets/images/bonds/" + bondType + ".svg"}
-                        alt={bondType + " bond"}
-                        className={buttonImage}
-                    />
-                </button>
-            )
-        })
-
         // This creates the list of buttons used to display and select
         // the reaction step currently active in the editor
         let listOfStepButtons: React.ReactNode
