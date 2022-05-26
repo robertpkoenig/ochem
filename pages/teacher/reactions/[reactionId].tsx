@@ -1,6 +1,5 @@
 import { PlusIcon, XIcon } from "@heroicons/react/solid"
 import { GetServerSideProps } from "next"
-import { MinusCircle, PlusCircle, RotateCcw, RotateCw } from "react-feather"
 import TeacherController from "../../../canvas/controller/teacher/TeacherController"
 import ReactionSaver from "../../../canvas/controller/teacher/helper/ReactionSaver"
 import BondType from "../../../canvas/model/chemistry/bonds/BondType"
