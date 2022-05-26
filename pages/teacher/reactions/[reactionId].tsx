@@ -23,6 +23,7 @@ import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
 import { MODULES, NAME, REACTIONS, REACTION_LISTINGS, SECTIONS, VISIBLE } from "../../../persistence-model/FirebaseConstants"
 import EditorTopPanel from "../../../components/editor/EditorTopPanel"
 import AtomicElements from "../../../components/editor/AtomicElements"
+import EditorLeftButtons from "../../../components/editor/EditorLeftButtons"
 
 const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
@@ -566,81 +567,26 @@ class TeacherReactionPage extends Component<IProps, IState> {
                 
                     <main className="-mt-32">
                         <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8 flex flex-row gap-5">
-                            {/* Various buttons */}
-                            <div className="bg-white rounded-lg shadow p-5 flex flex-col gap-2 h-full">
-                
-                                    {bondTypeButtons}
 
-                                    <hr className="my-2"></hr>
-
-                                    {/* Double curly arrow */}
-                                    <button
-                                        className={this.state.arrowType == ArrowType.DOUBLE ? selectedButton : squareButton}
-                                        onMouseDown={() => this.setArrowType(ArrowType.DOUBLE)}
-                                    >
-                                        <img className={buttonImage} src="/assets/images/curly_arrows/double.svg" alt="double curly arrow"  />
-                                    </button>
-
-                                    <hr className="my-2"></hr>
-
-                                    {/* Straight arrow */}
-                                    <button
-                                        className={this.state.straightArrowSelected ? selectedButton : squareButton}
-                                        onMouseDown={() => this.toggleStraightArrow()}
-                                    >
-                                        <img className={buttonImage} src="/assets/images/straight-arrow.svg" alt="straight arrow" />
-                                    </button>
-
-                                    <hr className="my-2"></hr>
-
-                                    {/* Plus */}
-                                    <button
-                                        className={this.state.selectedIon ==  Ion.CATION ? selectedButton : squareButton}
-                                        onMouseDown={() => this.selectIon(Ion.CATION)}
-                                    >
-                                        <PlusCircle className="w-4 h-4" />
-                                    </button>
-
-                                    {/* Minus */}
-                                    <button
-                                        className={this.state.selectedIon ==  Ion.ANION ? selectedButton : squareButton}
-                                        onMouseDown={() => this.selectIon(Ion.ANION)}
-                                    >
-                                        <MinusCircle className="w-4 h-4" />
-                                    </button>
-
-                                    <hr className="my-2"></hr>
-
-                                    <button
-                                        className={this.state.eraserOn ? selectedButton : squareButton}
-                                        onMouseDown={() => this.toggleEraser()}
-                                    >
-                                        <img className={buttonImage} src="/assets/images/eraser.svg" alt="eraser" />
-                                    </button>
-
-                                    {/* Undo */}
-                                    <button
-                                        onMouseDown={() => this.undo()}
-                                        className={squareButton}
-                                    >
-                                        <RotateCcw className="w-3.5 h-3.5"/>
-                                    </button>
-
-                                    {/* Redo */}
-                                    <button
-                                        onMouseDown={() => this.redo()}
-                                        className={squareButton}
-                                    >
-                                        <RotateCw className="w-3.5 h-3.5" />
-                                    </button>
-
-                                </div>
+                            <EditorLeftButtons 
+                                bondType={this.state.bondType}
+                                setBondType={this.setBondType.bind(this)}
+                                arrowType={this.state.arrowType}
+                                setArrowType={this.setArrowType.bind(this)}
+                                straightArrowSelected={this.state.straightArrowSelected}
+                                toggleStraightArrowSelected={this.toggleStraightArrow.bind(this)}
+                                selectedIon={this.state.selectedIon}
+                                selectIon={this.selectIon.bind(this)}
+                                eraserOn={this.state.eraserOn} 
+                                toggleEraser={this.toggleEraser.bind(this)}
+                                undo={this.undo.bind(this)}
+                                redo={this.redo.bind(this)}
+                            />
                                 
                             {/* p5 canvas */}
                             <div id={CANVAS_PARENT_NAME} className=" h-700 bg-white rounded-lg shadow flex-grow">
                             </div>
                             
-                            {/* atomic elements */}
                             <AtomicElements teacherController={this.state.teacherController} />
                 
                         </div>
