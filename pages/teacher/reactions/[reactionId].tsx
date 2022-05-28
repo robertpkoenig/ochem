@@ -1,4 +1,3 @@
-import { PlusIcon, XIcon } from "@heroicons/react/solid"
 import { GetServerSideProps } from "next"
 import TeacherController from "../../../canvas/controller/teacher/TeacherController"
 import ReactionSaver from "../../../canvas/controller/teacher/helper/ReactionSaver"
@@ -11,7 +10,6 @@ import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
 import ReactionStepLoader from "../../../canvas/utilities/ReactionStepLoader"
 import Utilities from "../../../canvas/utilities/Utilities"
 import { doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore"
-import { PencilIcon } from "@heroicons/react/outline"
 import PromptPopup from "../../../components/teacher/reactions/editor/PromptPopup"
 import ReactionRenamePopup from "../../../components/teacher/reactions/editor/ReactionRenamePopup"
 import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
@@ -26,10 +24,6 @@ import EditorLeftButtons from "../../../components/teacher/reactions/editor/Edit
 import ListOfSteps from "../../../components/teacher/reactions/editor/ListOfSteps"
 import ShowIf from "../../../components/common/ShowIf"
 import Prompt from "../../../components/teacher/reactions/editor/Prompt"
-
-const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
-const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
-const buttonImage = "w-4 h-4"
 
 // This function is used within server side rendering to get the 
 // reaction ID from the url path
@@ -528,7 +522,7 @@ class TeacherReactionPage extends Component<IProps, IState> {
                         </div>
                     </main>
                 </div>
-                
+
                 <ShowIf condition={this.state.promptPopupVisible != null}>
                     <PromptPopup
                         popupCloseFunction={this.togglePromptPopup.bind(this)}
