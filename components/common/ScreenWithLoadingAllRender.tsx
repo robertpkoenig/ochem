@@ -1,8 +1,9 @@
 import LoadingScreen from "./LoadingScreen";
+import ShowIf from "./ShowIf";
 
 interface IProps {
-    loading: boolean
-    children: JSX.Element
+    loading: boolean,
+    children: React.ReactNode
 }
 
 /** 
@@ -13,11 +14,12 @@ interface IProps {
  */
 export default function ScreenWithLoadingAllRender(props: IProps) {
 
-    const loadingScreen = <LoadingScreen />
-
     return (
         <>
-        {props.loading?loadingScreen:null}
+        <ShowIf condition={props.loading}>
+            <LoadingScreen />
+        </ShowIf>
+        
         {props.children}
         </>
     )
