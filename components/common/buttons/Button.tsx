@@ -16,7 +16,7 @@ function Button(props: IProps) {
     const sizeStyling = sizeStyles[props.size]
     const importanceStyling = importanceStyles[props.importance]
 
-    const icon = createElement(props.icon, {className: classNames(iconSizeStyle[props.size])})
+    const icon = props.icon != null && createElement(props.icon, {className: classNames(iconSizeStyle[props.size])})
 
     return (
         <button
