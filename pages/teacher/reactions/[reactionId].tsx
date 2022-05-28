@@ -479,7 +479,7 @@ class TeacherReactionPage extends Component<IProps, IState> {
                                         createStep={ this.createNewStep.bind(this)}
                                     />
 
-                                    <ShowIf condition={this.state.reaction?.prompt != null}> 
+                                    <ShowIf condition={this.state.reaction?.prompt == null}> 
                                         <div
                                             onMouseDown={() => this.togglePromptPopup()}
                                             className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
@@ -526,11 +526,11 @@ class TeacherReactionPage extends Component<IProps, IState> {
                     </main>
                 </div>
 
-                <ShowIf condition={this.state.promptPopupVisible != null}>
+                <ShowIf condition={this.state.promptPopupVisible}>
                     <PromptPopup
                         popupCloseFunction={this.togglePromptPopup.bind(this)}
                         setPromptTextFunction={this.setPromptText.bind(this)}
-                        initialText={this.state.reaction.prompt}
+                        initialText={this.state.reaction?.prompt}
                     />
                 </ShowIf>
 
@@ -538,7 +538,7 @@ class TeacherReactionPage extends Component<IProps, IState> {
                     <ReactionRenamePopup
                         reaction={this.state.reaction}
                         popupCloseFunction={this.toggleReactionRenamePopup.bind(this)}
-                        reameFunction={this.renameReaction.bind(this)}
+                        reameFunction={this.renameReaction?.bind(this)}
                     />
                 </ShowIf>
 
