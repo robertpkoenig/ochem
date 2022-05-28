@@ -16,6 +16,8 @@ function Button(props: IProps) {
     const sizeStyling = sizeStyles[props.size]
     const importanceStyling = importanceStyles[props.importance]
 
+    const icon = createElement(props.icon, {className: classNames(iconSizeStyle[props.size])})
+
     return (
         <button
             onClick={props.onClick} 
@@ -26,7 +28,7 @@ function Button(props: IProps) {
                     sizeStyling,
                     importanceStyling)}
         >
-            {createElement(props.icon, {className: classNames(iconSizeStyle[props.size])})}
+            {icon}
             {props.text}
         </button>
     )
