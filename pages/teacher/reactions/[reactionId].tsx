@@ -455,7 +455,7 @@ class TeacherReactionPage extends Component<IProps, IState> {
                     toggleVisibility={this.toggleVisibility.bind(this)}
                 />
 
-                {/* Element containing the reaction prompt and the list of steps */}
+                {/* Reaction prompt and the list of steps */}
                 <div className="min-h-screen bg-gray-100">
                     <div className="bg-indigo-600 pb-32">
                         <div className="py-5">
@@ -470,6 +470,7 @@ class TeacherReactionPage extends Component<IProps, IState> {
                                 </ShowIf>
                 
                                 <div className="flex flex-row justify-between">
+
                                     <ListOfSteps
                                         reaction={this.state.reaction}
                                         currentStepUid={this.state.reaction?.currentStep.uuid}
@@ -516,10 +517,12 @@ class TeacherReactionPage extends Component<IProps, IState> {
                             <AtomicElements teacherController={this.state.teacherController} />
                 
                         </div>
-                        {/* <!-- Eraser highlight --> */}
+
+                        {/* Tooltip that shows over element when in 'eraser' mode */}
                         <div id="eraser-tip" style={{display: "none"}} className="text-xs bg-gray-400 text-white rounded-sm shadow px-2 py-1 font-light absolute " >
                             Delete
                         </div>
+
                     </main>
                 </div>
 
