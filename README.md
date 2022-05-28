@@ -32,7 +32,7 @@ STRUCTURE
 
     ochem
     ├── canvas/             // Code for the molecule interaction canvas
-    │   ├── Sketch.ts       // P5 setup, the central 'game loop', and event listeners
+    │   ├── Sketch.ts       // Setup, the central 'game loop', event listeners
     │   ├── Constants.ts    // Defines object sizes, colors, and physics constants
     │   ├── model/          // Classes and interfaces defining application state
     │   ├── view/           // Functions to draw objects on the canvas
@@ -58,6 +58,23 @@ STRUCTURE
 
 - Web pages are defined using the [next.js structure](https://nextjs.org/docs/basic-features/pages)
 - React essentially consists of nested javascript functions that each wrap the HTML, CSS, and JS for a given component on the page, like a form or button
+
+IMPLEMENTATION
+---------------------------------------------------------------------------------------
+
+This project effectively comprises of two distinct applications that share state:
+
+    The canvas:
+    - the central element in the `/[teacher | student]/reactions/[reaction_id]` pages
+    - where teachers create and edit exercises
+    - where students practice the excercises
+    - written with P5.js, which is essentially a very low-level game engine that drives an HTML5 canvas
+    - written with a model-view-controller, object oriented design
+    - utilizes a 'game loop' which, in each iteration, updates the model, and re-renders the updated objects in the HTML5 canvas
+    
+    The react application:
+    - everything outside the canvas
+    - in the `*/reactions/[reaction_id]` pages, react shares state with the canvas so that react buttons can manipulate behaviour on the canvas
 
 
 Copyright Robert Koenig 2021
