@@ -528,30 +528,23 @@ class TeacherReactionPage extends Component<IProps, IState> {
                         </div>
                     </main>
                 </div>
-                {/* Show prompt popup if visible */}
-                {
-                    this.state.promptPopupVisible
-                    ?
+                
+                <ShowIf condition={this.state.promptPopupVisible != null}>
                     <PromptPopup
                         popupCloseFunction={this.togglePromptPopup.bind(this)}
                         setPromptTextFunction={this.setPromptText.bind(this)}
                         initialText={this.state.reaction.prompt}
                     />
-                    :
-                    null
-                }
-                {/* Rename popup */}
-                {
-                    this.state.renamePopupVisible
-                    ?
+                </ShowIf>
+
+                <ShowIf condition={this.state.renamePopupVisible}>
                     <ReactionRenamePopup
                         reaction={this.state.reaction}
                         popupCloseFunction={this.toggleReactionRenamePopup.bind(this)}
                         reameFunction={this.renameReaction.bind(this)}
                     />
-                    :
-                    null
-                }
+                </ShowIf>
+
                 </>
             </ScreenWithLoadingAllRender>
         )
