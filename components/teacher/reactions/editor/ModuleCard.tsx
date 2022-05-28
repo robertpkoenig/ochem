@@ -1,15 +1,15 @@
 import Link from "next/link"
 import React, { useState } from "react"
-import ModuleListing from "../../persistence-model/ModuleListing"
-import PopupBackground from "../common/PopupBackground"
+import ModuleListing from "../../../../persistence-model/ModuleListing"
+import PopupBackground from "../../../common/PopupBackground"
 import DeleteReactionPopup from "./DeleteReactionPopup"
 
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 import { XIcon } from "@heroicons/react/solid"
 import { PencilAltIcon } from "@heroicons/react/outline"
-import Button from "../common/buttons/Button"
-import RoundButton from "../common/buttons/RoundButton"
-import { MODULE_LISTINGS } from "../../persistence-model/FirebaseConstants"
+import Button from "../../../common/buttons/Button"
+import RoundButton from "../../../common/buttons/RoundButton"
+import { MODULE_LISTINGS } from "../../../../persistence-model/FirebaseConstants"
 
 interface IProps {
     moduleListing: ModuleListing

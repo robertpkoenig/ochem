@@ -1,7 +1,7 @@
 import { CheckCircleIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
 import { useState } from "react";
-import Button from "../common/buttons/Button";
-import PopupBackground from "../common/PopupBackground";
+import Button from "../../../common/buttons/Button";
+import PopupBackground from "../../../common/PopupBackground";
 
 interface IProps {
     popupCloseFunction: () => void

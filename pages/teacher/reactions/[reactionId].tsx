@@ -12,17 +12,19 @@ import ReactionStepLoader from "../../../canvas/utilities/ReactionStepLoader"
 import Utilities from "../../../canvas/utilities/Utilities"
 import { doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore"
 import { PencilIcon } from "@heroicons/react/outline"
-import PromptPopup from "../../../components/editor/PromptPopup"
-import ReactionRenamePopup from "../../../components/editor/ReactionRenamePopup"
+import PromptPopup from "../../../components/teacher/reactions/editor/PromptPopup"
+import ReactionRenamePopup from "../../../components/teacher/reactions/editor/ReactionRenamePopup"
 import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
 import Ion from "../../../canvas/model/chemistry/atoms/Ion"
 import p5 from "p5"
 import { Component } from "react"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
 import { MODULES, NAME, REACTIONS, REACTION_LISTINGS, SECTIONS, VISIBLE } from "../../../persistence-model/FirebaseConstants"
-import EditorTopPanel from "../../../components/editor/EditorTopPanel"
-import AtomicElements from "../../../components/editor/AtomicElements"
-import EditorLeftButtons from "../../../components/editor/EditorLeftButtons"
+import EditorTopPanel from "../../../components/teacher/reactions/editor/EditorTopPanel"
+import AtomicElements from "../../../components/teacher/reactions/editor/AtomicElements"
+import EditorLeftButtons from "../../../components/teacher/reactions/editor/EditorLeftButtons"
+import ListOfSteps from "../../../components/teacher/reactions/editor/ListOfSteps"
+import ShowIf from "../../../components/common/ShowIf"
 
 const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
@@ -445,43 +447,13 @@ class TeacherReactionPage extends Component<IProps, IState> {
         this.forceUpdate()
     }
 
-    render() {
 
-        // This creates the list of buttons used to display and select
-        // the reaction step currently active in the editor
-        let listOfStepButtons: React.ReactNode
-        if (this.state.reaction) {
-            listOfStepButtons =   this.state.reaction.steps.map(step => (
-                                        <li 
-                                            onMouseDown={() => this.setCurrentStep(step.uuid)}
-                                            key={step.uuid}
-                                            className={"group relative px-2 flex gap-1 items-center rounded-md  hover:bg-indigo-700 hover:text-white cursor-pointer " +
-                                            (step === this.state.reaction.currentStep
-                                                ? " text-white bg-indigo-700" : null)}
-                                        >
-                                            <span className="text-sm font-medium my-1">
-                                                Step {step.order + 1}
-                                            </span>
-                                            <button
-                                                onMouseDown={(e) => this.deleteStep(e, step.uuid)}
-                                                className={" invisible absolute top-0 right-0 text-indigo-300 bg-indigo-500 hover:text-white hover:bg-indigo-400 rounded-full p-0.5 " +
-                                                    ((this.state.reaction.steps.length > 1) ? " group-hover:visible" : null)}
-                                                style={{transform: "translate(40%, -40%)"}}
-                                            >
-                                                    <XIcon className="w-2 h-2" />
-                                            </button>
-                                        </li>
-                                    ))
-        }
-        else {
-            listOfStepButtons = "Loading"
-        }
+    render() {
                                 
         return (
             <ScreenWithLoadingAllRender loading={this.state.loading}>
                 <>
-                {/* Top header above the thin white horizontal rule
-                    including the reaction name and the back link to the module page */}
+
                 <EditorTopPanel 
                     reaction={this.state.reaction}
                     toggleReactionRenamePopup={this.toggleReactionRenamePopup.bind(this)}
@@ -517,31 +489,22 @@ class TeacherReactionPage extends Component<IProps, IState> {
                                 }
                 
                                 <div className="flex flex-row justify-between">
-                                    <div className="flex flex-row gap-4 items-center">
-                                        <nav className="flex flex-row items-center">
-                                            <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                                                {listOfStepButtons}
-                                            </ol>
-                                        </nav>
-                                        <button
-                                            onMouseDown={() => this.createNewStep()}
-                                            className="text-indigo-100 hover:text-white text-sm flex flex-row"
-                                        >
-                                            <PlusIcon className="w-5 h-5" />
-                                            Add step
-                                        </button>
-                                    </div>
-                                    {
-                                    this.state.reaction && !this.state.reaction.prompt
-                                    ?
-                                    <div
-                                        onMouseDown={() => this.togglePromptPopup()}
-                                        className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
-                                        + Add prompt
-                                    </div>
-                                    :
-                                    null
-                                    }
+                                    <ListOfSteps
+                                        reaction={this.state.reaction}
+                                        currentStepUid={this.state.reaction?.currentStep.uuid}
+                                        setCurrentStep={this.setCurrentStep.bind(this)}
+                                        deleteStep={this.deleteStep.bind(this)}
+                                        createStep={ this.createNewStep.bind(this)}
+                                    />
+
+                                    <ShowIf condition={this.state.reaction?.prompt != null}> 
+                                        <div
+                                            onMouseDown={() => this.togglePromptPopup()}
+                                            className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
+                                            + Add prompt
+                                        </div>
+                                    </ShowIf>
+
                                 </div>
                             </div>
                         </div>

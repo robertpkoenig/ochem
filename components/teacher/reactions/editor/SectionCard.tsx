@@ -1,21 +1,21 @@
 import { PlusIcon, ChevronDownIcon, ChevronUpIcon, XIcon } from '@heroicons/react/solid';
-import Module from '../../persistence-model/Module';
-import ReactionListing from '../../persistence-model/ReactionListing';
-import Section from '../../persistence-model/SectionListing';
+import Module from '../../../../persistence-model/Module';
+import ReactionListing from '../../../../persistence-model/ReactionListing';
+import Section from '../../../../persistence-model/SectionListing';
 import ReactionCard from './ReactionCard';
 import ReactionCreationPopup from './ReactionPopup';
 import { v4 as uuid } from 'uuid'
 import DeleteReactionPopup from './DeleteReactionPopup';
-import Reaction from '../../canvas/model/Reaction';
-import ReactionStep from '../../canvas/model/ReactionStep';
+import Reaction from '../../../../canvas/model/Reaction';
+import ReactionStep from '../../../../canvas/model/ReactionStep';
 import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 import { PencilIcon } from '@heroicons/react/outline';
 import SectionRenamePopup from './SectionRenamePopup';
-import EmptyState from '../common/EmptyState';
+import EmptyState from '../../../common/EmptyState';
 import { useState } from 'react';
-import Button from '../common/buttons/Button';
-import RoundButton from '../common/buttons/RoundButton';
-import { MODULES, REACTION_LISTINGS, SECTIONS } from '../../persistence-model/FirebaseConstants';
+import Button from '../../../common/buttons/Button';
+import RoundButton from '../../../common/buttons/RoundButton';
+import { MODULES, REACTION_LISTINGS, SECTIONS } from '../../../../persistence-model/FirebaseConstants';
 
 interface IProps {
     userId: string

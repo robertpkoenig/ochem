@@ -1,16 +1,16 @@
 import Link from 'next/link';
 import { useState } from 'react';
-import Module from '../../persistence-model/Module';
-import ReactionListing from '../../persistence-model/ReactionListing';
-import Section from '../../persistence-model/SectionListing';
-import PopupBackground from '../common/PopupBackground';
+import Module from '../../../../persistence-model/Module';
+import ReactionListing from '../../../../persistence-model/ReactionListing';
+import Section from '../../../../persistence-model/SectionListing';
+import PopupBackground from '../../../common/PopupBackground';
 import DeleteReactionPopup from './DeleteReactionPopup';
 import { deleteDoc, doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { PencilAltIcon } from '@heroicons/react/outline';
-import Button from '../common/buttons/Button';
-import RoundButton from '../common/buttons/RoundButton';
+import Button from '../../../common/buttons/Button';
+import RoundButton from '../../../common/buttons/RoundButton';
 import { ChevronDownIcon, ChevronUpIcon, XIcon } from '@heroicons/react/solid';
-import { REACTIONS, REACTION_LISTINGS, SECTIONS } from '../../persistence-model/FirebaseConstants';
+import { REACTIONS, REACTION_LISTINGS, SECTIONS } from '../../../../persistence-model/FirebaseConstants';
 
 export interface IReactionCardProps {
     reactionListing: ReactionListing

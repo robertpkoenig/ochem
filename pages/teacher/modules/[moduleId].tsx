@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import Section from "../../../persistence-model/SectionListing";
 import Module from "../../../persistence-model/Module";
-import SectionCard from "../../../components/editor/SectionCard";
+import SectionCard from "../../../components/teacher/reactions/editor/SectionCard";
 import { PlusIcon } from "@heroicons/react/solid";
-import SectionPopup from "../../../components/editor/SectionPopup";
+import SectionPopup from "../../../components/teacher/reactions/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { AuthContext } from "../../../context/authContext";
 import ScreenWithLoading from "../../../components/common/ScreenWithLoading";
-import ModuleEditorLayout from "../../../components/editor/ModuleEditorLayout";
+import ModuleEditorLayout from "../../../components/teacher/reactions/editor/ModuleEditorLayout";
 import EmptyState from "../../../components/common/EmptyState";
 import { useRouter } from "next/router";
 import Button from "../../../components/common/buttons/Button";

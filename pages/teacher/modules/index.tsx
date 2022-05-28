@@ -2,10 +2,10 @@
 import PageLayout from '../../../components/common/PageLayout'
 import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import { PlusIcon } from '@heroicons/react/solid'
-import ModulePopup from '../../../components/editor/ModulePopup'
+import ModulePopup from '../../../components/teacher/reactions/editor/ModulePopup'
 import PopupBackground from '../../../components/common/PopupBackground'
 import { v4 as uuid } from 'uuid'
-import ModuleCard from '../../../components/editor/ModuleCard'
+import ModuleCard from '../../../components/teacher/reactions/editor/ModuleCard'
 import ModuleListing from '../../../persistence-model/ModuleListing'
 import Module from '../../../persistence-model/Module'
 import { collection, query, where, doc, getDocs, getFirestore, setDoc } from "firebase/firestore";

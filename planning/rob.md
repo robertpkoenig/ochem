@@ -1,4 +1,5 @@
 - split up the reaction page
+- add linting rules, including tailwind
 - failure message on the top of the screen (0.75)
 - additional help explaining how curly arrows are drawn (0.75)
 - each step must be able to contain more than one curly arrow (8)
@@ -10,7 +11,8 @@
 - option to add lone pairs (8)
 - R group dummy element / atom (0.5)
 - look into make the hover detector logic simpler
-- add linting for tailwind using the new tailwind linter
+- see if I can split up the p5 stuff into a seperate package
+- 
 
 Total time estimate: roughly a week
 

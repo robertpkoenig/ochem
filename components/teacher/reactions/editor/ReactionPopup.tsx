@@ -1,17 +1,15 @@
 import React, { FormEvent, SyntheticEvent, useState } from "react";
-import Reaction from "../../canvas/model/Reaction";
-import FormSubmitButton from "../common/buttons/FormSubmitButton";
-import PopupBackground from "../common/PopupBackground";
+import FormSubmitButton from "../../../common/buttons/FormSubmitButton";
+import PopupBackground from "../../../common/PopupBackground";
 
 interface IProps {
-    reaction: Reaction
     popupCloseFunction: () => void
-    reameFunction: (reactionName: string) => void
+    createReactionFunction: (reactionName: string) => void
 }
 
-export default function ReactionRenamePopup(props: IProps) {
+export default function ReactionCreationPopup(props: IProps) {
 
-    const [reactionName, setReactionName] = useState<string>(props.reaction.name)
+    const [reactionName, setReactionName] = useState<string>('')
 
     function onReactionNameChange(event: FormEvent<HTMLInputElement>) {
         setReactionName(event.currentTarget.value)
@@ -19,7 +17,7 @@ export default function ReactionRenamePopup(props: IProps) {
 
     function onSubmit(event: React.FormEvent) {
         event.preventDefault();
-        props.reameFunction(reactionName)
+        props.createReactionFunction(reactionName)
         props.popupCloseFunction()
     }
 
@@ -56,7 +54,7 @@ export default function ReactionRenamePopup(props: IProps) {
                     </div>
                 </div>
                 <div className="px-4 py-3 bg-gray-100 text-right sm:px-6">
-                    <FormSubmitButton value={"Save"} class={""} />
+                    <FormSubmitButton value={"Create reaction"} class={""} />
                 </div>
                 </div>
             </form>

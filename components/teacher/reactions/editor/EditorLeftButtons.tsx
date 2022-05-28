@@ -1,8 +1,8 @@
 import { MinusCircle, PlusCircle, RotateCcw, RotateCw } from "react-feather";
-import Ion from "../../canvas/model/chemistry/atoms/Ion";
-import BondType from "../../canvas/model/chemistry/bonds/BondType";
-import { ArrowType } from "../../canvas/model/chemistry/CurlyArrow";
-import SquareButton from "../common/buttons/SquareButton";
+import Ion from "../../../../canvas/model/chemistry/atoms/Ion";
+import BondType from "../../../../canvas/model/chemistry/bonds/BondType";
+import { ArrowType } from "../../../../canvas/model/chemistry/CurlyArrow";
+import SquareButton from "../../../common/buttons/SquareButton";
 
 interface IProps {
     bondType: BondType,

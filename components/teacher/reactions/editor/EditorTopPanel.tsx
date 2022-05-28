@@ -1,7 +1,7 @@
 import { Switch } from "@headlessui/react"
 import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/solid"
 import Link from "next/link"
-import Reaction from "../../canvas/model/Reaction"
+import Reaction from "../../../../canvas/model/Reaction"
 
 interface IProps {
     reaction?: Reaction,

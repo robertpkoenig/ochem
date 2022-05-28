@@ -1,8 +1,8 @@
-import ModuleListing from "../../persistence-model/ModuleListing"
-import ReactionListing from "../../persistence-model/ReactionListing"
-import Section from "../../persistence-model/SectionListing"
-import Button from "../common/buttons/Button"
-import PopupBackground from "../common/PopupBackground"
+import ModuleListing from "../../../../persistence-model/ModuleListing"
+import ReactionListing from "../../../../persistence-model/ReactionListing"
+import Section from "../../../../persistence-model/SectionListing"
+import Button from "../../../common/buttons/Button"
+import PopupBackground from "../../../common/PopupBackground"
 
 interface IProps {
     thing: ReactionListing | ModuleListing | Section

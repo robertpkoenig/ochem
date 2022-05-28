@@ -1,6 +1,6 @@
 import { useState } from "react";
-import FormSubmitButton from "../common/buttons/FormSubmitButton";
-import PopupBackground from "../common/PopupBackground";
+import FormSubmitButton from "../../../common/buttons/FormSubmitButton";
+import PopupBackground from "../../../common/PopupBackground";
 
 interface IProps {
     popupCloseFunction: () => void

@@ -1,5 +1,5 @@
-import TeacherController from "../../canvas/controller/teacher/TeacherController";
-import { Elements } from "../../canvas/model/chemistry/atoms/elements"
+import TeacherController from "../../../../canvas/controller/teacher/TeacherController";
+import { Elements } from "../../../../canvas/model/chemistry/atoms/elements"
 
 interface IProps {
     teacherController: TeacherController
