@@ -11,9 +11,10 @@ import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore
 import { Transition } from "@headlessui/react"
 import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
 import p5 from "p5"
-import Button from "../../../components/common/buttons/Button"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
 import { REACTIONS } from "../../../persistence-model/FirebaseConstants"
+import Button from "../../../components/common/buttons/Button"
+import ShowIf from "../../../components/common/ShowIf"
 
 const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
 const buttonGrid = `flex flex-row gap-2`
@@ -360,11 +361,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                     null
                                 }
 
-                                {/* Wrong arrow notification on bottom of screen */}
-                                {
-                                    this.state.reaction &&
-                                    this.state.reaction.currentStep.order == this.state.reaction.steps.length - 1
-                                    ?
+                                <ShowIf condition={this.state.reaction?.currentStep.order == this.state.reaction?.steps.length - 1}>
                                     <div className="absolute bottom-0 bg-green-50 p-4 flex flex-row items-center justify-between w-full rounded-b-md ">
                                         <div className="flex">
                                             <div className="flex-shrink-0">
@@ -387,10 +384,10 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
                                             <Link href={"/student/modules/" + this.state.reaction?.moduleId}>
                                                 <a>
-                                                    <Button 
-                                                        size={'small'} 
-                                                        importance={'primary'} 
-                                                        text={'Back to module'} 
+                                                    <Button
+                                                        size={'small'}
+                                                        importance={'primary'}
+                                                        text={'Back to module'}
                                                         icon={null}
                                                         onClick={null}
                                                         extraClasses={''}
@@ -400,9 +397,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
                                         </div>
                                     </div>
-                                    :
-                                    null
-                                }
+                                </ShowIf>
 
                             </div>
                         
