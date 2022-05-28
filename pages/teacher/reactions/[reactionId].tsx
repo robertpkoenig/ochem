@@ -25,6 +25,7 @@ import AtomicElements from "../../../components/teacher/reactions/editor/AtomicE
 import EditorLeftButtons from "../../../components/teacher/reactions/editor/EditorLeftButtons"
 import ListOfSteps from "../../../components/teacher/reactions/editor/ListOfSteps"
 import ShowIf from "../../../components/common/ShowIf"
+import Prompt from "../../../components/teacher/reactions/editor/Prompt"
 
 const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
 const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
@@ -465,28 +466,14 @@ class TeacherReactionPage extends Component<IProps, IState> {
                     <div className="bg-indigo-600 pb-32">
                         <div className="py-5">
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-3 ">
-                                {
-                                this.state.reaction && this.state.reaction.prompt
-                                ?
-                                <div className="flex flex-row items-baseline justify-between">
-                                    <div className="flex flox-row items-center gap-1">
-                                        <div className="text-indigo-100 text-md">
-                                            {this.state.reaction.prompt}
-                                        </div>
-                                        <PencilIcon
-                                            className="text-indigo-400 w-4 h-4 hover:text-indigo-100 cursor-pointer"
-                                            onMouseDown={() => this.togglePromptPopup()}
-                                        />
-                                    </div>
-                                    <div
-                                        onMouseDown={() => this.setPromptText(null)}
-                                        className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
-                                        Remove prompt
-                                    </div>
-                                </div>
-                                :
-                                null
-                                }
+                                
+                                <ShowIf condition={this.state.reaction?.prompt != null}>
+                                    <Prompt 
+                                    reaction={this.state.reaction} 
+                                    togglePrompt={this.togglePromptPopup.bind(this)} 
+                                    setPromptText={this.setPromptText.bind(this)}                                    
+                                    />
+                                </ShowIf>
                 
                                 <div className="flex flex-row justify-between">
                                     <ListOfSteps
