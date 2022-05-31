@@ -15,12 +15,7 @@ import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
 import { REACTIONS } from "../../../persistence-model/FirebaseConstants"
 import Button from "../../../components/common/buttons/Button"
 import ShowIf from "../../../components/common/ShowIf"
-
-const panel = `rounded-md shadow p-5 bg-white flex items-center justify-between w-96`
-const buttonGrid = `flex flex-row gap-2`
-const squareButton = `text-white bg-indigo-600 rounded-md pointer w-8 h-8 flex justify-center items-center hover:bg-indigo-700 `
-const selectedButton = squareButton + "bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500 "
-const buttonImage = "w-4 h-4"
+import classNames from "../../../functions/helper/classNames"
 
 // Gets the reaction Id from the URL path when the page
 // is request on the server
@@ -207,44 +202,33 @@ class StudentReactionPage extends React.Component<IProps, IState> {
     render() {
 
         // The circles which represent the user's progress in the application
-        let stepIndicators: React.ReactNode
-        if (this.state.reaction) {
-            stepIndicators =   
+
+        const stepIndicators =   
                 <div className="flex flex-row gap-3 ">
                     <div className="text-xs font-medium">
                         Progress
                     </div>
                     <ol className="rounded-md flex gap-2 text-indigo-400 ">
                         {
-                        this.state.reaction.steps.map(step => (
-
+                        this.state.reaction?.steps.map(step => 
                             <li 
                                 key={step.uuid}
                                 className="relative flex items-center justify-center"
                             >
-                                {
-                                step === this.state.reaction.currentStep
-                                ?
-                                <span className="absolute w-5 h-5 p-px flex" aria-hidden="true">
-                                    <span className="w-full h-full rounded-full bg-indigo-200 animate-pulse" />
-                                </span>
-                                :
-                                null
-                                }
+                                <ShowIf condition={step == this.state.reaction.currentStep}>
+                                    <span className="absolute w-5 h-5 p-px flex" aria-hidden="true">
+                                        <span className="w-full h-full rounded-full bg-indigo-200 animate-pulse" />
+                                    </span>
+                                </ShowIf>
 
-                                <span className={"relative w-2.5 h-2.5 rounded-full  " +
-                                (step.order > this.state.reaction.currentStep.order
-                                    ? " bg-gray-300 " : "bg-indigo-600")} />
-                                
+                                <span className={classNames("relative w-2.5 h-2.5 rounded-full", 
+                                    step.order > this.state.reaction.currentStep.order
+                                        ? " bg-gray-300 " : "bg-indigo-600")} />
                             </li>
-                        ))
+                        )
                         }
                     </ol>
                 </div>
-        }
-        else {
-            stepIndicators = "Loading"
-        }
                                 
         return (
 
@@ -258,26 +242,14 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                             <Link href={"/student/modules/" + this.state.reaction?.moduleId}>
                                 <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
                                 <ArrowLeftIcon className="w-3 h-3" />
-                                    {
-                                        this.state.reaction
-                                        ?
-                                        this.state.reaction.moduleName + " | " + this.state.reaction.sectionName
-                                        :
-                                        null
-                                    }
+                                    {this.state.reaction?.moduleName + " | " + this.state.reaction?.sectionName}
                                 </a>
                             </Link>
 
                             <div className="w-full flex flex-row justify-between mb-3">
                                 <div>
                                     <h1 className="text-2xl font-semibold text-white">
-                                        {
-                                            this.state.reaction
-                                            ?
-                                            this.state.reaction.name
-                                            :
-                                            null
-                                        }
+                                        { this.state.reaction?.name }
                                     </h1>
                                 </div>
                             </div>
@@ -291,17 +263,13 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                     <div className="bg-indigo-600 pb-32">
 
                         {/* Step prompt container */}
-                        {
-                            this.state.reaction && this.state.reaction.prompt
-                            ?
+                        <ShowIf condition={this.state.reaction?.prompt !== null}>
                             <div className="py-5">
                                 <div className="w-1200 mx-auto flex flex-row gap-4 items-center text-white font-light">
                                     {this.state.reaction.prompt}
                                 </div>
                             </div>
-                            :
-                            <div className="h-5"></div>
-                        }
+                        </ShowIf>
 
                     </div>
                 
@@ -310,15 +278,9 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
                             {/* p5 canvas */}
                             <div id={CANVAS_PARENT_NAME} className="bg-white h-700 rounded-lg shadow flex-grow relative">
-                                {
-                                    this.state.reaction &&
-                                    this.state.reaction.currentStep.order == this.state.reaction.steps.length - 1
-                                    ?
+                                <ShowIf condition={this.state.reaction?.currentStep.order == this.state.reaction?.steps.length - 1}>
                                     <div className="z-20 h-96 absolute bg-white bg-opacity-0 w-1200 rounded-md" />
-                                    :
-                                    null
-                                }
-                                    
+                                </ShowIf>
                                 <div className="w-1200 p-5 absolute flex flex-row justify-between">
                                     <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
                                         {stepIndicators}
@@ -344,9 +306,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                 </div>
 
                                 {/* Wrong arrow notification on bottom of screen */}
-                                {
-                                    this.state.failureToastVis
-                                    ?
+                                <ShowIf condition={this.state.failureToastVis}>
                                     <div className="absolute bottom-0 bg-pink-200 p-2 flex flex-row justify-center w-full rounded-b-md ">
                                         <div className="flex">
                                         <div className="flex-shrink-0">
@@ -357,9 +317,7 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                         </div>
                                         </div>
                                     </div>
-                                    :
-                                    null
-                                }
+                                </ShowIf>
 
                                 <ShowIf condition={this.state.reaction?.currentStep.order == this.state.reaction?.steps.length - 1}>
                                     <div className="absolute bottom-0 bg-green-50 p-4 flex flex-row items-center justify-between w-full rounded-b-md ">
