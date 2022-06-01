@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid"
 import Link from "next/link"
-import React from "react"
+import React, { Fragment } from "react"
 import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
 import Reaction from "../../../canvas/model/Reaction"
 import ReactionStep from "../../../canvas/model/ReactionStep"
@@ -201,16 +201,13 @@ class StudentReactionPage extends React.Component<IProps, IState> {
 
     render() {
 
-        // The circles which represent the user's progress in the application
-
-        const stepIndicators =   
+        const progressIndicatorDots =   
                 <div className="flex flex-row gap-3 ">
                     <div className="text-xs font-medium">
                         Progress
                     </div>
                     <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                        {
-                        this.state.reaction?.steps.map(step => 
+                        {this.state.reaction?.steps.map(step => 
                             <li 
                                 key={step.uuid}
                                 className="relative flex items-center justify-center"
@@ -225,147 +222,148 @@ class StudentReactionPage extends React.Component<IProps, IState> {
                                     step.order > this.state.reaction.currentStep.order
                                         ? " bg-gray-300 " : "bg-indigo-600")} />
                             </li>
-                        )
-                        }
+                        )}
                     </ol>
                 </div>
+
+        const header = 
+            <header className="bg-indigo-600">
+                <div className="w-1200 mx-auto">
+                    <div className="flex flex-col justify-left border-b border-indigo-400">
+                        <Link href={"/student/modules/" + this.state.reaction?.moduleId}>
+                            <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
+                            <ArrowLeftIcon className="w-3 h-3" />
+                                {this.state.reaction?.moduleName + " | " + this.state.reaction?.sectionName}
+                            </a>
+                        </Link>
+                        <div className="w-full flex flex-row justify-between mb-3">
+                            <div>
+                                <h1 className="text-2xl font-semibold text-white">
+                                    { this.state.reaction?.name }
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>   
+            
+        const stepPrompt =
+            <div className="bg-indigo-600 pb-32">
+                <div className="py-5">
+                    <div className="w-1200 mx-auto flex flex-row gap-4 items-center text-white font-light">
+                        {this.state.reaction?.prompt}
+                    </div>
+                </div>
+            </div>
+        
+        const invisibleDivToBlockCanvasWhenFinishedExcercise =
+            <div className="z-20 h-full absolute bg-black w-1200 rounded-md" />
+            
+        const correctArrowNotification = 
+            <Transition
+                show={this.state.successToastVis}
+                enter="transition-opacity duration-75"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="transition-opacity duration-150"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+            >
+                <div className="ml-2 bg-green-200 py-1.5 pl-3 pr-4 flex flex-row gap-2 justify-center rounded-md">
+                    <div>
+                        <CheckCircleIcon className="h-5 w-5 text-green-600" aria-hidden="true" />
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-medium text-green-600">Correct arrow</h3>
+                    </div>
+                </div>
+            </Transition>    
+            
+        const wrongArrowNotification =
+            <div className="absolute bottom-0 bg-pink-200 p-2 flex flex-row justify-center w-full rounded-b-md ">
+                <div className="flex">
+                    <div className="flex-shrink-0">
+                        <XCircleIcon className="h-5 w-5 text-pink-600" aria-hidden="true" />
+                    </div>
+                    <div className="ml-3">
+                        <h3 className="text-sm font-medium text-pink-600">Incorrect arrow</h3>
+                    </div>
+                </div>
+            </div>
+
+        const excerciseFinishedNotification =
+            <div className="absolute bottom-0 bg-green-50 p-4 flex flex-row items-center justify-between w-full rounded-b-md ">
+                <div className="flex">
+                    <div className="flex-shrink-0">
+                        <CheckCircleIcon className="h-5 w-5 text-green-600" aria-hidden="true" />
+                    </div>
+                    <div className="ml-3">
+                        <h3 className="text-sm font-medium text-green-600">Reaction completed!</h3>
+                    </div>
+                </div>
+                <div className="flex flex-row gap-4">
+
+                    <Button
+                        size={'small'}
+                        importance={'secondary'}
+                        text={'Retry'}
+                        icon={null}
+                        onClick={this.resetReaction.bind(this)}
+                        extraClasses={''}
+                    />
+
+                    <Link href={"/student/modules/" + this.state.reaction?.moduleId}>
+                        <a>
+                            <Button
+                                size={'small'}
+                                importance={'primary'}
+                                text={'Back to module'}
+                                icon={null}
+                                onClick={null}
+                                extraClasses={''}
+                            />
+                        </a>
+                    </Link>
+
+                </div>
+            </div>
                                 
         return (
 
             <ScreenWithLoadingAllRender loading={this.state.loading}>
-                <>
-                {/* Header above thin white line */}
-                <header className="bg-indigo-600">
-                    <div className="w-1200 mx-auto">
-                        <div className="flex flex-col justify-left border-b border-indigo-400">
+                <Fragment>
+                    {header}
+                    <div className="min-h-screen bg-gray-100">
+                        {stepPrompt}
+                        <main className="-mt-32">
+                            <div className="w-1200 h-700 mx-auto pb-12 flex flex-row gap-5">
+                                {/* p5 canvas */}
+                                <div id={CANVAS_PARENT_NAME} className="bg-white h-700 rounded-lg shadow flex-grow relative">
 
-                            <Link href={"/student/modules/" + this.state.reaction?.moduleId}>
-                                <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
-                                <ArrowLeftIcon className="w-3 h-3" />
-                                    {this.state.reaction?.moduleName + " | " + this.state.reaction?.sectionName}
-                                </a>
-                            </Link>
+                                    <ShowIf condition={this.state.reaction?.currentStep.order == this.state.reaction?.steps.length - 1}>
+                                        {invisibleDivToBlockCanvasWhenFinishedExcercise}
+                                    </ShowIf>
 
-                            <div className="w-full flex flex-row justify-between mb-3">
-                                <div>
-                                    <h1 className="text-2xl font-semibold text-white">
-                                        { this.state.reaction?.name }
-                                    </h1>
+                                    <div className="w-1200 p-5 absolute flex flex-row justify-between">
+                                        <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
+                                            {progressIndicatorDots}
+                                            {correctArrowNotification}
+                                        </div>
+                                    </div>
+
+                                    <ShowIf condition={this.state.failureToastVis}>
+                                        {wrongArrowNotification}
+                                    </ShowIf>
+
+                                    <ShowIf condition={this.state.reaction?.currentStep.order == this.state.reaction?.steps.length - 1}>
+                                        {excerciseFinishedNotification}
+                                    </ShowIf>
+
                                 </div>
                             </div>
-
-                        </div>
+                        </main>
                     </div>
-                </header>
-
-                <div className="min-h-screen bg-gray-100">
-                    
-                    <div className="bg-indigo-600 pb-32">
-
-                        {/* Step prompt container */}
-                        <ShowIf condition={this.state.reaction?.prompt !== null}>
-                            <div className="py-5">
-                                <div className="w-1200 mx-auto flex flex-row gap-4 items-center text-white font-light">
-                                    {this.state.reaction.prompt}
-                                </div>
-                            </div>
-                        </ShowIf>
-
-                    </div>
-                
-                    <main className="-mt-32">
-                        <div className="w-1200 h-700 mx-auto pb-12 flex flex-row gap-5">
-
-                            {/* p5 canvas */}
-                            <div id={CANVAS_PARENT_NAME} className="bg-white h-700 rounded-lg shadow flex-grow relative">
-                                <ShowIf condition={this.state.reaction?.currentStep.order == this.state.reaction?.steps.length - 1}>
-                                    <div className="z-20 h-96 absolute bg-white bg-opacity-0 w-1200 rounded-md" />
-                                </ShowIf>
-                                <div className="w-1200 p-5 absolute flex flex-row justify-between">
-                                    <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
-                                        {stepIndicators}
-                                        <Transition
-                                            show={this.state.successToastVis}
-                                            enter="transition-opacity duration-75"
-                                            enterFrom="opacity-0"
-                                            enterTo="opacity-100"
-                                            leave="transition-opacity duration-150"
-                                            leaveFrom="opacity-100"
-                                            leaveTo="opacity-0"
-                                        >
-                                            <div className="ml-2 bg-green-200 py-1.5 pl-3 pr-4 flex flex-row gap-2 justify-center rounded-md">
-                                                <div>
-                                                    <CheckCircleIcon className="h-5 w-5 text-green-600" aria-hidden="true" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-sm font-medium text-green-600">Correct arrow</h3>
-                                                </div>
-                                            </div>
-                                        </Transition>
-                                    </div>
-                                </div>
-
-                                {/* Wrong arrow notification on bottom of screen */}
-                                <ShowIf condition={this.state.failureToastVis}>
-                                    <div className="absolute bottom-0 bg-pink-200 p-2 flex flex-row justify-center w-full rounded-b-md ">
-                                        <div className="flex">
-                                        <div className="flex-shrink-0">
-                                            <XCircleIcon className="h-5 w-5 text-pink-600" aria-hidden="true" />
-                                        </div>
-                                        <div className="ml-3">
-                                            <h3 className="text-sm font-medium text-pink-600">Incorrect arrow</h3>
-                                        </div>
-                                        </div>
-                                    </div>
-                                </ShowIf>
-
-                                <ShowIf condition={this.state.reaction?.currentStep.order == this.state.reaction?.steps.length - 1}>
-                                    <div className="absolute bottom-0 bg-green-50 p-4 flex flex-row items-center justify-between w-full rounded-b-md ">
-                                        <div className="flex">
-                                            <div className="flex-shrink-0">
-                                                <CheckCircleIcon className="h-5 w-5 text-green-600" aria-hidden="true" />
-                                            </div>
-                                            <div className="ml-3">
-                                                <h3 className="text-sm font-medium text-green-600">Reaction completed!</h3>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-row gap-4">
-    
-                                            <Button
-                                                size={'small'}
-                                                importance={'secondary'}
-                                                text={'Retry'}
-                                                icon={null}
-                                                onClick={this.resetReaction.bind(this)}
-                                                extraClasses={''}
-                                            />
-
-                                            <Link href={"/student/modules/" + this.state.reaction?.moduleId}>
-                                                <a>
-                                                    <Button
-                                                        size={'small'}
-                                                        importance={'primary'}
-                                                        text={'Back to module'}
-                                                        icon={null}
-                                                        onClick={null}
-                                                        extraClasses={''}
-                                                    />
-                                                </a>
-                                            </Link>
-
-                                        </div>
-                                    </div>
-                                </ShowIf>
-
-                            </div>
-                        
-                        </div>
-
-                    </main>
-                
-                </div>
-
-                </>
+                </Fragment>
             </ScreenWithLoadingAllRender>
         )
     }
