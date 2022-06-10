@@ -15,7 +15,7 @@ import ReactionRenamePopup from "../../../components/teacher/reactions/editor/Re
 import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
 import Ion from "../../../canvas/model/chemistry/atoms/Ion"
 import p5 from "p5"
-import { Component } from "react"
+import { useEffect, useState } from "react"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
 import { MODULES, NAME, REACTIONS, REACTION_LISTINGS, SECTIONS, VISIBLE } from "../../../persistence-model/FirebaseConstants"
 import EditorTopPanel from "../../../components/teacher/reactions/editor/EditorTopPanel"
@@ -24,6 +24,7 @@ import EditorLeftButtons from "../../../components/teacher/reactions/editor/Edit
 import ListOfSteps from "../../../components/teacher/reactions/editor/ListOfSteps"
 import ShowIf from "../../../components/common/ShowIf"
 import Prompt from "../../../components/teacher/reactions/editor/Prompt"
+import { Controller } from "../../../canvas/controller/Controller"
 
 // This function is used within server side rendering to get the 
 // reaction ID from the url path
@@ -40,13 +41,13 @@ interface IProps {
 }
 
 interface IState {
-    loading: boolean
+    controller: Controller,
     reaction: Reaction
     bondType: BondType
     arrowType: ArrowType
     straightArrowSelected: boolean
     angleControlSelected: boolean
-    selectedIon: Ion
+    ionSelected: Ion
     eraserOn: boolean
     teacherController: TeacherController
     selectedElement: HTMLElement
@@ -55,152 +56,125 @@ interface IState {
     p5: p5
 }
 
-// *** This NEEDS to be a class component :( otherwise p5 will not work ***
-
 // This is the page where the teacher edits exercises
 // The reaction is loaded from firebase using the reaction
 // Id in the URL path. On each edit action, the reaction is
 // serialized to JSON, and that JSON is sent to Firebase
 // to overwrite the existing reaction document.
 
-class TeacherReactionPage extends Component<IProps, IState> {
+const TeacherReactionPage = (props: IProps) => {
 
-    db: FirebaseFirestore
+    const db = getFirestore()
 
-    constructor(props: IProps) {
+    const [loading, setLoading] = useState<boolean>(true)
 
-        super(props)
+    const [state, setState] = useState<IState>(() => {
+        console.log("set state function running")
+        
+    return {
+        controller: null,
+        reaction: null,
+        bondType: null,
+        arrowType: null,
+        straightArrowSelected: false,
+        angleControlSelected: false,
+        ionSelected: null,
+        eraserOn: false,
+        teacherController: null,
+        selectedElement: null,
+        promptPopupVisible: false,
+        renamePopupVisible: false,
+        p5: null
+    }})
 
-        this.db = getFirestore()
-
-        this.state = {
-            loading: true,
-            reaction: null,
-            bondType: null,
-            arrowType: null,
-            straightArrowSelected: false,
-            angleControlSelected: false,
-            selectedIon: null,
-            eraserOn: false,
-            teacherController: null,
-            selectedElement: null,
-            promptPopupVisible: false,
-            renamePopupVisible: false,
-            p5: null,
-        }
-
-    }
-
-    // This function is called when this component is loaded in the browser.
-    async componentDidMount() {
-
-        // Load reaction from db
-        const docRef = doc(this.db, REACTIONS, this.props.reactionId);
-        const docSnap = await getDoc(docRef);
-        const rawReactionObject = docSnap.data()
-        const reaction = ReactionLoader.loadReactionFromObject(rawReactionObject)
-        this.setState({
-            ...this.state,
-            reaction: reaction
+    useEffect(() => {
+        
+        // load reaction from db
+        getDoc(doc(db, REACTIONS, props.reactionId))
+        .then(doc => {
+            const reaction = ReactionLoader.loadReactionFromObject(doc.data())
+            setState({...state, reaction: reaction})
         })
 
-        // Create the p5 element
-        if (window) {
-            
-            const createP5Context = (await import("../../../canvas/Sketch")).default
-            
-            if (!reaction) throw new Error("reaction not loaded")
-            createP5Context(this, UserType.TEACHER, reaction)
+    }, [db, props.reactionId])
 
-            this.setState(prevState => {
-                return {
-                    ...prevState,
-                    loading: false
-                }
+    useEffect(() => {
+        async function setupP5() {
+            import("../../../canvas/Sketch").then(module => {
+                module.default(state, setState, UserType.TEACHER, state.reaction)
+                setLoading(false)
             })
         }
+        if (window && state.reaction && !state.p5) setupP5()
+    }, [state.reaction])
 
-    }
-
-    // This is called by the p5 setup function to inject the p5 object
-    // into this component's state
-    setP5(p5: p5) {
-        this.setState(
-            {
-               ...this.state,
-               p5: p5
-            }
-        )
-    }
+    useEffect(() => {
+        if (state?.controller) {
+            console.log("controller state set function");
+            
+            state.controller.pageState = state;
+            state.controller.teacherController.pageState = state;
+        }
+    }, [state])
 
     // This function is called when this component is removed
-    // from the browser window. It removes the p5 object from
-    // the window, and therefore stops the p5 draw loop.
-    componentWillUnmount() {
-        this.state.p5.remove()
-    }
+    // from the browser window. That's why it's a double arrow function.
+    // It removes the p5 object from the window, and therefore stops the p5 draw loop.
+    useEffect(() => () =>  state.p5?.remove(), [])
 
     // This function toggles whether or not a reaction is visible
     // to students.
-    toggleVisibility() {
-        this.state.teacherController.undoManager.addUndoPoint()
-        this.state.reaction.visible = !this.state.reaction.visible
-        this.forceUpdate()
-        ReactionSaver.saveReaction(this.state.reaction)
+    function toggleVisibility() {
+        state.teacherController.undoManager.addUndoPoint()
+        state.reaction.visible = !state.reaction.visible
+        // forceUpdate()
+        ReactionSaver.saveReaction(state.reaction)
 
         // Module doc ref to access the nested reaction listing object
-        const moduleDocRef = doc(this.db, MODULES, this.state.reaction.moduleId)
+        const moduleDocRef = doc(db, MODULES, state.reaction.moduleId)
 
         // To update the reaction listing document in firestore,
         // the string detailing the document's nested location is
         // constructed here
         const reactionRefWithinSection =
-            SECTIONS + "."+ this.state.reaction.sectionId + "."+
-            REACTION_LISTINGS + "." + this.state.reaction.uuid + 
+            SECTIONS + "."+ state.reaction.sectionId + "."+
+            REACTION_LISTINGS + "." + state.reaction.uuid + 
             "." + VISIBLE
 
         const sectionVisibilityUpdateObject: any = {}
-        sectionVisibilityUpdateObject[reactionRefWithinSection] = this.state.reaction.visible
+        sectionVisibilityUpdateObject[reactionRefWithinSection] = state.reaction.visible
         updateDoc(moduleDocRef, sectionVisibilityUpdateObject)
+
+        setState({...state, reaction: state.reaction})
     }
 
     // This shows/hides the popup in which the user can edit
     // the reaction's prompt text
-    togglePromptPopup() {
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                promptPopupVisible: !prevState.promptPopupVisible
-            }
-        })
+    function togglePromptPopup() {
+        setState({...state, promptPopupVisible: !state.promptPopupVisible})
     }
 
     // This shows/hides the popup in which the user can
     // rename the reaction
-    toggleReactionRenamePopup() {
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                renamePopupVisible: !prevState.renamePopupVisible
-            }
-        })
+    function toggleReactionRenamePopup() {
+        setState({ ...state, renamePopupVisible: !state.renamePopupVisible })
     }
 
-    renameReaction(newName: string) {
-        this.state.reaction.name = newName
-        this.forceUpdate()
-        const reactionRef = doc(this.db, REACTIONS, this.state.reaction.uuid)
+    function renameReaction(newName: string) {
+        state.reaction.name = newName
+        // forceUpdate()
+        const reactionRef = doc(db, REACTIONS, state.reaction.uuid)
         updateDoc(reactionRef, {
             name: newName
         })
 
         // Module doc ref to access the nested reaction listing object
-        const moduleDocRef = doc(this.db, MODULES, this.state.reaction.moduleId)
+        const moduleDocRef = doc(db, MODULES, state.reaction.moduleId)
 
         // Update the reaction listing document in firestore
         const reactionRefWithinSection =
-            SECTIONS + "."+ this.state.reaction.sectionId + "."+
-            REACTION_LISTINGS + "." + this.state.reaction.uuid + 
+            SECTIONS + "."+ state.reaction.sectionId + "."+
+            REACTION_LISTINGS + "." + state.reaction.uuid + 
             "." + NAME
 
         const sectionVisibilityUpdateObject: any = {}
@@ -208,159 +182,138 @@ class TeacherReactionPage extends Component<IProps, IState> {
         updateDoc(moduleDocRef, sectionVisibilityUpdateObject)
     }
 
-    setPromptText(promptText: string) {
+    function setPromptText(promptText: string) {
         // if there is no prompt, and therefore prompt is being set
         // for the first time, then reset the canvas offsets
 
-        const needToResetOffsets = !this.state.reaction.prompt || !promptText
+        const needToResetOffsets = !state.reaction.prompt || !promptText
 
-        this.state.reaction.prompt = promptText
-        this.forceUpdate()
-        ReactionSaver.saveReaction(this.state.reaction)
+        state.reaction.prompt = promptText
+
+        ReactionSaver.saveReaction(state.reaction)
+        setState({...state, reaction: state.reaction})
 
         if (needToResetOffsets) {
-            this.state.teacherController.panelController.setCanvasParent()
+            state.teacherController.panelController.setCanvasParent()
         }
     }
 
     // Turns on and off the eraser.
-    toggleEraser() {
-        this.setState((prevState) => {
-            return {
-                ...prevState,
-                eraserOn: !prevState.eraserOn,
+    function toggleEraser() {
+        setState({
+                ...state,
+                eraserOn: !state.eraserOn,
                 bondType: null,
                 arrowType: null,
                 straightArrowSelected: false,
                 ionSelected: null,
                 angleControlSelected: false,
-            }
-        })        
+            })        
     }
 
-    setBondType(bondType: BondType) {
+    function setBondType(bondType: BondType) {
 
         // If the bond type is already selected, and the user
         // is pressing this bond type button again, simply set
         // the bond type to null, as the user is turning off the
         // bond drawing altogether
-        if (this.state.bondType == bondType) {
-            this.setState((prevState) => {
-                return {
-                    ...prevState,
-                    bondType: null
-                }
-            })  
+        if (state.bondType == bondType) {
+            setState({ ...state, bondType: null })  
         }
 
         else {
-            this.setState((prevState) => {
-                return {
-                    ...prevState,
+            setState({
+                    ...state,
                     bondType: bondType,
                     arrowType: null,
                     eraserOn: false,
                     straightArrowSelected: false,
-                    selectedIon: null,
+                    ionSelected: null,
                     angleControlSelected: false,
-                }
             }) 
         }
 
     }
 
-    setArrowType(arrowType: ArrowType) {
+    function setArrowType(arrowType: ArrowType) {
 
         // If the arrow type is already selected, and the user
         // is pressing this arrow type button again, simply set
         // the arrow type to null, as the user is turning off the
         // arrow drawing altogether
-        if (this.state.arrowType == arrowType) {
-            this.setState((prevState) => {
-                return {
-                    ...prevState,
-                    arrowType: null
-                }
-            })  
+        if (state.arrowType == arrowType) {
+            setState({ ...state, arrowType: null })  
         }
 
         else {
-            this.setState((prevState) => {
-                return {
-                    ...prevState,
+            setState({
+                    ...state,
                     arrowType: arrowType,
                     bondType: null,
                     eraserOn: false,
                     straightArrowSelected: false,
                     angleControlSelected: false,
-                    selectedIon: null,
-                }
+                    ionSelected: null,
             }) 
         }
        
     }
 
-    selectIon(ion: Ion) {
+    function selectIon(ion: Ion) {
 
         // If the ion type is already selected, and the user
         // is pressing this ion type button again, simply set
         // the ion type to null, as the user is turning off the
         // ion drawing altogether
-        if (this.state.selectedIon == ion) {
-            this.setState((prevState) => {
-                return {
-                    ...prevState,
-                    selectedIon: null
-                }
+        if (state.ionSelected == ion) {
+            setState({
+                    ...state,
+                    ionSelected: null
             })  
         }
 
         else {
-            this.setState(prevState => {
-                return {
-                    ...prevState,
-                    selectedIon: ion,
+            setState({
+                    ...state,
+                    ionSelected: ion,
                     eraserOn: false,
                     bondType: null,
                     arrowType: null,
                     straightArrowSelected: false,
                     angleControlSelected: false,
-                }
             })
         }
 
     }
 
-    toggleStraightArrow() {
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                straightArrowSelected: !prevState.straightArrowSelected,
+    function toggleStraightArrow() {
+        setState({
+                ...state,
+                straightArrowSelected: !state.straightArrowSelected,
                 eraserOn: false,
                 bondType: null,
-                selectedIon: null,
+                ionSelected: null,
                 arrowType: null,
                 angleControlSelected: false,
-            }
         })
     }
 
     // Sets the step object currently active in the editor canvas
-    setCurrentStep(stepId: string) {
+    function setCurrentStep(stepId: string) {
         let selectedStep: ReactionStep
-        for (const step of this.state.reaction.steps) {
+        for (const step of state.reaction.steps) {
             if (step.uuid == stepId) selectedStep = step
         }
-        this.state.reaction.currentStep = selectedStep
-        ReactionSaver.saveReaction(this.state.reaction)
-        this.forceUpdate()
+        state.reaction.currentStep = selectedStep
+        ReactionSaver.saveReaction(state.reaction)
+        setState({...state, reaction: state.reaction})
     }
 
     // Copies the contents of the last step in the reaction,
     // minus the curly arrow, into a new step
-    createNewStep() {
+    function createNewStep() {
         // Copy the last step into a new step
-        const steps = this.state.reaction.steps
+        const steps = state.reaction.steps
         const lastStep = steps[steps.length - 1]
         
         const lastStepJSON = lastStep.toJSON()
@@ -371,21 +324,22 @@ class TeacherReactionPage extends Component<IProps, IState> {
         newStep.uuid = Utilities.generateUid()
         newStep.order += 1
 
-        this.state.reaction.steps.push(newStep)
-        this.state.reaction.currentStep = newStep
+        state.reaction.steps.push(newStep)
+        state.reaction.currentStep = newStep
 
-        this.forceUpdate()
-        ReactionSaver.saveReaction(this.state.reaction)
+        ReactionSaver.saveReaction(state.reaction)
+
+        setState({...state, reaction: state.reaction})
     }
 
-    deleteStep(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, stepId: string) {
+    function deleteStep(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, stepId: string) {
 
-        this.state.teacherController.undoManager.addUndoPoint()
+        state.teacherController.undoManager.addUndoPoint()
 
         let stepToDelete: ReactionStep | null = null
 
         // Get the step to delete
-        for (const step of this.state.reaction.steps) {
+        for (const step of state.reaction.steps) {
             if (step.uuid == stepId) stepToDelete = step
         }
 
@@ -393,161 +347,143 @@ class TeacherReactionPage extends Component<IProps, IState> {
             throw new Error("Could not find the stepToDelete")
 
         // Filter the step of out the list of steps
-        this.state.reaction.steps =
-            this.state.reaction.steps.filter(step => {
+        state.reaction.steps =
+            state.reaction.steps.filter(step => {
                 return step != stepToDelete
             })
         
         // Reduce the order of the remaining steps
-        for (const step of this.state.reaction.steps) {
+        for (const step of state.reaction.steps) {
             if (step.order > stepToDelete.order) {
                 step.order -= 1
             }
         }
 
-        if (this.state.reaction.currentStep == stepToDelete) {
-            for (const step of this.state.reaction.steps) {
+        if (state.reaction.currentStep == stepToDelete) {
+            for (const step of state.reaction.steps) {
                 if (step.order == stepToDelete.order - 1) {
-                    this.state.reaction.currentStep = step
+                    state.reaction.currentStep = step
                 }
             }
         }
 
-        ReactionSaver.saveReaction(this.state.reaction)
-
-        this.forceUpdate()
+        ReactionSaver.saveReaction(state.reaction)
+        setState({...state, reaction: state.reaction})
 
         event.stopPropagation()
 
     }
 
-    // This is called by the downstream 'Controller' classe
-    // to associate this component with that controller.
-    // This allows events from this component to be routed
-    // to that controller class
-    setController(editorController: TeacherController) {
-        this.setState({
-            ...this.state,
-            teacherController: editorController
-        })
+    function undo() {
+        state.teacherController.undoManager.undo()
     }
 
-    undo() {
-        this.state.teacherController.undoManager.undo()
-        this.forceUpdate()
+    function redo() {
+        state.teacherController.undoManager.redo()
     }
-
-    redo() {
-        this.state.teacherController.undoManager.redo()
-        this.forceUpdate()
-    }
-
-
-    render() {
                                 
-        return (
-            <ScreenWithLoadingAllRender loading={this.state.loading}>
-                <>
+    return (
+        <ScreenWithLoadingAllRender loading={loading}>
+            <>
 
-                <EditorTopPanel 
-                    reaction={this.state.reaction}
-                    toggleReactionRenamePopup={this.toggleReactionRenamePopup.bind(this)}
-                    toggleVisibility={this.toggleVisibility.bind(this)}
-                />
+            <EditorTopPanel 
+                state={state}
+                toggleReactionRenamePopup={toggleReactionRenamePopup}
+                toggleVisibility={toggleVisibility}
+            />
 
-                {/* Reaction prompt and the list of steps */}
-                <div className="min-h-screen bg-gray-100">
-                    <div className="bg-indigo-600 pb-32">
-                        <div className="py-5">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-3 ">
-                                
-                                <ShowIf condition={this.state.reaction?.prompt != null}>
-                                    <Prompt 
-                                    reaction={this.state.reaction} 
-                                    togglePrompt={this.togglePromptPopup.bind(this)} 
-                                    setPromptText={this.setPromptText.bind(this)}                                    
-                                    />
+            {/* Reaction prompt and the list of steps */}
+            <div className="min-h-screen bg-gray-100">
+                <div className="bg-indigo-600 pb-32">
+                    <div className="py-5">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-3 ">
+                            
+                            <ShowIf condition={!!state.reaction?.prompt}>
+                                <Prompt 
+                                    state={state} 
+                                    togglePrompt={togglePromptPopup} 
+                                    setPromptText={setPromptText}                                    
+                                />
+                            </ShowIf>
+            
+                            <div className="flex flex-row justify-between">
+
+                                <ListOfSteps
+                                    state={state}
+                                    currentStepUid={state.reaction?.currentStep.uuid}
+                                    setCurrentStep={setCurrentStep}
+                                    deleteStep={deleteStep}
+                                    createStep={ createNewStep}
+                                />
+
+                                <ShowIf condition={state.reaction?.prompt == null}> 
+                                    <div
+                                        onMouseDown={togglePromptPopup}
+                                        className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
+                                        + Add prompt
+                                    </div>
                                 </ShowIf>
-                
-                                <div className="flex flex-row justify-between">
 
-                                    <ListOfSteps
-                                        reaction={this.state.reaction}
-                                        currentStepUid={this.state.reaction?.currentStep.uuid}
-                                        setCurrentStep={this.setCurrentStep.bind(this)}
-                                        deleteStep={this.deleteStep.bind(this)}
-                                        createStep={ this.createNewStep.bind(this)}
-                                    />
-
-                                    <ShowIf condition={this.state.reaction?.prompt == null}> 
-                                        <div
-                                            onMouseDown={() => this.togglePromptPopup()}
-                                            className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
-                                            + Add prompt
-                                        </div>
-                                    </ShowIf>
-
-                                </div>
                             </div>
                         </div>
                     </div>
-                
-                    <main className="-mt-32">
-                        <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8 flex flex-row gap-5">
-
-                            <EditorLeftButtons 
-                                bondType={this.state.bondType}
-                                setBondType={this.setBondType.bind(this)}
-                                arrowType={this.state.arrowType}
-                                setArrowType={this.setArrowType.bind(this)}
-                                straightArrowSelected={this.state.straightArrowSelected}
-                                toggleStraightArrowSelected={this.toggleStraightArrow.bind(this)}
-                                selectedIon={this.state.selectedIon}
-                                selectIon={this.selectIon.bind(this)}
-                                eraserOn={this.state.eraserOn} 
-                                toggleEraser={this.toggleEraser.bind(this)}
-                                undo={this.undo.bind(this)}
-                                redo={this.redo.bind(this)}
-                            />
-                                
-                            {/* p5 canvas */}
-                            <div id={CANVAS_PARENT_NAME} className=" h-700 bg-white rounded-lg shadow flex-grow">
-                            </div>
-                            
-                            <AtomicElements teacherController={this.state.teacherController} />
-                
-                        </div>
-
-                        {/* Tooltip that shows over element when in 'eraser' mode */}
-                        <div id="eraser-tip" style={{display: "none"}} className="text-xs bg-gray-400 text-white rounded-sm shadow px-2 py-1 font-light absolute " >
-                            Delete
-                        </div>
-
-                    </main>
                 </div>
+            
+                <main className="-mt-32">
+                    <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8 flex flex-row gap-5">
 
-                <ShowIf condition={this.state.promptPopupVisible}>
-                    <PromptPopup
-                        popupCloseFunction={this.togglePromptPopup.bind(this)}
-                        setPromptTextFunction={this.setPromptText.bind(this)}
-                        initialText={this.state.reaction?.prompt}
-                    />
-                </ShowIf>
+                        <EditorLeftButtons 
+                            bondType={state.bondType}
+                            setBondType={setBondType}
+                            arrowType={state.arrowType}
+                            setArrowType={setArrowType}
+                            straightArrowSelected={state.straightArrowSelected}
+                            toggleStraightArrowSelected={toggleStraightArrow}
+                            selectedIon={state.ionSelected}
+                            selectIon={selectIon}
+                            eraserOn={state.eraserOn} 
+                            toggleEraser={toggleEraser}
+                            undo={undo}
+                            redo={redo}
+                        />
+                            
+                        {/* p5 canvas */}
+                        <div id={CANVAS_PARENT_NAME} className=" h-700 bg-white rounded-lg shadow flex-grow">
+                        </div>
+                        
+                        <AtomicElements teacherController={state.teacherController} />
+            
+                    </div>
 
-                <ShowIf condition={this.state.renamePopupVisible}>
-                    <ReactionRenamePopup
-                        reaction={this.state.reaction}
-                        popupCloseFunction={this.toggleReactionRenamePopup.bind(this)}
-                        reameFunction={this.renameReaction?.bind(this)}
-                    />
-                </ShowIf>
+                    {/* Tooltip that shows over element when in 'eraser' mode */}
+                    <div id="eraser-tip" style={{display: "none"}} className="text-xs bg-gray-400 text-white rounded-sm shadow px-2 py-1 font-light absolute " >
+                        Delete
+                    </div>
 
-                </>
-            </ScreenWithLoadingAllRender>
-        )
+                </main>
+            </div>
 
-    }
+            <ShowIf condition={state.promptPopupVisible}>
+                <PromptPopup
+                    popupCloseFunction={togglePromptPopup}
+                    setPromptTextFunction={setPromptText}
+                    initialText={state.reaction?.prompt}
+                />
+            </ShowIf>
+
+            <ShowIf condition={state.renamePopupVisible}>
+                <ReactionRenamePopup
+                    state={state}
+                    popupCloseFunction={toggleReactionRenamePopup}
+                    reameFunction={renameReaction}
+                />
+            </ShowIf>
+
+            </>
+        </ScreenWithLoadingAllRender>
+    )
 
 }
 
+export type { IState as IPageState }
 export default TeacherReactionPage

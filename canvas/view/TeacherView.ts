@@ -50,7 +50,7 @@ class TeacherView {
         const hoveredIon = this.teacherController.hoverDetector.ionCurrentlyHovered
 
         if (hoveredIon != null) {
-            if (this.teacherController.teacherReactionPage.state.eraserOn) {
+            if (this.teacherController.pageState.eraserOn) {
                 this.drawIonOutline(hoveredIon)
                 this.showEraserTip()
             }
@@ -78,7 +78,7 @@ class TeacherView {
 
         if (hoveredAtom != null) {
 
-            if (this.teacherController.teacherReactionPage.state.eraserOn) {
+            if (this.teacherController.pageState.eraserOn) {
                 this.drawAtomOutline(hoveredAtom, RED_OUTLINE_COLOR)
                 this.showEraserTip()
             }
@@ -126,12 +126,12 @@ class TeacherView {
         const hoveredBond = this.teacherController.hoverDetector.bondCurrentlyHovered
 
         if (hoveredBond != null) {
-            if (this.teacherController.teacherReactionPage.state.eraserOn) {
+            if (this.teacherController.pageState.eraserOn) {
                 this.drawBondOutline(hoveredBond, RED_OUTLINE_COLOR)
                 this.showEraserTip()
                 this.eraserTipVisible = true
             }
-            if (this.teacherController.teacherReactionPage.state.arrowType != null) {
+            if (this.teacherController.pageState.arrowType != null) {
                 this.drawBondOutline(hoveredBond, BLUE_OUTLINE_COLOR)
             }
         }
@@ -194,7 +194,7 @@ class TeacherView {
 
                 this.p5.fill(0)
 
-                if (this.teacherController.teacherReactionPage.state.bondType == BondType.SINGLE) {
+                if (this.teacherController.pageState.bondType == BondType.SINGLE) {
                 this.p5.stroke(0)
                 this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
                     this.teacherController.bondCreator.startAtom.circle.pos.y,
@@ -202,7 +202,7 @@ class TeacherView {
                     this.p5.mouseY)
                 }
 
-                if (this.teacherController.teacherReactionPage.state.bondType == BondType.DOUBLE) {
+                if (this.teacherController.pageState.bondType == BondType.DOUBLE) {
                     this.p5.strokeWeight(STROKE_WEIGHT * 3)
                     this.p5.stroke(0)
                     this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
@@ -227,7 +227,7 @@ class TeacherView {
 
         const arrow = this.teacherController.hoverDetector.curlyArrowCurrentlyHovered
         
-        if (arrow != null && this.teacherController.teacherReactionPage.state.eraserOn) {
+        if (arrow != null && this.teacherController.pageState.eraserOn) {
             this.drawArrowOutline(arrow, RED_OUTLINE_COLOR)
             this.showEraserTip()
         }
@@ -284,7 +284,7 @@ class TeacherView {
     public decorateStraightArrowIfHovered() {
         const straightArrow =
             this.teacherController.hoverDetector.straightArrowCurrentlyHovered
-        if (straightArrow != null && this.teacherController.teacherReactionPage.state.eraserOn) {
+        if (straightArrow != null && this.teacherController.pageState.eraserOn) {
             this.decorateStraightArrow(straightArrow, RED_OUTLINE_COLOR)
             this.showEraserTip()
         }

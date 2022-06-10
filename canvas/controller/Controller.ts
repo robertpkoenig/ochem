@@ -1,11 +1,9 @@
 import p5 from "p5"
 import Reaction from "../model/Reaction"
 import BodyMover from "./BodyMover"
-
 import { Vector } from "sat"
 import CollisionDetector from "../view/CollisinDetector"
-import TeacherReactionPage from "../../pages/teacher/reactions/[reactionId]"
-import StudentReactionPage from "../../pages/student/reactions/[reactionId]"
+import { IPageState } from "../../pages/teacher/reactions/[reactionId]"
 import UserType from "../model/UserType"
 import CurlyArrowCreator from "./CurlyArrowCreator"
 import HoverDetector from "./teacher/helper/HoverDetector"
@@ -30,23 +28,24 @@ class Controller {
     teacherController: TeacherController
     studentController: StudentController
 
-    page: StudentReactionPage | TeacherReactionPage
+    // State held in the react page
+    pageState: IPageState
 
     constructor(
         p5: p5,
         reaction: Reaction,
         collisionDetector: CollisionDetector,
-        page: TeacherReactionPage | StudentReactionPage,
+        pageState: IPageState,
         userType: UserType) {
 
         this.p5 = p5
         this.reaction = reaction
         this.collisionDetector = collisionDetector
-        this.page = page
+        this.pageState = pageState
         this.userType = userType
 
         this.hoverDetector = new HoverDetector(reaction, collisionDetector)
-        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, page)
+        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState)
 
         this.bodyMover = new BodyMover(p5, reaction)
 
@@ -59,7 +58,7 @@ class Controller {
                     this.hoverDetector,
                     this.arrowCreator,
                     this.bodyMover,
-                    page as TeacherReactionPage,
+                    this.pageState
                 )
             
             this.arrowCreator.undoManager = this.teacherController.undoManager
@@ -71,10 +70,10 @@ class Controller {
                     p5,
                     reaction,
                     collisionDetector,
-                    page as StudentReactionPage,
                     this.hoverDetector,
                     this.arrowCreator,
-                    this.bodyMover)
+                    this.bodyMover,
+                    pageState)
         }
 
     }
@@ -106,7 +105,7 @@ class Controller {
         if (this.studentController) {
             this.studentController.routeMousePressed(mouseVector)
         }
-        if (this.page.state.arrowType != null) {
+        if (this.pageState.arrowType != null) {
             this.arrowCreator.startArrowIfObjectClicked()
         }
     }

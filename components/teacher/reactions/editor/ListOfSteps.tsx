@@ -1,10 +1,10 @@
 import { PlusIcon, XIcon } from "@heroicons/react/solid"
-import Reaction from "../../../../canvas/model/Reaction"
 import classNames from "../../../../functions/helper/classNames"
+import { IPageState } from "../../../../pages/teacher/reactions/[reactionId]"
 import ShowIf from "../../../common/ShowIf"
 
 interface IProps {
-    reaction: Reaction,
+    state: IPageState,
     currentStepUid: string,
     setCurrentStep: (stepUid: string) => void,
     deleteStep: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, stepUid: string) => void,
@@ -22,13 +22,13 @@ function ListOfSteps(props: IProps) {
     }
 
     const listOfStepButtons =
-        props.reaction?.steps.map(step => (
+        props.state.reaction?.steps.map(step => (
             <li 
                 onMouseDown={() => setCurrentStep(step.uuid)}
                 key={step.uuid}
                 className={
                         classNames("group relative px-2 flex gap-1 items-center rounded-md  hover:bg-indigo-700 hover:text-white cursor-pointer", 
-                        step === props.reaction.currentStep && "text-white bg-indigo-700")}
+                        step === props.state.reaction.currentStep && "text-white bg-indigo-700")}
             >
                 <span className="text-sm font-medium my-1">
                     Step {step.order + 1}
@@ -37,7 +37,7 @@ function ListOfSteps(props: IProps) {
                     onMouseDown={(e) => props.deleteStep(e, step.uuid)}
                     className={
                         classNames("invisible absolute top-0 right-0 text-indigo-300 bg-indigo-500 hover:text-white hover:bg-indigo-400 rounded-full p-0.5",
-                        props.reaction.steps.length > 1 && "group-hover:visible")}
+                        props.state.reaction.steps.length > 1 && "group-hover:visible")}
                     style={{transform: "translate(40%, -40%)"}}
                 >
                     <XIcon className="w-2 h-2" />
@@ -50,7 +50,7 @@ function ListOfSteps(props: IProps) {
         <div className="flex flex-row gap-4 items-center">
             <nav className="flex flex-row items-center">
                 <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                    <ShowIf condition={props.reaction != null}>
+                    <ShowIf condition={props.state.reaction != null}>
                         {listOfStepButtons}
                     </ShowIf>
                 </ol>

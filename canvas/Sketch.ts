@@ -6,16 +6,16 @@ import { PhysicsEngine } from './model/physics/PhysicsEngine'
 import Utilities from './utilities/Utilities'
 import { View } from './view/View'
 import Reaction from './model/Reaction'
-import TeacherReactionPage from '../pages/teacher/reactions/[reactionId]'
-import StudentReactionPage from '../pages/student/reactions/[reactionId]'
+import { IPageState } from '../pages/teacher/reactions/[reactionId]'
 import UserType from './model/UserType'
 import { CANVAS_PARENT_NAME } from './Constants'
 
 function createP5Context(
-    page: TeacherReactionPage | StudentReactionPage,
+    pageState: IPageState, 
+    setPageState: (state: IPageState) => void,
     userType: UserType,
-    reaction: Reaction) {
-
+    reaction: Reaction
+) {
     new p5(sketch)
 
     function sketch(p5: p5) {
@@ -36,11 +36,11 @@ function createP5Context(
 
             collisionDetector = new CollisionDetector(p5, reaction)
             physicsEngine = new PhysicsEngine(reaction)
-            controller = new Controller(p5, reaction, collisionDetector, page, userType)
+            controller = new Controller(p5, reaction, collisionDetector, pageState, userType)
             view = new View(p5, reaction, controller, userType)
 
-            page.setP5(p5)
-           
+            setPageState({...pageState, controller: controller, p5: p5, teacherController: controller.teacherController})
+
         }
     
         // This is run continuously while the p5 instance is active

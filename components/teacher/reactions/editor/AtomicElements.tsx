@@ -8,8 +8,7 @@ interface IProps {
 // List of atomic elements on the right panel of the screen
 function AtomicElements(props: IProps) {
 
-    console.log(Elements);
-    
+    console.log('props.teacherController : ' + props.teacherController)
 
     const atomicElements = Object.values(Elements).map(element => {
         return (

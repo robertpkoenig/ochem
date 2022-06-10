@@ -62,7 +62,7 @@ class BondCreator {
         // Put all atoms into the same molecule object
         Molecule.mergeTwoMolecules(this.reaction, moleculeOne, moleculeTwo)
 
-        if (this.editorController.teacherReactionPage.state.bondType == null) {
+        if (this.editorController.pageState.bondType == null) {
             throw new Error("Tried creating bond without bond type selected")
         }
 
@@ -70,7 +70,7 @@ class BondCreator {
             this.startAtom,
             endAtom,
             BOND_DISTANCE,
-            this.editorController.teacherReactionPage.state.bondType,
+            this.editorController.pageState.bondType,
             uuid()
         )
 

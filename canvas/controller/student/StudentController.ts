@@ -1,11 +1,11 @@
 import p5 from "p5"
 import { Vector } from "sat"
-import StudentReactionPage from "../../../pages/student/reactions/[reactionId]"
 import CollisionDetector from "../../view/CollisinDetector"
 import Reaction from "../../model/Reaction"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import BodyMover from "../BodyMover"
 import HoverDetector from "../teacher/helper/HoverDetector"
+import { IPageState } from "../../../pages/teacher/reactions/[reactionId]"
 
 /** Handles student input in canvas */
 class StudentController {
@@ -14,27 +14,29 @@ class StudentController {
     p5: p5
     reaction: Reaction
     collisionDetector: CollisionDetector
-    studentReactionPage: StudentReactionPage
     hoverDetector: HoverDetector
     arrowCreator: CurlyArrowCreator
     bodyMover: BodyMover
+
+    // React page state
+    pageState: IPageState
 
     constructor(
         p5: p5,
         reaction: Reaction,
         collisionDetector: CollisionDetector,
-        studentReactionPage: StudentReactionPage,
         hoverDetector: HoverDetector,
         arrowCreator: CurlyArrowCreator,
-        bodyMover: BodyMover
+        bodyMover: BodyMover,
+        pageState: IPageState
     ) {
         this.p5 = p5
         this.reaction = reaction
         this.collisionDetector = collisionDetector
-        this.studentReactionPage = studentReactionPage
         this.hoverDetector = hoverDetector
         this.arrowCreator = arrowCreator
         this.bodyMover = bodyMover
+        this.pageState = pageState
     }
 
     process() {
@@ -42,7 +44,7 @@ class StudentController {
     }
 
     routeMousePressed(mouseVector: Vector) {
-        if (this.studentReactionPage.state.arrowType == null) {
+        if (this.pageState.arrowType == null) {
             this.bodyMover.startDraggingBodyIfPressed(mouseVector)
         }
     }
@@ -70,7 +72,7 @@ class StudentController {
         else if (currentlyOverAtom) {
             
             // if a bond is currently being drawn, draw a cross hair
-            if (this.studentReactionPage.state.arrowType != null) {            
+            if (this.pageState.arrowType != null) {            
                 this.p5.cursor("crosshair")
             }
 
@@ -85,7 +87,7 @@ class StudentController {
         }
 
         // Hovering a bond and arrow type is selected
-        else if (currentlyOverBond && this.studentReactionPage.state.arrowType != null) {
+        else if (currentlyOverBond && this.pageState.arrowType != null) {
             this.p5.cursor("crosshair")
         }
 
@@ -103,12 +105,12 @@ class StudentController {
                 this.reaction.currentStep.curlyArrow.startObject &&
             this.arrowCreator.draftArrow.endObject ===
                 this.reaction.currentStep.curlyArrow.endObject) {
-                this.studentReactionPage.arrowDrawnSuccesfully()
+                // this.studentReactionPage.arrowDrawnSuccesfully()
                 this.arrowCreator.draftArrow = null
         }
         else if (this.arrowCreator.draftArrow != null &&
                  this.arrowCreator.draftArrow.endObject != null) {
-            this.studentReactionPage.arrowDrawnWrong()
+            // this.studentReactionPage.arrowDrawnWrong()
         }
         this.arrowCreator.draftArrow = null
     }

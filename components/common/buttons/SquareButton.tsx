@@ -9,7 +9,6 @@ interface IProps {
     onMouseDown: () => void,
     selected: boolean,
     children?: ReactNode,
-    key?: any
 }
 
 function SquareButton(props: IProps) {
@@ -20,7 +19,6 @@ function SquareButton(props: IProps) {
                 props.selected && 'bg-indigo-700 ring-2 ring-offset-2 ring-indigo-500'
             )}
             onMouseDown={props.onMouseDown}
-            key={props.key}
         >
             {props.children}
             <ShowIf condition={props.imageSrc != null}>

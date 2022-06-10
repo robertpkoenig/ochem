@@ -9,8 +9,7 @@ import HoverDetector from "./helper/HoverDetector"
 import Eraser from "./helper/Eraser"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import p5 from "p5"
-import TeacherReactionPage from "../../../pages/teacher/reactions/[reactionId]"
-import UserType from "../../model/UserType"
+import { IPageState } from "../../../pages/teacher/reactions/[reactionId]"
 import BodyMover from "../BodyMover"
 import IonCreator from "./helper/IonCreator"
 import StraightArrowCreator from "./helper/StraightArrowCreator"
@@ -24,7 +23,6 @@ class TeacherController {
     hoverDetector: HoverDetector
     arrowCreator: CurlyArrowCreator
     bodyMover: BodyMover
-    teacherReactionPage: TeacherReactionPage | null
 
 	// downstream collaborating objects
 	atomCreator: SingleAtomMoleculeCreator
@@ -35,13 +33,16 @@ class TeacherController {
     ionCreator: IonCreator
     straightArrowCreator: StraightArrowCreator
 
+    // React page state
+    pageState: IPageState
+
     constructor(p5: p5,
                 reaction: Reaction,
                 collisionDetector: CollisionDetector,
                 hoverDetector: HoverDetector,
                 arrowCreator: CurlyArrowCreator,
                 bodyMover: BodyMover,
-                teacherReactionPage: TeacherReactionPage) {
+                pageState: IPageState) {
 
         // Upstream collaborating objects
         this.p5 = p5
@@ -50,7 +51,6 @@ class TeacherController {
         this.hoverDetector = hoverDetector
         this.arrowCreator = arrowCreator
         this.bodyMover = bodyMover
-        this.teacherReactionPage = teacherReactionPage
 
         // Downstream collaborating objects
 		this.atomCreator = new SingleAtomMoleculeCreator(p5, reaction, this)
@@ -60,8 +60,9 @@ class TeacherController {
         this.eraser = new Eraser(reaction, this)
         this.ionCreator = new IonCreator(reaction, this)
         this.straightArrowCreator = new StraightArrowCreator(reaction, this)
-        
-        this.teacherReactionPage.setController(this)
+
+        // React page state
+        this.pageState = pageState
 
     }
 
@@ -74,26 +75,26 @@ class TeacherController {
     }
 
     routeMousePressed(mouseVector: Vector) {
-        if (this.teacherReactionPage.state.bondType != null) {
+        if (this.pageState.bondType != null) {
             this.bondCreator.startBondIfAtomClicked()
         }
-        if (this.teacherReactionPage.state.bondType == null &&
-            this.teacherReactionPage.state.arrowType == null) {
+        if (this.pageState.bondType == null &&
+            this.pageState.arrowType == null) {
             this.bodyMover.startDraggingBodyIfPressed(mouseVector)
         }
-        if (this.teacherReactionPage.state.eraserOn) {
+        if (this.pageState.eraserOn) {
             this.eraser.eraseAnythingClicked()
         }
-        if (this.teacherReactionPage.state.selectedIon) {
-            this.ionCreator.createIonIfAtomClicked(this.teacherReactionPage.state.selectedIon)
+        if (this.pageState.ionSelected) {
+            this.ionCreator.createIonIfAtomClicked(this.pageState.ionSelected)
         }
-        if (this.teacherReactionPage.state.straightArrowSelected) {
+        if (this.pageState.straightArrowSelected) {
             this.straightArrowCreator.startArrow(mouseVector)
         }
     }
 
     routeMouseReleased(mouseVector: Vector) {
-        if (this.teacherReactionPage.state.bondType != null) {
+        if (this.pageState.bondType != null) {
             this.bondCreator.completeBondIfReleasedOverAtom()
         }
         if (this.panelController.selectedElementId != null) {
@@ -115,19 +116,19 @@ class TeacherController {
         const currentlyDrawingBondOrArrowOrIonOrAngle = 
             this.bondCreator.startAtom != null ||
             this.arrowCreator.draftArrow != null ||
-            this.teacherReactionPage.state.selectedIon ||
-            this.teacherReactionPage.state.angleControlSelected
+            this.pageState.ionSelected ||
+            this.pageState.angleControlSelected
 
         if (currentlyDrawingBondOrArrowOrIonOrAngle) {
             this.p5.cursor("crosshair")
         }
 
         // Hovering atom and eraser off
-        else if (currentlyOverAtom && !this.teacherReactionPage.state.eraserOn) {
+        else if (currentlyOverAtom && !this.pageState.eraserOn) {
 
             // if a bond is currently being drawn, draw a cross hair
-            if (this.teacherReactionPage.state.bondType != null ||
-                this.teacherReactionPage.state.arrowType != null) {            
+            if (this.pageState.bondType != null ||
+                this.pageState.arrowType != null) {            
                 this.p5.cursor("crosshair")
             }
 
@@ -141,7 +142,7 @@ class TeacherController {
         }
 
         // Hovering a bond and arrow type is selected
-        else if (currentlyOverBond && this.teacherReactionPage.state.arrowType != null) {
+        else if (currentlyOverBond && this.pageState.arrowType != null) {
             this.p5.cursor("crosshair")
         }
 

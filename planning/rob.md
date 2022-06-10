@@ -1,4 +1,9 @@
 - refactor teacher editor to functional component, and reduce size to around 200
+
+    - start by just making the whole component functional to start with
+    - then replace the wider sketch logic
+
+- get the triple bond to draw
 - refactor student page to functional component, and reduce size to around 100\
 - redesign the overall layout of the student and teacher page so that notifications are on the page, and the canvas is not constrained
 - failure message on the top of the screen (0.75)

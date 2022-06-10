@@ -1,6 +1,4 @@
-import { Vector } from "sat"
-import StudentReactionPage from "../../pages/student/reactions/[reactionId]"
-import TeacherReactionPage from "../../pages/teacher/reactions/[reactionId]"
+import { IPageState } from "../../pages/teacher/reactions/[reactionId]"
 import { CurlyArrow } from "../model/chemistry/CurlyArrow"
 import Reaction from "../model/Reaction"
 import HoverDetector from "./teacher/helper/HoverDetector"
@@ -13,7 +11,7 @@ class CurlyArrowCreator {
 	reaction: Reaction
     hoverDetector: HoverDetector
     undoManager: UndoManager
-    page: TeacherReactionPage | StudentReactionPage
+    pageState: IPageState
 
     // properties
     draftArrow: CurlyArrow
@@ -21,11 +19,11 @@ class CurlyArrowCreator {
     constructor(
         reaction: Reaction,
         hoverDetecter: HoverDetector,
-        page: TeacherReactionPage | StudentReactionPage) {
+        pageState: IPageState) {
 
         this.reaction = reaction
         this.hoverDetector = hoverDetecter
-        this.page = page
+        this.pageState = pageState
 
         this.draftArrow = null
 
@@ -42,7 +40,7 @@ class CurlyArrowCreator {
         const hoveredAtom = this.hoverDetector.atomCurrentlyHovered
         if (hoveredAtom != null) {
             const newArrow = new CurlyArrow (
-                this.page.state.arrowType
+                this.pageState.arrowType
             )
             newArrow.setStartObject(hoveredAtom)
             this.draftArrow = newArrow
@@ -53,7 +51,7 @@ class CurlyArrowCreator {
         const hoveredBond = this.hoverDetector.bondCurrentlyHovered
         if (hoveredBond != null) {
             const newArrow = new CurlyArrow (
-                this.page.state.arrowType
+                this.pageState.arrowType
             )
             newArrow.setStartObject(hoveredBond)
             this.draftArrow = newArrow

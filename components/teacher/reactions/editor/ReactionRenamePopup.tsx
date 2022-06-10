@@ -1,17 +1,17 @@
 import React, { FormEvent, SyntheticEvent, useState } from "react";
-import Reaction from "../../../../canvas/model/Reaction";
+import { IPageState } from "../../../../pages/teacher/reactions/[reactionId]";
 import FormSubmitButton from "../../../common/buttons/FormSubmitButton";
 import PopupBackground from "../../../common/PopupBackground";
 
 interface IProps {
-    reaction: Reaction
+    state: IPageState
     popupCloseFunction: () => void
     reameFunction: (reactionName: string) => void
 }
 
 export default function ReactionRenamePopup(props: IProps) {
 
-    const [reactionName, setReactionName] = useState<string>(props.reaction.name)
+    const [reactionName, setReactionName] = useState<string>(props.state.reaction.name)
 
     function onReactionNameChange(event: FormEvent<HTMLInputElement>) {
         setReactionName(event.currentTarget.value)
