@@ -47,7 +47,7 @@ class Controller {
         this.userType = userType
 
         this.hoverDetector = new HoverDetector(reaction, collisionDetector)
-        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState)
+        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState, null) // will not be problem when I remove this class
 
         this.bodyMover = new BodyMover(p5, reaction)
 

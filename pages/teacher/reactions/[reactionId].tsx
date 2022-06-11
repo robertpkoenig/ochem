@@ -20,7 +20,6 @@ import EditorLeftButtons from "../../../components/teacher/reactions/editor/Edit
 import ListOfSteps from "../../../components/teacher/reactions/editor/ListOfSteps"
 import ShowIf from "../../../components/common/ShowIf"
 import Prompt from "../../../components/teacher/reactions/editor/Prompt"
-import { Controller } from "../../../canvas/controller/Controller"
 import TeacherController from "../../../canvas/controller/teacher/TeacherController"
 
 // This function is used within server side rendering to get the 

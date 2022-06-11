@@ -20,12 +20,13 @@ class CurlyArrowCreator {
     constructor(
         reaction: Reaction,
         hoverDetecter: HoverDetector,
-        pageState: ITeacherState | IStudentState
+        pageState: ITeacherState | IStudentState,
+        undoManager: UndoManager
     ) {
-
         this.reaction = reaction
         this.hoverDetector = hoverDetecter
         this.pageState = pageState
+        this.undoManager = undoManager
 
         this.draftArrow = null
 

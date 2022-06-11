@@ -48,20 +48,18 @@ class TeacherController {
 
         // Downstream collaborating objects
         this.hoverDetector = new HoverDetector(reaction, collisionDetector)
-        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState)
         this.bodyMover = new BodyMover(p5, reaction)
 		this.atomCreator = new SingleAtomMoleculeCreator(p5, reaction, this)
         this.bondCreator = new BondCreator(reaction, this)
 		this.panelController = new PanelController(p5, reaction, this)
         this.undoManager = new UndoManager(this)
+        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState, this.undoManager)
         this.eraser = new Eraser(reaction, this)
         this.ionCreator = new IonCreator(reaction, this)
         this.straightArrowCreator = new StraightArrowCreator(reaction, this)
 
         // React page state
         this.pageState = pageState
-
-        this.arrowCreator.undoManager = this.undoManager
 
     }
 
