@@ -5,8 +5,7 @@ import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
 import Reaction from "../../../canvas/model/Reaction"
 import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
 import { GetServerSideProps } from 'next'
-import UserType from "../../../canvas/model/UserType"
-import { doc, FirebaseFirestore, getDoc, getFirestore } from "firebase/firestore"
+import { doc, getDoc, getFirestore } from "firebase/firestore"
 import { Transition } from "@headlessui/react"
 import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
 import p5 from "p5"
@@ -15,7 +14,6 @@ import { REACTIONS } from "../../../persistence-model/FirebaseConstants"
 import Button from "../../../components/common/buttons/Button"
 import ShowIf from "../../../components/common/ShowIf"
 import classNames from "../../../functions/helper/classNames"
-import { Controller } from "../../../canvas/controller/Controller"
 
 // Gets the reaction Id from the URL path during server side rendering
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -67,8 +65,8 @@ function StudentReactionPage(props: IProps) {
     useEffect(() => {
         // Instantiate p5 in browser (not possible serverside)
         async function setupP5() {
-            import("../../../canvas/TeacherP5Setup").then(module => {
-                module.default(state, setP5, setController, UserType.STUDENT, state.reaction)
+            import("../../../canvas/StudentP5Setup").then(module => {
+                module.default(state, setP5, state.reaction, arrowDrawnCorrectly, arrowDrawnIncorrectly)
                 setLoading(false)
             })
         }
@@ -83,17 +81,7 @@ function StudentReactionPage(props: IProps) {
         setState({...state, p5: p5})
     }
 
-    function setController(controller: Controller) {
-        // This is not used, but is required to avoid having multiple verstions of sketch setup     
-    }
-
-    function setCurrentStep(stepUuid: string) {
-        const selectedStep = state.reaction.steps.find(step => step.uuid === stepUuid)
-        state.reaction.currentStep = selectedStep
-        setState({...state, reaction: state.reaction})
-    }
-
-    function arrowDrawnSuccesfully() {
+    function arrowDrawnCorrectly() {
         incrementStep()
         if (state.reaction.currentStep.order == state.reaction.steps.length - 1) {
             setState({ ...state, arrowType: null })
@@ -102,17 +90,17 @@ function StudentReactionPage(props: IProps) {
         setTimeout(toggleSuccessToast, 1000)
     }
 
+    function arrowDrawnIncorrectly() {
+        toggleFailureToast()
+        setTimeout(toggleFailureToast, 1000)
+    }
+
     function toggleSuccessToast() {
         setState({ ...state, successToastVis: !state.successToastVis }) 
     }
 
     function toggleFailureToast() {
         setState({ ...state, failureToastVis: !state.failureToastVis }) 
-    }
-
-    function arrowDrawnWrong() {
-        toggleFailureToast()
-        setTimeout(toggleFailureToast, 1000)
     }
 
     // Advances to the next step in the reaction after

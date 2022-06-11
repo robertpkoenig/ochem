@@ -92,7 +92,7 @@ const TeacherReactionPage = (props: IProps) => {
     useEffect(() => {
         async function setupP5() {
             import("../../../canvas/TeacherP5Setup").then(module => {
-                module.default(state, setP5, setController, UserType.TEACHER, state.reaction)
+                module.default(state, setP5, setController, state.reaction)
                 setLoading(false)
             })
         }

@@ -5,7 +5,6 @@ import Reaction from "../../model/Reaction"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import BodyMover from "../BodyMover"
 import HoverDetector from "../teacher/helper/HoverDetector"
-import { ITeacherState } from "../../../pages/teacher/reactions/[reactionId]"
 import { IStudentState } from "../../../pages/student/reactions/[reactionId]"
 
 /** Handles student input in canvas */
@@ -22,31 +21,48 @@ class StudentController {
     // React page state
     pageState: IStudentState
 
+    // Functions from the react page that trigger notifications to user
+    arrowDrawnCorrectly: () => void
+    arrowDrawnIncorrectly: () => void
+
     constructor(
         p5: p5,
         reaction: Reaction,
         collisionDetector: CollisionDetector,
-        hoverDetector: HoverDetector,
-        arrowCreator: CurlyArrowCreator,
-        bodyMover: BodyMover,
-        pageState: IStudentState
+        pageState: IStudentState,
+        arrowDrawnCorrectly: () => void,
+        arrowDrawnIncorrectly: () => void,
     ) {
         this.p5 = p5
         this.reaction = reaction
         this.collisionDetector = collisionDetector
-        this.hoverDetector = hoverDetector
-        this.arrowCreator = arrowCreator
-        this.bodyMover = bodyMover
         this.pageState = pageState
+
+        this.arrowDrawnCorrectly = arrowDrawnCorrectly
+        this.arrowDrawnIncorrectly = arrowDrawnIncorrectly
+
+        this.hoverDetector = new HoverDetector(reaction, collisionDetector)
+        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState, null) // no undo for student
     }
 
     process() {
+        if (this.reaction.currentStep.curlyArrow) { // if there is a curly arrow present
+            this.reaction.currentStep.curlyArrow.update(this.p5)
+        }
+        // TODO change this update function to sit with the arrowCreator
+        if (this.arrowCreator.draftArrow != null) {
+            this.arrowCreator.draftArrow.update(this.p5)
+        }
         this.updateMouseStyle()
+        this.hoverDetector.detectHovering()
     }
 
     routeMousePressed(mouseVector: Vector) {
-        if (this.pageState.arrowType == null) {
-            this.bodyMover.startDraggingBodyIfPressed(mouseVector)
+        // if (this.pageState.arrowType == null) {
+        //     this.bodyMover.startDraggingBodyIfPressed(mouseVector)
+        // }
+        if (this.pageState.arrowType != null) {
+            this.arrowCreator.startArrowIfObjectClicked()
         }
     }
 
@@ -54,6 +70,7 @@ class StudentController {
         if (this.arrowCreator.draftArrow != null) {
             this.testStudentArrowIfCompleted()
         }
+        // this.bodyMover.stopDraggingBody()
     }
 
     // Updates the mouse style based on what the mouse is hovering
@@ -106,12 +123,12 @@ class StudentController {
                 this.reaction.currentStep.curlyArrow.startObject &&
             this.arrowCreator.draftArrow.endObject ===
                 this.reaction.currentStep.curlyArrow.endObject) {
-                // this.studentReactionPage.arrowDrawnSuccesfully()
+                this.arrowDrawnCorrectly()
                 this.arrowCreator.draftArrow = null
         }
         else if (this.arrowCreator.draftArrow != null &&
                  this.arrowCreator.draftArrow.endObject != null) {
-            // this.studentReactionPage.arrowDrawnWrong()
+            this.arrowDrawnIncorrectly()
             this.arrowCreator.draftArrow = null
         }
         this.arrowCreator.draftArrow = null

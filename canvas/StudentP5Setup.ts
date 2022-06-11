@@ -1,25 +1,21 @@
 import p5 from 'p5'
 import { Vector } from 'sat'
-import { Controller } from './controller/Controller'
 import CollisionDetector from './view/CollisinDetector'
 import { PhysicsEngine } from './model/physics/PhysicsEngine'
 import Utilities from './utilities/Utilities'
 import { View } from './view/View'
 import Reaction from './model/Reaction'
-import { ITeacherState } from '../pages/teacher/reactions/[reactionId]'
 import UserType from './model/UserType'
 import { CANVAS_PARENT_NAME } from './Constants'
 import { IStudentState } from '../pages/student/reactions/[reactionId]'
-import { Dispatch, SetStateAction } from 'react'
-import TeacherController from './controller/teacher/TeacherController'
 import StudentController from './controller/student/StudentController'
 
 function createP5Context(
-    pageState: ITeacherState,
+    pageState: IStudentState,
     setP5: (p5: p5) => void,
-    setController: (controller: Controller) => void,
-    userType: UserType,
-    reaction: Reaction
+    reaction: Reaction,
+    arrowDrawnCorrectly: () => void,
+    arrowDrawnIncorrectly: () => void,
 ) {
     new p5(sketch)
 
@@ -28,7 +24,7 @@ function createP5Context(
         let view: View
         let physicsEngine: PhysicsEngine
         let collisionDetector: CollisionDetector
-        let controller: Controller
+        let controller: StudentController
     
         // Contains the setup logic for the p5 instance
         p5.setup = () => {
@@ -41,11 +37,10 @@ function createP5Context(
 
             collisionDetector = new CollisionDetector(p5, reaction)
             physicsEngine = new PhysicsEngine(reaction)
-            // controller = new StudentController(p5, reaction, collisionDetector, pageState)
-            // view = new View(p5, reaction, controller, userType)
+            controller = new StudentController(p5, reaction, collisionDetector, pageState, arrowDrawnCorrectly, arrowDrawnIncorrectly)
+            view = new View(p5, reaction, controller, UserType.STUDENT)
 
             setP5(p5)
-            setController(controller)
 
         }
     

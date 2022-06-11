@@ -1,6 +1,5 @@
 import p5 from 'p5'
 import { Vector } from 'sat'
-import { Controller } from './controller/Controller'
 import CollisionDetector from './view/CollisinDetector'
 import { PhysicsEngine } from './model/physics/PhysicsEngine'
 import Utilities from './utilities/Utilities'
@@ -9,14 +8,12 @@ import Reaction from './model/Reaction'
 import { ITeacherState } from '../pages/teacher/reactions/[reactionId]'
 import UserType from './model/UserType'
 import { CANVAS_PARENT_NAME } from './Constants'
-import { IStudentState } from '../pages/student/reactions/[reactionId]'
 import TeacherController from './controller/teacher/TeacherController'
 
 function createTeacherP5Context(
     pageState: ITeacherState,
     setP5: (p5: p5) => void,
     setController: (controller: TeacherController) => void,
-    userType: UserType,
     reaction: Reaction
 ) {
     new p5(sketch)
@@ -38,9 +35,9 @@ function createTeacherP5Context(
             canvas.parent(CANVAS_PARENT_NAME)
 
             collisionDetector = new CollisionDetector(p5, reaction)
-            physicsEngine = new PhysicsEngine(reaction)
+    physicsEngine = new PhysicsEngine(reaction)
             controller = new TeacherController(p5, reaction, collisionDetector, pageState)
-            view = new View(p5, reaction, controller, userType)
+            view = new View(p5, reaction, controller, UserType.TEACHER)
 
             setP5(p5)
             setController(controller)
