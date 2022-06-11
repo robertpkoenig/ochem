@@ -73,7 +73,7 @@ function createP5Context(
             controller.routeMouseReleased(mouseVector)
         }
     
-        // Triggered when a keyboard key is pressed
+        // See the reaction state for debugging purposes
         p5.keyPressed = () => {
             if (p5.key == "=") Utilities.printReactionState(reaction)
         }

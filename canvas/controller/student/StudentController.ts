@@ -58,9 +58,6 @@ class StudentController {
     }
 
     routeMousePressed(mouseVector: Vector) {
-        // if (this.pageState.arrowType == null) {
-        //     this.bodyMover.startDraggingBodyIfPressed(mouseVector)
-        // }
         if (this.pageState.arrowType != null) {
             this.arrowCreator.startArrowIfObjectClicked()
         }
@@ -70,7 +67,6 @@ class StudentController {
         if (this.arrowCreator.draftArrow != null) {
             this.testStudentArrowIfCompleted()
         }
-        // this.bodyMover.stopDraggingBody()
     }
 
     // Updates the mouse style based on what the mouse is hovering

@@ -1,19 +1,19 @@
-import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid"
-import Link from "next/link"
 import React, { Fragment, useEffect, useState } from "react"
 import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
 import Reaction from "../../../canvas/model/Reaction"
 import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
 import { GetServerSideProps } from 'next'
 import { doc, getDoc, getFirestore } from "firebase/firestore"
-import { Transition } from "@headlessui/react"
 import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
 import p5 from "p5"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
 import { REACTIONS } from "../../../persistence-model/FirebaseConstants"
-import Button from "../../../components/common/buttons/Button"
 import ShowIf from "../../../components/common/ShowIf"
-import classNames from "../../../functions/helper/classNames"
+import ProgressIndicators from "../../../components/student/reaction/ProgressIndicators"
+import ExcerciseFinishedNotification from "../../../components/student/reaction/ExcerciseFinishedNotification"
+import CorrectArrowNotification from "../../../components/student/reaction/CorrectArrowNotification"
+import WrongArrowNotification from "../../../components/student/reaction/WrongArrowNotification"
+import StudentReactionHeader from "../../../components/student/reaction/StudentReactionHeader"
 
 // Gets the reaction Id from the URL path during server side rendering
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -31,8 +31,6 @@ interface IProps {
 interface IStudentState {
     reaction: Reaction | null
     arrowType: ArrowType | null
-    successToastVis: boolean
-    failureToastVis: boolean
     p5: p5
 }
 
@@ -42,14 +40,14 @@ function StudentReactionPage(props: IProps) {
     const db = getFirestore()
 
     const [loading, setLoading] = useState<boolean>(true)
+    const [ successToastVis, setSuccessToastVis ] = useState<boolean>(false)
+    const [ failureToastVis, setFailureToastVis ] = useState<boolean>(false)
 
     const [state, setState] = 
         useState<IStudentState>(() => (
             {
                 reaction: null,
                 arrowType: ArrowType.DOUBLE,
-                successToastVis: false,
-                failureToastVis: false,
                 p5: null
             }))
 
@@ -86,21 +84,16 @@ function StudentReactionPage(props: IProps) {
         if (state.reaction.currentStep.order == state.reaction.steps.length - 1) {
             setState({ ...state, arrowType: null })
         }
-        toggleSuccessToast()
-        setTimeout(toggleSuccessToast, 1000)
+        setSuccessToastVis(true)
+        setTimeout(() => setSuccessToastVis(false), 1000)
     }
 
     function arrowDrawnIncorrectly() {
-        toggleFailureToast()
-        setTimeout(toggleFailureToast, 1000)
-    }
-
-    function toggleSuccessToast() {
-        setState({ ...state, successToastVis: !state.successToastVis }) 
-    }
-
-    function toggleFailureToast() {
-        setState({ ...state, failureToastVis: !state.failureToastVis }) 
+        setFailureToastVis(true)
+        setTimeout(() => {
+            console.log("Toggling failure toast");
+            setFailureToastVis(false)
+        }, 1000)
     }
 
     // Advances to the next step in the reaction after
@@ -118,56 +111,9 @@ function StudentReactionPage(props: IProps) {
         setState({...state, reaction: state.reaction})
     }
 
-
-    const progressIndicatorDots =   
-            <div className="flex flex-row gap-3 ">
-                <div className="text-xs font-medium">
-                    Progress
-                </div>
-                <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                    {state.reaction?.steps.map(step => 
-                        <li 
-                            key={step.uuid}
-                            className="relative flex items-center justify-center"
-                        >
-                            <ShowIf condition={step == state.reaction.currentStep}>
-                                <span className="absolute w-5 h-5 p-px flex" aria-hidden="true">
-                                    <span className="w-full h-full rounded-full bg-indigo-200 animate-pulse" />
-                                </span>
-                            </ShowIf>
-
-                            <span className={classNames("relative w-2.5 h-2.5 rounded-full", 
-                                step.order > state.reaction.currentStep.order
-                                    ? " bg-gray-300 " : "bg-indigo-600")} />
-                        </li>
-                    )}
-                </ol>
-            </div>
-
-    const header = 
-        <header className="bg-indigo-600">
-            <div className="w-1200 mx-auto">
-                <div className="flex flex-col justify-left border-b border-indigo-400">
-                    <Link href={"/student/modules/" + state.reaction?.moduleId}>
-                        <a className="text-indigo-200 hover:text-white text-xs font-light mt-3 mb-2 flex items-center gap-1">
-                        <ArrowLeftIcon className="w-3 h-3" />
-                            {state.reaction?.moduleName + " | " + state.reaction?.sectionName}
-                        </a>
-                    </Link>
-                    <div className="w-full flex flex-row justify-between mb-3">
-                        <div>
-                            <h1 className="text-2xl font-semibold text-white">
-                                { state.reaction?.name }
-                            </h1>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>   
-        
     const stepPrompt =
         <div className="bg-indigo-600 pb-32">
-            <div className="py-5">
+                <div className="py-5">
                 <div className="w-1200 mx-auto flex flex-row gap-4 items-center text-white font-light">
                     {state.reaction?.prompt}
                 </div>
@@ -176,80 +122,13 @@ function StudentReactionPage(props: IProps) {
     
     const invisibleDivToBlockCanvasWhenFinishedExcercise =
         <div className="z-20 h-full absolute bg-black w-1200 rounded-md" />
-        
-    const correctArrowNotification = 
-        <Transition
-            show={state.successToastVis}
-            enter="transition-opacity duration-75"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity duration-150"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-        >
-            <div className="ml-2 bg-green-200 py-1.5 pl-3 pr-4 flex flex-row gap-2 justify-center rounded-md">
-                <div>
-                    <CheckCircleIcon className="h-5 w-5 text-green-600" aria-hidden="true" />
-                </div>
-                <div>
-                    <h3 className="text-sm font-medium text-green-600">Correct arrow</h3>
-                </div>
-            </div>
-        </Transition>    
-        
-    const wrongArrowNotification =
-        <div className="absolute bottom-0 bg-pink-200 p-2 flex flex-row justify-center w-full rounded-b-md ">
-            <div className="flex">
-                <div className="flex-shrink-0">
-                    <XCircleIcon className="h-5 w-5 text-pink-600" aria-hidden="true" />
-                </div>
-                <div className="ml-3">
-                    <h3 className="text-sm font-medium text-pink-600">Incorrect arrow</h3>
-                </div>
-            </div>
-        </div>
 
-    const excerciseFinishedNotification =
-        <div className="absolute bottom-0 bg-green-50 p-4 flex flex-row items-center justify-between w-full rounded-b-md ">
-            <div className="flex">
-                <div className="flex-shrink-0">
-                    <CheckCircleIcon className="h-5 w-5 text-green-600" aria-hidden="true" />
-                </div>
-                <div className="ml-3">
-                    <h3 className="text-sm font-medium text-green-600">Reaction completed!</h3>
-                </div>
-            </div>
-            <div className="flex flex-row gap-4">
-
-                <Button
-                    size={'small'}
-                    importance={'secondary'}
-                    text={'Retry'}
-                    icon={null}
-                    onClick={resetReaction}
-                    extraClasses={''}
-                />
-
-                <Link href={"/student/modules/" + state.reaction?.moduleId}>
-                    <a>
-                        <Button
-                            size={'small'}
-                            importance={'primary'}
-                            text={'Back to module'}
-                            icon={null}
-                            onClick={null}
-                            extraClasses={''}
-                        />
-                    </a>
-                </Link>
-
-            </div>
-        </div>
+    const reactionComplete = state.reaction?.currentStep.order == state.reaction?.steps.length - 1
                                 
     return (
         <ScreenWithLoadingAllRender loading={loading}>
             <Fragment>
-                {header}
+                <StudentReactionHeader reaction={state.reaction} />
                 <div className="min-h-screen bg-gray-100">
                     {stepPrompt}
                     <main className="-mt-32">
@@ -263,17 +142,20 @@ function StudentReactionPage(props: IProps) {
 
                                 <div className="w-1200 p-5 absolute flex flex-row justify-between">
                                     <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
-                                        {progressIndicatorDots}
-                                        {correctArrowNotification}
+                                        <ProgressIndicators reaction={state.reaction} />
+                                        <CorrectArrowNotification successToastVis={successToastVis} />
                                     </div>
                                 </div>
 
-                                <ShowIf condition={state.failureToastVis}>
-                                    {wrongArrowNotification}
+                                <ShowIf condition={failureToastVis}>
+                                    <WrongArrowNotification />
                                 </ShowIf>
 
-                                <ShowIf condition={state.reaction?.currentStep.order == state.reaction?.steps.length - 1}>
-                                    {excerciseFinishedNotification}
+                                <ShowIf condition={reactionComplete}>
+                                    <ExcerciseFinishedNotification
+                                        reaction={state.reaction}
+                                        resetReaction={resetReaction}
+                                    />
                                 </ShowIf>
 
                             </div>
