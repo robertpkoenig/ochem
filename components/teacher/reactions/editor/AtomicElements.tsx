@@ -8,8 +8,6 @@ interface IProps {
 // List of atomic elements on the right panel of the screen
 function AtomicElements(props: IProps) {
 
-    console.log('props.teacherController : ' + props.teacherController)
-
     const atomicElements = Object.values(Elements).map(element => {
         return (
             // Logic around the dummy element should be deleted
@@ -34,11 +32,9 @@ function AtomicElements(props: IProps) {
     })
 
     return (
-        <>
         <div className="bg-white p-5 rounded-lg shadow flex flex-col gap-2 h-full">
             {atomicElements}
         </div>
-        </>
     )
 }
 

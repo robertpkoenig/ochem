@@ -1,7 +1,4 @@
-- refactor teacher editor to functional component, and reduce size to around 200
-
-    - start by just making the whole component functional to start with
-    - then replace the wider sketch logic
+- refactor student editor to functional component, and reduce size to around 200
 
 - get the triple bond to draw
 - refactor student page to functional component, and reduce size to around 100\

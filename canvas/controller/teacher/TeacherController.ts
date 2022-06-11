@@ -85,8 +85,8 @@ class TeacherController {
         if (this.pageState.eraserOn) {
             this.eraser.eraseAnythingClicked()
         }
-        if (this.pageState.ionSelected) {
-            this.ionCreator.createIonIfAtomClicked(this.pageState.ionSelected)
+        if (this.pageState.selectedIon) {
+            this.ionCreator.createIonIfAtomClicked(this.pageState.selectedIon)
         }
         if (this.pageState.straightArrowSelected) {
             this.straightArrowCreator.startArrow(mouseVector)
@@ -116,7 +116,7 @@ class TeacherController {
         const currentlyDrawingBondOrArrowOrIonOrAngle = 
             this.bondCreator.startAtom != null ||
             this.arrowCreator.draftArrow != null ||
-            this.pageState.ionSelected ||
+            this.pageState.selectedIon ||
             this.pageState.angleControlSelected
 
         if (currentlyDrawingBondOrArrowOrIonOrAngle) {

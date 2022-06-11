@@ -1,15 +1,44 @@
 import { Switch } from "@headlessui/react"
 import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/solid"
+import { doc, FirebaseFirestore, updateDoc } from "firebase/firestore"
 import Link from "next/link"
+import ReactionSaver from "../../../../canvas/controller/teacher/helper/ReactionSaver"
 import { IPageState } from "../../../../pages/teacher/reactions/[reactionId]"
-
+import { MODULES, REACTION_LISTINGS, SECTIONS, VISIBLE } from "../../../../persistence-model/FirebaseConstants"
 interface IProps {
     state: IPageState,
+    setState: (state: IPageState) => void,
     toggleReactionRenamePopup: () => void,
-    toggleVisibility: () => void,
+    db: FirebaseFirestore,
 }
 
 function EditorTopPanel(props: IProps) {
+
+    // This function toggles whether or not a reaction is visible
+    // to students.
+    function toggleVisibility() {
+        props.state.teacherController.undoManager.addUndoPoint()
+        props.state.reaction.visible = !props.state.reaction.visible
+        // forceUpdate()
+        ReactionSaver.saveReaction(props.state.reaction)
+
+        // Module doc ref to access the nested reaction listing object
+        const moduleDocRef = doc(props.db, MODULES, props.state.reaction.moduleId)
+
+        // To update the reaction listing document in firestore,
+        // the string detailing the document's nested location is
+        // constructed here
+        const reactionRefWithinSection =
+            SECTIONS + "."+ props.state.reaction.sectionId + "."+
+            REACTION_LISTINGS + "." + props.state.reaction.uuid + 
+            "." + VISIBLE
+
+        const sectionVisibilityUpdateObject: any = {}
+        sectionVisibilityUpdateObject[reactionRefWithinSection] = props.state.reaction.visible
+        updateDoc(moduleDocRef, sectionVisibilityUpdateObject)
+
+        props.setState({...props.state, reaction: props.state.reaction})
+    }
 
     const linkBackToModule =
         <Link href={"/teacher/modules/" + props.state.reaction?.moduleId}>
@@ -44,7 +73,7 @@ function EditorTopPanel(props: IProps) {
             </div>
             <Switch
                     checked={props.state.reaction?.visible}
-                    onChange={() => props.toggleVisibility()}
+                    onChange={toggleVisibility}
                     className={
                         (props.state.reaction?.visible ? 'bg-green-300 ' : 'bg-gray-200 ') +
                         'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200'
