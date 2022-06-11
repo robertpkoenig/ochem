@@ -1,8 +1,8 @@
 import { PencilIcon } from "@heroicons/react/solid"
-import { IPageState } from "../../../../pages/teacher/reactions/[reactionId]"
+import { ITeacherState } from "../../../../pages/teacher/reactions/[reactionId]"
 
 interface IProps {
-    state: IPageState,
+    state: ITeacherState,
     togglePrompt: () => void,
     setPromptText: (text: string) => void,
 }

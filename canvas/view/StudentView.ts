@@ -44,9 +44,7 @@ class StudentView {
         const hoveredBond = this.controller.hoverDetector.bondCurrentlyHovered
 
         if (hoveredBond != null) {
-            console.log("hello");
-            
-            if (this.controller.page.state.arrowType != null) {
+            if (this.controller.pageState.arrowType != null) {
                 this.drawBondOutline(hoveredBond, BLUE_OUTLINE_COLOR)
             }
         }

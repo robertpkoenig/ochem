@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import Module from '../../persistence-model/Module';
-import ReactionListing from '../../persistence-model/ReactionListing';
-import Section from '../../persistence-model/SectionListing';
-import Button from '../common/buttons/Button';
+import Module from '../../../persistence-model/Module';
+import ReactionListing from '../../../persistence-model/ReactionListing';
+import Section from '../../../persistence-model/SectionListing';
+import Button from '../../common/buttons/Button';
 
 export interface IReactionCardProps {
     reactionListing: ReactionListing

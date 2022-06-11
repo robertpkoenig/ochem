@@ -1,13 +1,13 @@
 import { doc, getFirestore, updateDoc } from "firebase/firestore";
 import React, { FormEvent, SyntheticEvent, useState } from "react";
-import { IPageState } from "../../../../pages/teacher/reactions/[reactionId]";
+import { ITeacherState } from "../../../../pages/teacher/reactions/[reactionId]";
 import { MODULES, NAME, REACTIONS, REACTION_LISTINGS, SECTIONS } from "../../../../persistence-model/FirebaseConstants";
 import FormSubmitButton from "../../../common/buttons/FormSubmitButton";
 import PopupBackground from "../../../common/PopupBackground";
 
 interface IProps {
-    state: IPageState
-    setState: (state: IPageState) => void
+    state: ITeacherState
+    setState: (state: ITeacherState) => void
     toggleReactionRenamePopup: () => void
 }
 

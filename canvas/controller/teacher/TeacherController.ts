@@ -9,7 +9,7 @@ import HoverDetector from "./helper/HoverDetector"
 import Eraser from "./helper/Eraser"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import p5 from "p5"
-import { IPageState } from "../../../pages/teacher/reactions/[reactionId]"
+import { ITeacherState } from "../../../pages/teacher/reactions/[reactionId]"
 import BodyMover from "../BodyMover"
 import IonCreator from "./helper/IonCreator"
 import StraightArrowCreator from "./helper/StraightArrowCreator"
@@ -34,7 +34,7 @@ class TeacherController {
     straightArrowCreator: StraightArrowCreator
 
     // React page state
-    pageState: IPageState
+    pageState: ITeacherState
 
     constructor(p5: p5,
                 reaction: Reaction,
@@ -42,7 +42,7 @@ class TeacherController {
                 hoverDetector: HoverDetector,
                 arrowCreator: CurlyArrowCreator,
                 bodyMover: BodyMover,
-                pageState: IPageState) {
+                pageState: ITeacherState) {
 
         // Upstream collaborating objects
         this.p5 = p5

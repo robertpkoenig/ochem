@@ -1,4 +1,5 @@
-import { IPageState } from "../../pages/teacher/reactions/[reactionId]"
+import { IStudentState } from "../../pages/student/reactions/[reactionId]"
+import { ITeacherState } from "../../pages/teacher/reactions/[reactionId]"
 import { CurlyArrow } from "../model/chemistry/CurlyArrow"
 import Reaction from "../model/Reaction"
 import HoverDetector from "./teacher/helper/HoverDetector"
@@ -11,7 +12,7 @@ class CurlyArrowCreator {
 	reaction: Reaction
     hoverDetector: HoverDetector
     undoManager: UndoManager
-    pageState: IPageState
+    pageState: ITeacherState | IStudentState
 
     // properties
     draftArrow: CurlyArrow
@@ -19,7 +20,8 @@ class CurlyArrowCreator {
     constructor(
         reaction: Reaction,
         hoverDetecter: HoverDetector,
-        pageState: IPageState) {
+        pageState: ITeacherState | IStudentState
+    ) {
 
         this.reaction = reaction
         this.hoverDetector = hoverDetecter

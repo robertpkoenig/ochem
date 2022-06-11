@@ -1,6 +1,6 @@
-import Module from '../../persistence-model/Module';
-import ReactionListing from '../../persistence-model/ReactionListing';
-import Section from '../../persistence-model/SectionListing';
+import Module from '../../../persistence-model/Module';
+import ReactionListing from '../../../persistence-model/ReactionListing';
+import Section from '../../../persistence-model/SectionListing';
 import StudentReactionCard from './StudentReactionCard';
 
 interface ISectionCardProps {

@@ -3,12 +3,13 @@ import Reaction from "../model/Reaction"
 import BodyMover from "./BodyMover"
 import { Vector } from "sat"
 import CollisionDetector from "../view/CollisinDetector"
-import { IPageState } from "../../pages/teacher/reactions/[reactionId]"
+import { ITeacherState } from "../../pages/teacher/reactions/[reactionId]"
 import UserType from "../model/UserType"
 import CurlyArrowCreator from "./CurlyArrowCreator"
 import HoverDetector from "./teacher/helper/HoverDetector"
 import StudentController from "./student/StudentController"
 import TeacherController from "./teacher/TeacherController"
+import { IStudentState } from "../../pages/student/reactions/[reactionId]"
 
 /** Handles user input in the canvas. */
 class Controller {
@@ -29,14 +30,15 @@ class Controller {
     studentController: StudentController
 
     // State held in the react page
-    pageState: IPageState
+    pageState: ITeacherState | IStudentState
 
     constructor(
         p5: p5,
         reaction: Reaction,
         collisionDetector: CollisionDetector,
-        pageState: IPageState,
-        userType: UserType) {
+        pageState: ITeacherState | IStudentState,
+        userType: UserType
+    ) {
 
         this.p5 = p5
         this.reaction = reaction
@@ -58,8 +60,7 @@ class Controller {
                     this.hoverDetector,
                     this.arrowCreator,
                     this.bodyMover,
-                    this.pageState
-                )
+                    pageState as ITeacherState)
             
             this.arrowCreator.undoManager = this.teacherController.undoManager
         }
@@ -73,7 +74,7 @@ class Controller {
                     this.hoverDetector,
                     this.arrowCreator,
                     this.bodyMover,
-                    pageState)
+                    pageState as IStudentState)
         }
 
     }

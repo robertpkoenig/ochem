@@ -3,11 +3,11 @@ import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/solid"
 import { doc, FirebaseFirestore, updateDoc } from "firebase/firestore"
 import Link from "next/link"
 import ReactionSaver from "../../../../canvas/controller/teacher/helper/ReactionSaver"
-import { IPageState } from "../../../../pages/teacher/reactions/[reactionId]"
+import { ITeacherState } from "../../../../pages/teacher/reactions/[reactionId]"
 import { MODULES, REACTION_LISTINGS, SECTIONS, VISIBLE } from "../../../../persistence-model/FirebaseConstants"
 interface IProps {
-    state: IPageState,
-    setState: (state: IPageState) => void,
+    state: ITeacherState,
+    setState: (state: ITeacherState) => void,
     toggleReactionRenamePopup: () => void,
     db: FirebaseFirestore,
 }

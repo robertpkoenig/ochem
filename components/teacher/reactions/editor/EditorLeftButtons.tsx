@@ -2,12 +2,12 @@ import { MinusCircle, PlusCircle, RotateCcw, RotateCw } from "react-feather";
 import Ion from "../../../../canvas/model/chemistry/atoms/Ion";
 import BondType from "../../../../canvas/model/chemistry/bonds/BondType";
 import { ArrowType } from "../../../../canvas/model/chemistry/CurlyArrow";
-import { IPageState } from "../../../../pages/teacher/reactions/[reactionId]";
+import { ITeacherState } from "../../../../pages/teacher/reactions/[reactionId]";
 import SquareButton from "../../../common/buttons/SquareButton";
 
 interface IProps {
-    state: IPageState
-    setState: (state: IPageState) => void 
+    state: ITeacherState
+    setState: (state: ITeacherState) => void 
 }
 
 function EditorLeftButtons(props: IProps) {

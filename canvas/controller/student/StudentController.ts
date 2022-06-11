@@ -5,7 +5,8 @@ import Reaction from "../../model/Reaction"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import BodyMover from "../BodyMover"
 import HoverDetector from "../teacher/helper/HoverDetector"
-import { IPageState } from "../../../pages/teacher/reactions/[reactionId]"
+import { ITeacherState } from "../../../pages/teacher/reactions/[reactionId]"
+import { IStudentState } from "../../../pages/student/reactions/[reactionId]"
 
 /** Handles student input in canvas */
 class StudentController {
@@ -19,7 +20,7 @@ class StudentController {
     bodyMover: BodyMover
 
     // React page state
-    pageState: IPageState
+    pageState: IStudentState
 
     constructor(
         p5: p5,
@@ -28,7 +29,7 @@ class StudentController {
         hoverDetector: HoverDetector,
         arrowCreator: CurlyArrowCreator,
         bodyMover: BodyMover,
-        pageState: IPageState
+        pageState: IStudentState
     ) {
         this.p5 = p5
         this.reaction = reaction
@@ -105,12 +106,13 @@ class StudentController {
                 this.reaction.currentStep.curlyArrow.startObject &&
             this.arrowCreator.draftArrow.endObject ===
                 this.reaction.currentStep.curlyArrow.endObject) {
-                // this.studentReactionPage.arrowDrawnSuccesfully()
+                this.studentReactionPage.arrowDrawnSuccesfully()
                 this.arrowCreator.draftArrow = null
         }
         else if (this.arrowCreator.draftArrow != null &&
                  this.arrowCreator.draftArrow.endObject != null) {
-            // this.studentReactionPage.arrowDrawnWrong()
+            this.studentReactionPage.arrowDrawnWrong()
+            this.arrowCreator.draftArrow = null
         }
         this.arrowCreator.draftArrow = null
     }

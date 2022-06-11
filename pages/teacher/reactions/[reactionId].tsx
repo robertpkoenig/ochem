@@ -1,5 +1,4 @@
 import { GetServerSideProps } from "next"
-import TeacherController from "../../../canvas/controller/teacher/TeacherController"
 import ReactionSaver from "../../../canvas/controller/teacher/helper/ReactionSaver"
 import BondType from "../../../canvas/model/chemistry/bonds/BondType"
 import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
@@ -46,7 +45,6 @@ interface IState {
     angleControlSelected: boolean
     selectedIon: Ion
     eraserOn: boolean
-    teacherController: TeacherController
     selectedElement: HTMLElement
     promptPopupVisible: boolean
     renamePopupVisible: boolean
@@ -76,7 +74,6 @@ const TeacherReactionPage = (props: IProps) => {
                 angleControlSelected: false,
                 selectedIon: null,
                 eraserOn: false,
-                teacherController: null,
                 selectedElement: null,
                 promptPopupVisible: false,
                 renamePopupVisible: false,
@@ -94,8 +91,8 @@ const TeacherReactionPage = (props: IProps) => {
 
     useEffect(() => {
         async function setupP5() {
-            import("../../../canvas/Sketch").then(module => {
-                module.default(state, setState, UserType.TEACHER, state.reaction)
+            import("../../../canvas/TeacherP5Setup").then(module => {
+                module.default(state, setP5, setController, UserType.TEACHER, state.reaction)
                 setLoading(false)
             })
         }
@@ -103,18 +100,23 @@ const TeacherReactionPage = (props: IProps) => {
     }, [state.reaction])
 
     useEffect(() => {
-        if (state?.controller) {
-            console.log("controller state set function");
-            
+        if (state?.controller) {    
             state.controller.pageState = state;
             state.controller.teacherController.pageState = state;
         }
     }, [state])
 
-    // This function is called when this component is removed
-    // from the browser window. That's why it's a double arrow function.
-    // It removes the p5 object from the window, and therefore stops the p5 draw loop.
+    // Removes p5 object from window when component dismounts
+    // double arrow function means that the function is called on component dismount
     useEffect(() => () =>  state.p5?.remove(), [])
+
+    function setP5(p5: p5) {
+        setState({...state, p5: p5})
+    }
+
+    function setController(controller: Controller) {
+        setState({...state, controller: controller})
+    }
 
     // This shows/hides the popup in which the user can edit
     // the reaction's prompt text
@@ -140,7 +142,7 @@ const TeacherReactionPage = (props: IProps) => {
         setState({...state, reaction: state.reaction})
 
         if (needToResetOffsets) {
-            state.teacherController.panelController.setCanvasParent()
+            state.controller.teacherController.panelController.setCanvasParent()
         }
     }
                                 
@@ -197,7 +199,7 @@ const TeacherReactionPage = (props: IProps) => {
                         />
                         {/* p5 canvas */}
                         <div id={CANVAS_PARENT_NAME} className="h-700 bg-white rounded-lg shadow flex-grow" />
-                        <AtomicElements teacherController={state.teacherController} />
+                        <AtomicElements teacherController={state.controller?.teacherController} />
                     </div>
 
                     {/* Tooltip that shows over element when in 'eraser' mode */}
@@ -229,5 +231,5 @@ const TeacherReactionPage = (props: IProps) => {
 
 }
 
-export type { IState as IPageState }
+export type { IState as ITeacherState }
 export default TeacherReactionPage

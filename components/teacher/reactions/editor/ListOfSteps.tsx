@@ -4,12 +4,12 @@ import ReactionStep from "../../../../canvas/model/ReactionStep"
 import ReactionStepLoader from "../../../../canvas/utilities/ReactionStepLoader"
 import Utilities from "../../../../canvas/utilities/Utilities"
 import classNames from "../../../../functions/helper/classNames"
-import { IPageState } from "../../../../pages/teacher/reactions/[reactionId]"
+import { ITeacherState } from "../../../../pages/teacher/reactions/[reactionId]"
 import ShowIf from "../../../common/ShowIf"
 
 interface IProps {
-    state: IPageState
-    setState: (state: IPageState) => void
+    state: ITeacherState
+    setState: (state: ITeacherState) => void
 }
 
 function ListOfSteps(props: IProps) {
