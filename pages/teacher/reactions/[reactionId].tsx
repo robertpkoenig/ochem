@@ -21,6 +21,7 @@ import ListOfSteps from "../../../components/teacher/reactions/editor/ListOfStep
 import ShowIf from "../../../components/common/ShowIf"
 import Prompt from "../../../components/teacher/reactions/editor/Prompt"
 import { Controller } from "../../../canvas/controller/Controller"
+import TeacherController from "../../../canvas/controller/teacher/TeacherController"
 
 // This function is used within server side rendering to get the 
 // reaction ID from the url path
@@ -37,7 +38,7 @@ interface IProps {
 }
 
 interface IState {
-    controller: Controller,
+    controller: TeacherController,
     reaction: Reaction
     bondType: BondType
     arrowType: ArrowType
@@ -102,7 +103,6 @@ const TeacherReactionPage = (props: IProps) => {
     useEffect(() => {
         if (state?.controller) {    
             state.controller.pageState = state;
-            state.controller.teacherController.pageState = state;
         }
     }, [state])
 
@@ -114,7 +114,7 @@ const TeacherReactionPage = (props: IProps) => {
         setState({...state, p5: p5})
     }
 
-    function setController(controller: Controller) {
+    function setController(controller: TeacherController) {
         setState({...state, controller: controller})
     }
 
@@ -142,7 +142,7 @@ const TeacherReactionPage = (props: IProps) => {
         setState({...state, reaction: state.reaction})
 
         if (needToResetOffsets) {
-            state.controller.teacherController.panelController.setCanvasParent()
+            state.controller.panelController.setCanvasParent()
         }
     }
                                 
@@ -199,7 +199,7 @@ const TeacherReactionPage = (props: IProps) => {
                         />
                         {/* p5 canvas */}
                         <div id={CANVAS_PARENT_NAME} className="h-700 bg-white rounded-lg shadow flex-grow" />
-                        <AtomicElements teacherController={state.controller?.teacherController} />
+                        <AtomicElements teacherController={state.controller} />
                     </div>
 
                     {/* Tooltip that shows over element when in 'eraser' mode */}

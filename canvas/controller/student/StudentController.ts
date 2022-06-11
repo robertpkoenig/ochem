@@ -106,12 +106,12 @@ class StudentController {
                 this.reaction.currentStep.curlyArrow.startObject &&
             this.arrowCreator.draftArrow.endObject ===
                 this.reaction.currentStep.curlyArrow.endObject) {
-                this.studentReactionPage.arrowDrawnSuccesfully()
+                // this.studentReactionPage.arrowDrawnSuccesfully()
                 this.arrowCreator.draftArrow = null
         }
         else if (this.arrowCreator.draftArrow != null &&
                  this.arrowCreator.draftArrow.endObject != null) {
-            this.studentReactionPage.arrowDrawnWrong()
+            // this.studentReactionPage.arrowDrawnWrong()
             this.arrowCreator.draftArrow = null
         }
         this.arrowCreator.draftArrow = null

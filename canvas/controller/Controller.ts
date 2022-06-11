@@ -57,9 +57,6 @@ class Controller {
                     p5,
                     reaction,
                     collisionDetector,
-                    this.hoverDetector,
-                    this.arrowCreator,
-                    this.bodyMover,
                     pageState as ITeacherState)
             
             this.arrowCreator.undoManager = this.teacherController.undoManager
@@ -81,21 +78,21 @@ class Controller {
 
     // Logic triggered each frame to update model
     process() {
-        if (this.reaction.currentStep.curlyArrow) { // if there is a curly arrow present
-            this.reaction.currentStep.curlyArrow.update(this.p5)
-        }
-        // TODO change this update function to sit with the arrowCreator
-        if (this.arrowCreator.draftArrow != null) {
-            this.arrowCreator.draftArrow.update(this.p5)
-        }
+        // if (this.reaction.currentStep.curlyArrow) { // if there is a curly arrow present
+        //     this.reaction.currentStep.curlyArrow.update(this.p5)
+        // }
+        // // TODO change this update function to sit with the arrowCreator
+        // if (this.arrowCreator.draftArrow != null) {
+        //     this.arrowCreator.draftArrow.update(this.p5)
+        // }
         if (this.userType == UserType.TEACHER) {
             this.teacherController.process()
         }
         if (this.userType == UserType.STUDENT) {
             this.studentController.process()
         }
-        this.bodyMover.dragBodyIfPressed()
-        this.hoverDetector.detectHovering()
+        // this.bodyMover.dragBodyIfPressed()
+        // this.hoverDetector.detectHovering()
     }
 
     // Routes mouse press to different handlers based on program state
@@ -106,9 +103,9 @@ class Controller {
         if (this.studentController) {
             this.studentController.routeMousePressed(mouseVector)
         }
-        if (this.pageState.arrowType != null) {
-            this.arrowCreator.startArrowIfObjectClicked()
-        }
+        // if (this.pageState.arrowType != null) {
+        //     this.arrowCreator.startArrowIfObjectClicked()
+        // }
     }
 
     // Routes mouse release to different handlers based on program state
@@ -119,7 +116,7 @@ class Controller {
         if (this.studentController) {
             this.studentController.routeMouseReleased(mouseVector)
         }
-        this.bodyMover.stopDraggingBody()
+        // this.bodyMover.stopDraggingBody()
 
     }
 

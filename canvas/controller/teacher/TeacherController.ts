@@ -39,20 +39,17 @@ class TeacherController {
     constructor(p5: p5,
                 reaction: Reaction,
                 collisionDetector: CollisionDetector,
-                hoverDetector: HoverDetector,
-                arrowCreator: CurlyArrowCreator,
-                bodyMover: BodyMover,
                 pageState: ITeacherState) {
 
         // Upstream collaborating objects
         this.p5 = p5
         this.reaction = reaction
         this.collisionDetector = collisionDetector
-        this.hoverDetector = hoverDetector
-        this.arrowCreator = arrowCreator
-        this.bodyMover = bodyMover
 
         // Downstream collaborating objects
+        this.hoverDetector = new HoverDetector(reaction, collisionDetector)
+        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState)
+        this.bodyMover = new BodyMover(p5, reaction)
 		this.atomCreator = new SingleAtomMoleculeCreator(p5, reaction, this)
         this.bondCreator = new BondCreator(reaction, this)
 		this.panelController = new PanelController(p5, reaction, this)
@@ -64,14 +61,28 @@ class TeacherController {
         // React page state
         this.pageState = pageState
 
+        this.arrowCreator.undoManager = this.undoManager
+
     }
 
     process() {
+
+        if (this.reaction.currentStep.curlyArrow) { // if there is a curly arrow present
+            this.reaction.currentStep.curlyArrow.update(this.p5)
+        }
+        // TODO change this update function to sit with the arrowCreator
+        if (this.arrowCreator.draftArrow != null) {
+            this.arrowCreator.draftArrow.update(this.p5)
+        }
+
         this.panelController.moveSelectedElementIfOneIsSelected()
         this.updateMouseStyle()
         if (this.straightArrowCreator.draftArrow) {
             this.straightArrowCreator.draftArrow.update(this.p5)
         }
+      
+        this.bodyMover.dragBodyIfPressed()
+        this.hoverDetector.detectHovering()
     }
 
     routeMousePressed(mouseVector: Vector) {
@@ -91,6 +102,9 @@ class TeacherController {
         if (this.pageState.straightArrowSelected) {
             this.straightArrowCreator.startArrow(mouseVector)
         }
+        if (this.pageState.arrowType != null) {
+            this.arrowCreator.startArrowIfObjectClicked()
+        }
     }
 
     routeMouseReleased(mouseVector: Vector) {
@@ -106,6 +120,7 @@ class TeacherController {
         if (this.straightArrowCreator.draftArrow) {
             this.straightArrowCreator.completeArrow(mouseVector)
         }
+        this.bodyMover.stopDraggingBody()
     }
 
     updateMouseStyle() {

@@ -1,6 +1,7 @@
 import p5 from "p5"
 import { BLUE_OUTLINE_COLOR, OUTLINE_THICKNESS, STROKE_WEIGHT } from "../Constants"
 import { Controller } from "../controller/Controller"
+import StudentController from "../controller/student/StudentController"
 import { Atom } from "../model/chemistry/atoms/Atom"
 import { Bond } from "../model/chemistry/bonds/Bond"
 import BondType from "../model/chemistry/bonds/BondType"
@@ -9,9 +10,9 @@ import BondType from "../model/chemistry/bonds/BondType"
 class StudentView {
 
     p5: p5
-    controller: Controller
+    controller: StudentController
 
-    constructor(p5: p5, controller: Controller) {
+    constructor(p5: p5, controller: StudentController) {
         this.p5 = p5
         this.controller = controller
     }

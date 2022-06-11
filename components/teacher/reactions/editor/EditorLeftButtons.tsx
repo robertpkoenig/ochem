@@ -13,11 +13,11 @@ interface IProps {
 function EditorLeftButtons(props: IProps) {
 
     function undo() {
-        props.state.teacherController.undoManager.undo()
+        props.state.controller.undoManager.undo()
     }
 
     function redo() {
-        props.state.teacherController.undoManager.redo()
+        props.state.controller.undoManager.redo()
     }
 
     // Turns on and off the eraser.

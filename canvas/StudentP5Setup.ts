@@ -6,13 +6,18 @@ import { PhysicsEngine } from './model/physics/PhysicsEngine'
 import Utilities from './utilities/Utilities'
 import { View } from './view/View'
 import Reaction from './model/Reaction'
-import { IPageState } from '../pages/teacher/reactions/[reactionId]'
+import { ITeacherState } from '../pages/teacher/reactions/[reactionId]'
 import UserType from './model/UserType'
 import { CANVAS_PARENT_NAME } from './Constants'
+import { IStudentState } from '../pages/student/reactions/[reactionId]'
+import { Dispatch, SetStateAction } from 'react'
+import TeacherController from './controller/teacher/TeacherController'
+import StudentController from './controller/student/StudentController'
 
 function createP5Context(
-    pageState: IPageState, 
-    setPageState: (state: IPageState) => void,
+    pageState: ITeacherState,
+    setP5: (p5: p5) => void,
+    setController: (controller: Controller) => void,
     userType: UserType,
     reaction: Reaction
 ) {
@@ -36,10 +41,11 @@ function createP5Context(
 
             collisionDetector = new CollisionDetector(p5, reaction)
             physicsEngine = new PhysicsEngine(reaction)
-            controller = new Controller(p5, reaction, collisionDetector, pageState, userType)
-            view = new View(p5, reaction, controller, userType)
+            // controller = new StudentController(p5, reaction, collisionDetector, pageState)
+            // view = new View(p5, reaction, controller, userType)
 
-            setPageState({...pageState, controller: controller, p5: p5, teacherController: controller.teacherController})
+            setP5(p5)
+            setController(controller)
 
         }
     

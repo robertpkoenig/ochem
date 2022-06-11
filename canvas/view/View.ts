@@ -7,13 +7,15 @@ import TeacherView from "./TeacherView"
 import MoleculeViewer from "./MoleculeViewer"
 import StudentView from "./StudentView"
 import { ARROW_STROKE_WEIGHT, STROKE_WEIGHT } from "../Constants"
+import TeacherController from "../controller/teacher/TeacherController"
+import StudentController from "../controller/student/StudentController"
 
 class View {
 
     // Upstrea objects
     p5: p5
     reaction: Reaction
-    controller: Controller
+    controller: TeacherController | StudentController
 
     // Properties
     userType: UserType
@@ -26,7 +28,7 @@ class View {
 
     constructor(p5: p5,
                 reaction: Reaction,
-                controller: Controller,
+                controller: TeacherController | StudentController,
                 userType: UserType) {
 
         this.p5 = p5
@@ -37,13 +39,12 @@ class View {
         if (userType == UserType.TEACHER) {
             this.teacherView = new TeacherView( p5,
                                               reaction,
-                                              controller.teacherController, 
+                                              controller as TeacherController, 
                                               controller.collisionDetector)
 
         }
         if (userType == UserType.STUDENT) {
-            this.studentView = new StudentView( p5,
-                                                controller)
+            this.studentView = new StudentView( p5, controller as StudentController)
 
         }
         this.moleculeViewer = new MoleculeViewer(p5)
