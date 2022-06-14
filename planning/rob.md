@@ -1,14 +1,11 @@
-- refactor student editor to functional component, and reduce size to around 200
-
-- get the triple bond to draw
-- refactor student page to functional component, and reduce size to around 100\
-- redesign the overall layout of the student and teacher page so that notifications are on the page, and the canvas is not constrained
-- failure message on the top of the screen (0.75)
-- R group dummy element / atom (0.5)
-- additional help explaining how curly arrows are drawn (0.75)
-- change color per steve's directions (0.5)
 - add tooltip for each editor button (2)
-- zoom if that's relatively easy (2 )
+- 3-step zoom if that's relatively easy (8)
+- get the triple bond to draw (1)
+
+- adjust overall layout of the student and teacher page so that notifications are on the page, and the canvas is not constrained
+- failure message on the top of the screen (0.75)
+
+- additional help explaining how curly arrows are drawn (0.75)
 - each step must be able to contain more than one curly arrow (8)
 - add option for contextual information / question for each step (5)
 - option to add lone pairs (8)
