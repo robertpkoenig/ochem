@@ -130,6 +130,7 @@ function EditorLeftButtons(props: IProps) {
                     imageAltText={bondType + " bond"} 
                     onMouseDown={() => setBondType(bondType)} 
                     selected={props.state.bondType === bondType}
+                    tip="Bond type"
                 />
             )
         })
@@ -140,6 +141,7 @@ function EditorLeftButtons(props: IProps) {
             imageAltText={"double curly arrow"} 
             onMouseDown={() => setArrowType(ArrowType.DOUBLE)}
             selected={props.state.arrowType == ArrowType.DOUBLE}
+            tip="Curly arrow"
         />
 
     const straightArrowButton =
@@ -148,12 +150,14 @@ function EditorLeftButtons(props: IProps) {
             imageAltText={"straight arrow"} 
             onMouseDown={toggleStraightArrow}
             selected={props.state.straightArrowSelected}
+            tip="Straight arrow"
         />
 
     const selectCationButton =
         <SquareButton
             onMouseDown={() => selectIon(Ion.CATION)}
             selected={props.state.selectedIon ==  Ion.CATION}
+            tip="Cation"
         >
             <PlusCircle className="w-4 h-4" />
         </SquareButton> 
@@ -162,6 +166,7 @@ function EditorLeftButtons(props: IProps) {
         <SquareButton
             onMouseDown={() => selectIon(Ion.ANION)}
             selected={props.state.selectedIon ==  Ion.ANION}
+            tip="Anion"
         >
             <MinusCircle className="w-4 h-4" />
         </SquareButton>
@@ -172,12 +177,14 @@ function EditorLeftButtons(props: IProps) {
             imageAltText={"eraser"} 
             onMouseDown={toggleEraser}
             selected={props.state.eraserOn}
+            tip="Eraser"
         />
 
     const undoButton = 
         <SquareButton
             onMouseDown={() => undo()}
             selected={false}
+            tip="Undo"
         >
             <RotateCcw className="w-3.5 h-3.5"/>
         </SquareButton>
@@ -186,10 +193,10 @@ function EditorLeftButtons(props: IProps) {
         <SquareButton
             onMouseDown={() => redo()}
             selected={false}
+            tip="Redo"
         >
             <RotateCw className="w-3.5 h-3.5" />
         </SquareButton>
-
 
     return (
         <div className="bg-white rounded-lg shadow p-5 flex flex-col gap-2 h-full">
