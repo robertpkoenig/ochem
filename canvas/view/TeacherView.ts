@@ -33,7 +33,6 @@ class TeacherView {
     }
 
     render() {
-
         this.decorateIonIfHovered()
 
         this.decorateAtomIfHovered()
@@ -43,7 +42,6 @@ class TeacherView {
 
         this.renderDraftBond()
         this.renderDraftStraightArrow()
-
     }
 
     private decorateIonIfHovered() {
@@ -215,6 +213,24 @@ class TeacherView {
                         this.teacherController.bondCreator.startAtom.circle.pos.y,
                         this.p5.mouseX,
                         this.p5.mouseY)
+                }
+
+                if (this.teacherController.pageState.bondType == BondType.TRIPLE) {
+
+                    this.p5.strokeWeight(STROKE_WEIGHT * 5)
+                    this.p5.stroke(0)
+                    this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x, this.teacherController.bondCreator.startAtom.circle.pos.y,
+                                 this.p5.mouseX, this.p5.mouseY)
+    
+                    this.p5.strokeWeight(STROKE_WEIGHT * 3)
+                    this.p5.stroke(255)
+                    this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x, this.teacherController.bondCreator.startAtom.circle.pos.y,
+                                 this.p5.mouseX, this.p5.mouseY)
+    
+                    this.p5.strokeWeight(STROKE_WEIGHT)
+                    this.p5.stroke(0)
+                    this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x, this.teacherController.bondCreator.startAtom.circle.pos.y,
+                                 this.p5.mouseX, this.p5.mouseY)
                 }
                 
             this.p5.pop()

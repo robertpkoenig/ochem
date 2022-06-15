@@ -18,7 +18,7 @@ function createTeacherP5Context(
 ) {
     new p5(sketch)
 
-    function sketch(p5: p5) {
+    function sketch(p5: p5) { // Confusing code structure dictated by p5.js
 
         let view: View
         let physicsEngine: PhysicsEngine
@@ -35,7 +35,7 @@ function createTeacherP5Context(
             canvas.parent(CANVAS_PARENT_NAME)
 
             collisionDetector = new CollisionDetector(p5, reaction)
-    physicsEngine = new PhysicsEngine(reaction)
+            physicsEngine = new PhysicsEngine(reaction)
             controller = new TeacherController(p5, reaction, collisionDetector, pageState)
             view = new View(p5, reaction, controller, UserType.TEACHER)
 

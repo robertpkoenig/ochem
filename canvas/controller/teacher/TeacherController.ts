@@ -75,6 +75,7 @@ class TeacherController {
 
         this.panelController.moveSelectedElementIfOneIsSelected()
         this.updateMouseStyle()
+        
         if (this.straightArrowCreator.draftArrow) {
             this.straightArrowCreator.draftArrow.update(this.p5)
         }
