@@ -1,4 +1,4 @@
-import { MinusCircle, PlusCircle, RotateCcw, RotateCw } from "react-feather";
+import { Minus, MinusCircle, Plus, PlusCircle, RotateCcw, RotateCw, ZoomIn, ZoomOut } from "react-feather";
 import Ion from "../../../../canvas/model/chemistry/atoms/Ion";
 import BondType from "../../../../canvas/model/chemistry/bonds/BondType";
 import { ArrowType } from "../../../../canvas/model/chemistry/CurlyArrow";
@@ -120,6 +120,13 @@ function EditorLeftButtons(props: IProps) {
         })
     }
 
+    function incrementZoom() {
+        props.state.reaction.zoom += 0.1
+    }
+
+    function decrementZoom() {
+        props.state.reaction.zoom -= 0.1
+    }
 
     const bondTypeButtons = 
         Object.values(BondType).map(bondType => {
@@ -198,6 +205,24 @@ function EditorLeftButtons(props: IProps) {
             <RotateCw className="w-3.5 h-3.5" />
         </SquareButton>
 
+    const zoomInButton =
+        <SquareButton
+            onMouseDown={incrementZoom}
+            selected={false}
+            tip="Zoom in"
+        >
+            <ZoomIn className="w-3.5 h-3.5" />
+        </SquareButton>
+    
+    const zoomOutButton =
+        <SquareButton
+            onMouseDown={decrementZoom}
+            selected={false}
+            tip="Zoom out"
+        >
+            <ZoomOut className="w-3.5 h-3.5" />
+        </SquareButton>
+
     return (
         <div className="bg-white rounded-lg shadow p-5 flex flex-col gap-2 h-full">
             {bondTypeButtons}
@@ -212,6 +237,9 @@ function EditorLeftButtons(props: IProps) {
             {eraserButton}
             {undoButton}
             {redoButton}
+            <hr className="my-2"></hr>
+            {zoomInButton}
+            {zoomOutButton}
         </div> 
     )
 }

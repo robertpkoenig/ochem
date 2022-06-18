@@ -52,6 +52,7 @@ class ReactionLoader {
         const authorId = reactionRawObject["authorId"]
         const published = reactionRawObject["published"]
         const prompt = reactionRawObject["prompt"]
+        const zoom = reactionRawObject["zoom"]
 
 
         const restoredReaction = new Reaction(
@@ -66,6 +67,7 @@ class ReactionLoader {
             restoredSteps,
             currentStep,
             prompt,
+            zoom
         )
         
         restoredReaction.steps = restoredSteps

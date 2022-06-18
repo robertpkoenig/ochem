@@ -13,6 +13,7 @@ class Reaction {
     public authorId: string
     public visible: boolean
     public prompt: string
+    public zoom: number
 
     constructor(name: string,
                 uuid: string,
@@ -24,7 +25,8 @@ class Reaction {
                 visible: boolean,
                 steps: ReactionStep[],
                 currentStep: ReactionStep,
-                prompt: string) {
+                prompt: string,
+                zoom: number) {
         this.name = name
         this.uuid = uuid
         this.moduleId = moduleId
@@ -36,6 +38,7 @@ class Reaction {
         this.steps = steps
         this.currentStep = currentStep
         this.prompt = prompt
+        this.zoom = zoom
     }
 
     update() {
@@ -67,6 +70,7 @@ class Reaction {
             authorId: this.authorId,
             published: this.visible,
             prompt: this.prompt,
+            zoom: this.zoom
         }
 
     }
@@ -87,7 +91,8 @@ class Reaction {
             this.visible,
             this.steps,
             this.currentStep,
-            this.prompt
+            this.prompt,
+            this.zoom
         )
     }
 

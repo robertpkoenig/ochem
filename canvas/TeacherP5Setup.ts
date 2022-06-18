@@ -12,8 +12,8 @@ import TeacherController from './controller/teacher/TeacherController'
 
 function createTeacherP5Context(
     pageState: ITeacherState,
-    setP5: (p5: p5) => void,
-    setController: (controller: TeacherController) => void,
+    setP5: (p5: p5) => void, // call back to the react component
+    setController: (controller: TeacherController) => void, // call back to the react component
     reaction: Reaction
 ) {
     new p5(sketch)
@@ -44,11 +44,12 @@ function createTeacherP5Context(
 
         }
     
-        // This is run continuously while the p5 instance is active
+        // Runs continuously while the p5 instance is active
         p5.draw = () => {
 
             // Clear the canvas
             p5.background(255)
+            p5.scale(controller.reaction.zoom)
 
             reaction.update()
     
@@ -63,7 +64,7 @@ function createTeacherP5Context(
     
         // Triggered whenever p5 senses a mousePress anywhere on the page
         p5.mousePressed = () => {
-            const mouseVector = new Vector(p5.mouseX, p5.mouseY)
+            const mouseVector = new Vector(p5.mouseX / controller.reaction.zoom, p5.mouseY / controller.reaction.zoom)
             controller.routeMousePressed(mouseVector)
         }
     

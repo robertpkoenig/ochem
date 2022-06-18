@@ -178,7 +178,8 @@ export default function SectionCard(props: IProps) {
             false,
             [],
             null,
-            ''
+            '',
+            1
         )
 
         // Add the first reaction step
