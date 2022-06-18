@@ -39,7 +39,7 @@ function StudentReactionPage(props: IProps) {
 
     const db = getFirestore()
 
-    const [loading, setLoading] = useState<boolean>(true)
+    const [ loading, setLoading ] = useState<boolean>(true)
     const [ successToastVis, setSuccessToastVis ] = useState<boolean>(false)
     const [ failureToastVis, setFailureToastVis ] = useState<boolean>(false)
 
@@ -113,7 +113,7 @@ function StudentReactionPage(props: IProps) {
 
     const stepPrompt =
         <div className="bg-indigo-600 pb-32">
-                <div className="py-5">
+            <div className="py-5">
                 <div className="w-1200 mx-auto flex flex-row gap-4 items-center text-white font-light">
                     {state.reaction?.prompt}
                 </div>

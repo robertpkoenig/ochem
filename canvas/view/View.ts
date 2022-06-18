@@ -1,5 +1,4 @@
 import p5 from "p5"
-import { Controller } from "../controller/Controller"
 import Reaction from "../model/Reaction"
 import UserType from "../model/UserType"
 import ArrowViewer from "./ArrowViewer"

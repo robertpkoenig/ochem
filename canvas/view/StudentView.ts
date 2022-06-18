@@ -1,6 +1,5 @@
 import p5 from "p5"
 import { BLUE_OUTLINE_COLOR, OUTLINE_THICKNESS, STROKE_WEIGHT } from "../Constants"
-import { Controller } from "../controller/Controller"
 import StudentController from "../controller/student/StudentController"
 import { Atom } from "../model/chemistry/atoms/Atom"
 import { Bond } from "../model/chemistry/bonds/Bond"

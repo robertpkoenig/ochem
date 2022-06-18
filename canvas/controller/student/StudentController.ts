@@ -47,11 +47,11 @@ class StudentController {
 
     process() {
         if (this.reaction.currentStep.curlyArrow) { // if there is a curly arrow present
-            this.reaction.currentStep.curlyArrow.update(this.p5)
+            this.reaction.currentStep.curlyArrow.update(this.p5, this.reaction.zoom)
         }
         // TODO change this update function to sit with the arrowCreator
         if (this.arrowCreator.draftArrow != null) {
-            this.arrowCreator.draftArrow.update(this.p5)
+            this.arrowCreator.draftArrow.update(this.p5, this.reaction.zoom)
         }
         this.updateMouseStyle()
         this.hoverDetector.detectHovering()
