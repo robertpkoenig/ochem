@@ -17,7 +17,7 @@ function EditorTopPanel(props: IProps) {
     // This function toggles whether or not a reaction is visible
     // to students.
     function toggleVisibility() {
-        props.state.teacherController.undoManager.addUndoPoint()
+        props.state.controller.undoManager.addUndoPoint()
         props.state.reaction.visible = !props.state.reaction.visible
         // forceUpdate()
         ReactionSaver.saveReaction(props.state.reaction)
