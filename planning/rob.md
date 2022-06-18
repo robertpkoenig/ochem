@@ -1,11 +1,10 @@
-- add tooltip for each editor button (2)
 - 3-step zoom if that's relatively easy (8)
-- get the triple bond to draw (1)
+- remove the extra css file in styles or public, actually remove both and use the tailwind built in smooth scrolling
 
 - adjust overall layout of the student and teacher page so that notifications are on the page, and the canvas is not constrained
 - failure message on the top of the screen (0.75)
 
-- additional help explaining how curly arrows are drawn (0.75)
+- additional help explaining how curly arrows are drawn (3)
 - each step must be able to contain more than one curly arrow (8)
 - add option for contextual information / question for each step (5)
 - option to add lone pairs (8)

@@ -105,8 +105,8 @@ class TeacherView {
         const eraserTip = this.p5.select("#eraser-tip")
         eraserTip.style("display", "inline")
         const boundingRect = this.teacherController.panelController.canvasParent.getBoundingClientRect()
-        const x = this.p5.mouseX + boundingRect.x + 10
-        const y = this.p5.mouseY + boundingRect.y + 10
+        const x = this.p5.mouseX / this.reaction.zoom + boundingRect.x + 10
+        const y = this.p5.mouseY  / this.reaction.zoom + boundingRect.y + 10
         eraserTip.position(x, y)
 
         this.eraserTipVisible = true
@@ -196,8 +196,8 @@ class TeacherView {
                 this.p5.stroke(0)
                 this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
                     this.teacherController.bondCreator.startAtom.circle.pos.y,
-                    this.p5.mouseX,
-                    this.p5.mouseY)
+                    this.p5.mouseX / this.reaction.zoom ,
+                    this.p5.mouseY / this.reaction.zoom )
                 }
 
                 if (this.teacherController.pageState.bondType == BondType.DOUBLE) {
@@ -205,14 +205,14 @@ class TeacherView {
                     this.p5.stroke(0)
                     this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
                         this.teacherController.bondCreator.startAtom.circle.pos.y,
-                        this.p5.mouseX,
-                        this.p5.mouseY)
+                        this.p5.mouseX / this.reaction.zoom ,
+                        this.p5.mouseY / this.reaction.zoom )
                     this.p5.strokeWeight(STROKE_WEIGHT)
                     this.p5.stroke(255)
                     this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x,
                         this.teacherController.bondCreator.startAtom.circle.pos.y,
-                        this.p5.mouseX,
-                        this.p5.mouseY)
+                        this.p5.mouseX / this.reaction.zoom ,
+                        this.p5.mouseY / this.reaction.zoom )
                 }
 
                 if (this.teacherController.pageState.bondType == BondType.TRIPLE) {
@@ -220,17 +220,17 @@ class TeacherView {
                     this.p5.strokeWeight(STROKE_WEIGHT * 5)
                     this.p5.stroke(0)
                     this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x, this.teacherController.bondCreator.startAtom.circle.pos.y,
-                                 this.p5.mouseX, this.p5.mouseY)
+                                 this.p5.mouseX / this.reaction.zoom , this.p5.mouseY / this.reaction.zoom )
     
                     this.p5.strokeWeight(STROKE_WEIGHT * 3)
                     this.p5.stroke(255)
                     this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x, this.teacherController.bondCreator.startAtom.circle.pos.y,
-                                 this.p5.mouseX, this.p5.mouseY)
+                                 this.p5.mouseX / this.reaction.zoom , this.p5.mouseY / this.reaction.zoom )
     
                     this.p5.strokeWeight(STROKE_WEIGHT)
                     this.p5.stroke(0)
                     this.p5.line(this.teacherController.bondCreator.startAtom.circle.pos.x, this.teacherController.bondCreator.startAtom.circle.pos.y,
-                                 this.p5.mouseX, this.p5.mouseY)
+                                 this.p5.mouseX / this.reaction.zoom , this.p5.mouseY / this.reaction.zoom )
                 }
                 
             this.p5.pop()

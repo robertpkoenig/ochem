@@ -35,8 +35,8 @@ class BodyMover {
         if (this.atomBeingDragged != null) {
             // console.log("pos: ", this.atomBeingDragged.pos.x);
             
-            this.atomBeingDragged.circle.pos.x = this.p5.mouseX
-            this.atomBeingDragged.circle.pos.y = this.p5.mouseY
+            this.atomBeingDragged.circle.pos.x = this.p5.mouseX / this.reaction.zoom
+            this.atomBeingDragged.circle.pos.y = this.p5.mouseY / this.reaction.zoom
 		}
     }
 	

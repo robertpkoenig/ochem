@@ -21,7 +21,7 @@ class SingleAtomMoleculeCreator {
 
         this.editorController.undoManager.addUndoPoint()
 
-        const newAtom = AtomFactory.createAtom(elementName, this.p5.mouseX, this.p5.mouseY)
+        const newAtom = AtomFactory.createAtom(elementName, this.p5.mouseX / this.reaction.zoom, this.p5.mouseY / this.reaction.zoom)
         const newMolecule = new Molecule()
         newMolecule.atoms.push(newAtom)
         this.reaction.currentStep.molecules.push(newMolecule)

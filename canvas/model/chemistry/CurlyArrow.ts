@@ -46,21 +46,21 @@ class CurlyArrow {
     // Updates the arrows properties on each draw loop iteration,
     // so that the curly arrow is always lined up with the atoms/bonds
     // it goes between
-    update(p5: p5) {
-        this.setEndPoints(p5)
+    update(p5: p5, zoom: number) {
+        this.setEndPoints(p5, zoom)
         this.setAnchorPoints()
         this.setTrianglePoints(p5)
         this.setCollisionPoints(p5)
     }
 
-    setEndPoints(p5: p5) {
+    setEndPoints(p5: p5, zoom: number) {
         this.startVector = this.startObject.getPosVector()
         if (this.endObject != null) {
             this.endVector = this.endObject.getPosVector()
         }
         else {
-            this.endVector = new Vector(p5.mouseX,
-                                        p5.mouseY)
+            this.endVector = new Vector(p5.mouseX / zoom,
+                                        p5.mouseY / zoom)
         }
     }
 

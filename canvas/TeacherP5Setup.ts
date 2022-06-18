@@ -70,7 +70,7 @@ function createTeacherP5Context(
     
         // Triggered when mouse is released anywhere on the page
         p5.mouseReleased = () => {
-            const mouseVector = new Vector(p5.mouseX, p5.mouseY)
+            const mouseVector = new Vector(p5.mouseX / controller.reaction.zoom, p5.mouseY / controller.reaction.zoom)
             controller.routeMouseReleased(mouseVector)
         }
     

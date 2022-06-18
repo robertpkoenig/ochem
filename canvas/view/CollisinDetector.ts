@@ -27,12 +27,18 @@ class CollisionDetector {
     }
 
     mouseHoveredOverAtom(atom: Atom): boolean {
-        const mousePosition = new Vector(this.p5.mouseX, this.p5.mouseY)
+        // console.log('this.p5.mouseX : ' + this.p5.mouseX)
+        // console.log('this.p5.mouseY : ' + this.p5.mouseY)
+        // console.log('this.p5.mouseX / 2 : ' + this.p5.mouseX * 2)
+        // console.log('this.p5.mouseY / 2 : ' + this.p5.mouseY * 2)
+        // console.log('atom.circle.x : ' + atom.circle.pos.x)
+        // console.log('atom.circle.y : ' + atom.circle.pos.y)
+        const mousePosition = new Vector(this.p5.mouseX / this.reaction.zoom, this.p5.mouseY / this.reaction.zoom)
         return SAT.pointInCircle(mousePosition, atom.circle)
     }
 
     mouseHoveredOverIon(atom: Atom) {
-        const mouseVector = new Vector(this.p5.mouseX, this.p5.mouseY)
+        const mouseVector = new Vector(this.p5.mouseX / this.reaction.zoom, this.p5.mouseY / this.reaction.zoom)
         const ionX = atom.getPosVector().x + ION_ORBIT_RADIUS
         const ionY = atom.getPosVector().y - ION_ORBIT_RADIUS
         const ionCoordinateVector = new Vector(ionX, ionY)
@@ -41,7 +47,7 @@ class CollisionDetector {
     }
 
     mouseHoveredOverBond(bond: Bond): boolean {
-        const mouseVector = new Vector(this.p5.mouseX, this.p5.mouseY)
+        const mouseVector = new Vector(this.p5.mouseX / this.reaction.zoom, this.p5.mouseY / this.reaction.zoom)
         const mouseCircle = new Circle(mouseVector, 10)
         const bondPolygon = new Polygon(new Vector, [
             bond.atoms[0].circle.pos,
@@ -51,7 +57,7 @@ class CollisionDetector {
     }
 
     mouseHoveredOverArrow(arrow: CurlyArrow): boolean {
-        const mouseVector = new Vector(this.p5.mouseX, this.p5.mouseY)
+        const mouseVector = new Vector(this.p5.mouseX / this.reaction.zoom, this.p5.mouseY / this.reaction.zoom)
         const mouseCircle = new Circle(mouseVector, 10)
         for (let i = 1 ; i < arrow.points.length ; i++) {
             const linePolygon = new Polygon(new Vector, [
@@ -66,7 +72,7 @@ class CollisionDetector {
     }
 
     mouseHoveredOverStraightArrow(arrow: StraightArrow): boolean {
-        const mouseVector = new Vector(this.p5.mouseX, this.p5.mouseY)
+        const mouseVector = new Vector(this.p5.mouseX / this.reaction.zoom, this.p5.mouseY / this.reaction.zoom)
         const mouseCircle = new Circle(mouseVector, 10)
         const bondPolygon = new Polygon(new Vector, [
             arrow.startVector,

@@ -13,21 +13,21 @@ class StraightArrow {
         this.endVector = start
     }
 
-    update(p5: p5) {
-        this.setTrianglePoints(p5)
-        this.setEndVector(p5)
+    update(p5: p5, zoom: number) {
+        this.setTrianglePoints(p5, zoom)
+        this.setEndVector(p5, zoom)
     }
 
-    setEndVector(p5: p5) {
-        const mouseVector = new Vector(p5.mouseX, p5.mouseY)
+    setEndVector(p5: p5, zoom: number) {
+        const mouseVector = new Vector(p5.mouseX / zoom, p5.mouseY / zoom)
         this.endVector = mouseVector
     }
 
-    setTrianglePoints(p5: p5) {
+    setTrianglePoints(p5: p5, zoom: number) {
         // Find the coordinates of the triangle tip
         
-        const xDistance = this.startVector.x - p5.mouseX
-        const yDistance = this.startVector.y - p5.mouseY
+        const xDistance = this.startVector.x - ( p5.mouseX / zoom )
+        const yDistance = this.startVector.y - ( p5.mouseY / zoom )
         let angle = p5.atan2(yDistance, xDistance)
 
         const angleScale = Math.PI / 10
