@@ -1,6 +1,6 @@
 // Landing page for Ochem.io
 
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import VideoPopup from '../components/landing-page/VideoPopup'
 import { NextPage } from 'next'
 import TopPanel from '../components/landing-page/top-panel.tsx/TopPanel'
@@ -17,16 +17,16 @@ const LandingPage: NextPage = () => {
     }
 
     return (
-        <>
+        <Fragment>
 
-        <TopPanel toggleVideoPopup={toggleVideoPopup} />    
-        <HowItWorks />
-        <Features />
-        <BottomPanel toggleVideoPopup={toggleVideoPopup} />
+            <TopPanel toggleVideoPopup={toggleVideoPopup} />    
+            <HowItWorks />
+            <Features />
+            <BottomPanel toggleVideoPopup={toggleVideoPopup} />
 
-        { videoPopupVis && <VideoPopup popupCloseFunction={toggleVideoPopup} />}
+            { videoPopupVis && <VideoPopup popupCloseFunction={toggleVideoPopup} />}
 
-        </>
+        </Fragment>
   )
 }
 

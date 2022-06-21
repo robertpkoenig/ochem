@@ -1,4 +1,3 @@
-- zoom for students
 - remove the extra css file in styles or public, actually remove both and use the tailwind built in smooth scrolling
 
 - adjust overall layout of the student and teacher page so that notifications are on the page, and the canvas is not constrained
