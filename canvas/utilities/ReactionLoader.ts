@@ -52,7 +52,7 @@ class ReactionLoader {
         const authorId = reactionRawObject["authorId"]
         const published = reactionRawObject["published"]
         const prompt = reactionRawObject["prompt"]
-        const zoom = reactionRawObject["zoom"]
+        const zoom = reactionRawObject["zoom"] || 1
 
 
         const restoredReaction = new Reaction(

@@ -26,7 +26,7 @@ class Reaction {
                 steps: ReactionStep[],
                 currentStep: ReactionStep,
                 prompt: string,
-                zoom: number) {
+                zoom: number = 1) {
         this.name = name
         this.uuid = uuid
         this.moduleId = moduleId
