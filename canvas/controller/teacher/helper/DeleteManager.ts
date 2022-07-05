@@ -10,15 +10,15 @@ import { Queue } from 'typescript-collections';
 class DeleteManager {
 
     public static deleteAtom(reaction: Reaction, atomToDelete: Atom) {
-        
-        const bondsToDelete = [...atomToDelete.bonds]
+        this.deleteBondsAttachedToAtom(atomToDelete, reaction)
+        this.deleteCurlyArrowsThatStartOrEndOnThisAtom(atomToDelete, reaction)
+        this.removeReferencesToAtom(reaction, atomToDelete)
+    }
 
-        for (const bond of bondsToDelete) {
+    private static deleteBondsAttachedToAtom(atom: Atom, reaction: Reaction) {
+        for (const bond of atom.bonds) {
             this.deleteBond(reaction, bond)
         }
-
-        this.removeReferencesToAtom(reaction, atomToDelete)
-
     }
 
     private static removeReferencesToAtom(reaction: Reaction, atomToDelete: Atom) {
@@ -30,7 +30,15 @@ class DeleteManager {
                 if (molecule.atoms.length == 0) {
                     this.removeReferencesToMolecule(reaction, molecule)
                 }
-                break
+                return
+            }
+        }
+    }
+
+    private static deleteCurlyArrowsThatStartOrEndOnThisAtom(atom: Atom, reaction: Reaction) {
+        for (const curlyArrow of reaction.currentStep.curlyArrows) {
+            if (curlyArrow.startObject == atom || curlyArrow.endObject == atom) {
+                reaction.currentStep.curlyArrows = reaction.currentStep.curlyArrows.filter(currArrow => currArrow != curlyArrow)
             }
         }
     }
@@ -150,7 +158,6 @@ class DeleteManager {
     }
 
     private static resassignBondsToCorrectMolecules(reaction: Reaction): void {
-        console.log("hello");
         
         // gather all bonds
         const allBonds = reaction.currentStep.getAllBonds()

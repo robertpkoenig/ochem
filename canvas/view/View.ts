@@ -1,11 +1,11 @@
 import p5 from "p5"
 import Reaction from "../model/Reaction"
 import UserType from "../model/UserType"
-import ArrowViewer from "./ArrowViewer"
+import CurlyArrowViewer from "./CurlyArrowViewer"
 import TeacherView from "./TeacherView"
 import MoleculeViewer from "./MoleculeViewer"
 import StudentView from "./StudentView"
-import { ARROW_STROKE_WEIGHT, STROKE_WEIGHT } from "../Constants"
+import { ARROW_STROKE_WEIGHT, FRAME_RATE, STROKE_WEIGHT } from "../Constants"
 import TeacherController from "../controller/teacher/TeacherController"
 import StudentController from "../controller/student/StudentController"
 
@@ -23,7 +23,7 @@ class View {
     teacherView: TeacherView
     studentView: StudentView
     moleculeViewer: MoleculeViewer
-    arrowViewer: ArrowViewer
+    curlyArrowViewer: CurlyArrowViewer
 
     constructor(p5: p5,
                 reaction: Reaction,
@@ -35,6 +35,9 @@ class View {
         this.controller = controller
         this.userType = userType
 
+        this.moleculeViewer = new MoleculeViewer(p5)
+        this.curlyArrowViewer = new CurlyArrowViewer(p5)
+
         if (userType == UserType.TEACHER) {
             this.teacherView = new TeacherView( p5,
                                               reaction,
@@ -43,11 +46,9 @@ class View {
 
         }
         if (userType == UserType.STUDENT) {
-            this.studentView = new StudentView( p5, controller as StudentController)
+            this.studentView = new StudentView( p5, controller as StudentController, this.curlyArrowViewer)
 
         }
-        this.moleculeViewer = new MoleculeViewer(p5)
-        this.arrowViewer = new ArrowViewer(p5)
         
         // this.loadFont()
         this.setupDrawingParams()
@@ -59,7 +60,7 @@ class View {
         this.p5.textSize(17)
         this.p5.imageMode(this.p5.CENTER)
         this.p5.strokeWeight(STROKE_WEIGHT)
-        this.p5.frameRate(30)
+        this.p5.frameRate(FRAME_RATE)
         this.p5.textFont("Poppins")
     }
 
@@ -74,8 +75,8 @@ class View {
         }
 
         this.renderMolecules()
-        this.renderArrow()
-        this.renderDraftArrow()
+        this.renderCurlyArrows()
+        this.renderDraftCurlyArrow()
         this.renderStraightArrow()
     }
 
@@ -83,20 +84,24 @@ class View {
         this.moleculeViewer.render(this.reaction)
     }
 
-    renderArrow() {
+    renderCurlyArrows() {
         if (this.userType == UserType.TEACHER) {
-            const arrow = this.reaction.currentStep.curlyArrow
-            if (arrow != null) {
-                this.arrowViewer.renderArrow(arrow)
+            const curlyArrows = this.reaction.currentStep.curlyArrows
+            const showIndex = curlyArrows.length > 1
+            for (let index = 0; index < curlyArrows.length; index++) {
+                const arrow = curlyArrows[index];
+                this.curlyArrowViewer.renderCurlyArrow(arrow, index, showIndex)
             }
         }
     }
 
-    renderDraftArrow() {
+    renderDraftCurlyArrow() {
         const draftArrow = 
             this.controller.arrowCreator.draftArrow
+        const index = this.reaction.currentStep.curlyArrows.length
+        const showIndex = index > 1 && this.userType == UserType.TEACHER
         if (draftArrow != null) {
-            this.arrowViewer.renderArrow(draftArrow)
+            this.curlyArrowViewer.renderCurlyArrow(draftArrow, index, showIndex)
         }
     }
 

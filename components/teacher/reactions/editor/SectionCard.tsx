@@ -294,8 +294,8 @@ export default function SectionCard(props: IProps) {
                     {           
                         reactionCreationPopupVis &&
                         <ReactionCreationPopup
-                            popupCloseFunction={toggleReactionCreationPopup} 
-                            createReactionFunction={createReaction} 
+                            closePopup={toggleReactionCreationPopup} 
+                            createReaction={createReaction} 
                         />
                     }
 

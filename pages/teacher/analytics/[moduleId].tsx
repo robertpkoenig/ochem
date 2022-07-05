@@ -197,7 +197,7 @@ export default function Analytics() {
         datesFormattedForDisplay: string[],
         listOfStudentNumbersByDay: number[]
     ) {
-        console.log(datesFormattedForDisplay);
+        // console.log(datesFormattedForDisplay);
         
         setData(
             {

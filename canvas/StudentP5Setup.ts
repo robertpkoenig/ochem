@@ -9,13 +9,15 @@ import UserType from './model/UserType'
 import { CANVAS_PARENT_NAME } from './Constants'
 import { IStudentState } from '../pages/student/reactions/[reactionId]'
 import StudentController from './controller/student/StudentController'
+import { processAllDelayedActions } from './controller/delayedActions'
+import { viewAllCurlyArrows } from './view/curlyArrows'
+import { showAllFeedbackItems } from './view/feedback'
+import { checkImage, loadImages } from './view/images'
 
 function createP5Context(
     pageState: IStudentState,
-    setP5: (p5: p5) => void,
-    reaction: Reaction,
-    arrowDrawnCorrectly: () => void,
-    arrowDrawnIncorrectly: () => void,
+    setPageState: React.Dispatch<React.SetStateAction<IStudentState>>,
+    reaction: Reaction
 ) {
     new p5(sketch)
 
@@ -37,10 +39,12 @@ function createP5Context(
 
             collisionDetector = new CollisionDetector(p5, reaction)
             physicsEngine = new PhysicsEngine(reaction)
-            controller = new StudentController(p5, reaction, collisionDetector, pageState, arrowDrawnCorrectly, arrowDrawnIncorrectly)
+            controller = new StudentController(p5, reaction, collisionDetector, pageState, setPageState)
             view = new View(p5, reaction, controller, UserType.STUDENT)
 
-            setP5(p5)
+            setPageState({...pageState, p5: p5, controller: controller})
+
+            loadImages(p5)
 
         }
     
@@ -57,8 +61,12 @@ function createP5Context(
             physicsEngine.applyAllForces()
 
             controller.process()
+
+            processAllDelayedActions()
         
             view.render()
+            viewAllCurlyArrows(view.curlyArrowViewer)
+            showAllFeedbackItems()
     
         }
     

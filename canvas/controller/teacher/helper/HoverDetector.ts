@@ -111,14 +111,14 @@ class HoverDetector {
         this.bondCurrentlyHovered = null
     }
 
-    private detectCurlyArrowHover() {        
-        const arrow = this.reaction.currentStep.curlyArrow
-        if (arrow != null && this.collisionDetector.mouseHoveredOverArrow(arrow)) {
-            this.curlyArrowCurrentlyHovered = arrow   
+    private detectCurlyArrowHover() {
+        let curlyArrowHovered = null    
+        for (const curlyArrow of this.reaction.currentStep.curlyArrows) {
+            if (this.collisionDetector.mouseHoveredOverArrow(curlyArrow)) {
+                curlyArrowHovered = curlyArrow
+            }
         }
-        else {
-            this.curlyArrowCurrentlyHovered = null
-        }
+        this.curlyArrowCurrentlyHovered = curlyArrowHovered
     }
 
     detectStraightArrowHover() {

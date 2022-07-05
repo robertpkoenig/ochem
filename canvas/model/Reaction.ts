@@ -55,6 +55,8 @@ class Reaction {
         const stepsAsPlainObjectArray = []
 
         for (const step of this.steps) {
+            console.log(step);
+            
             stepsAsPlainObjectArray.push(step.toJSON())
         }
 

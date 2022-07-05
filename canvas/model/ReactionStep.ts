@@ -10,7 +10,7 @@ class ReactionStep {
     public name: string
     public order: number
     public molecules: Molecule[]
-    public curlyArrow: CurlyArrow
+    public curlyArrows: CurlyArrow[]
     public straightArrow: StraightArrow
     public uuid: string
     public promptText: string
@@ -19,7 +19,7 @@ class ReactionStep {
         this.name = null
         this.order = order
         this.molecules = []
-        this.curlyArrow = null
+        this.curlyArrows = []
         this.straightArrow = null
         this.uuid = uuid()
         this.promptText = ""
@@ -58,8 +58,11 @@ class ReactionStep {
             moleculesAsPlainObjects.push(molecule.toJSON())
         }
 
-        const curlyArrowAsPlainObject =
-            this.curlyArrow ? this.curlyArrow.toJSON() : null
+        const curlyArrowAsPlainObjectArray = []
+
+        for (const curlyArrow of this.curlyArrows) {
+            curlyArrowAsPlainObjectArray.push(curlyArrow.toJSON())
+        }
 
         const straightArrowAsPlainObject = 
             this.straightArrow ? JSON.stringify(this.straightArrow) : null
@@ -68,7 +71,7 @@ class ReactionStep {
             name: this.name,
             order: this.order,
             molecules: moleculesAsPlainObjects,
-            curlyArrow: curlyArrowAsPlainObject,
+            curlyArrows: curlyArrowAsPlainObjectArray,
             straightArrow: straightArrowAsPlainObject,
             uuid: this.uuid,
         }

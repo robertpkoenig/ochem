@@ -42,9 +42,7 @@ class CurlyArrowCreator {
     private startArrowIfAtomClicked() {
         const hoveredAtom = this.hoverDetector.atomCurrentlyHovered
         if (hoveredAtom != null) {
-            const newArrow = new CurlyArrow (
-                this.pageState.arrowType
-            )
+            const newArrow = new CurlyArrow (this.pageState.arrowType)
             newArrow.setStartObject(hoveredAtom)
             this.draftArrow = newArrow
         }
@@ -53,15 +51,13 @@ class CurlyArrowCreator {
     private startArrowIfBondClicked() {
         const hoveredBond = this.hoverDetector.bondCurrentlyHovered
         if (hoveredBond != null) {
-            const newArrow = new CurlyArrow (
-                this.pageState.arrowType
-            )
+            const newArrow = new CurlyArrow (this.pageState.arrowType)
             newArrow.setStartObject(hoveredBond)
             this.draftArrow = newArrow
         }
     }
 
-    completeTeacherArrowIfReleasedOverObject() {
+    completeTeacherCurlyArrowIfReleasedOverObject() {
         this.completeArrowIfReleasedOverAtom()
         this.completeArrowIfReleasedOverBond()
         this.draftArrow = null
@@ -73,17 +69,12 @@ class CurlyArrowCreator {
             this.hoverDetector.atomCurrentlyHovered
 
 		if (atomCurrentlyHovered != null &&
-            this.draftArrow.startObject != atomCurrentlyHovered) {
-
+            this.draftArrow.startObject != atomCurrentlyHovered
+        ) {
             this.undoManager.addUndoPoint()
-
             this.draftArrow.setEndObject(atomCurrentlyHovered)
-
-            this.reaction.currentStep.curlyArrow =
-                this.draftArrow
-
+            this.reaction.currentStep.curlyArrows.push(this.draftArrow)
             ReactionSaver.saveReaction(this.reaction)
-
 		}
 
     }
@@ -94,15 +85,11 @@ class CurlyArrowCreator {
             this.hoverDetector.bondCurrentlyHovered
 
 		if (bondCurrentlyHovered != null &&
-            this.draftArrow.startObject != bondCurrentlyHovered) {
-
+            this.draftArrow.startObject != bondCurrentlyHovered
+        ) {
             this.undoManager.addUndoPoint()
-
             this.draftArrow.setEndObject(bondCurrentlyHovered)
-
-            this.reaction.currentStep.curlyArrow =
-                this.draftArrow
-
+            this.reaction.currentStep.curlyArrows.push(this.draftArrow)
             ReactionSaver.saveReaction(this.reaction)
 		}
 

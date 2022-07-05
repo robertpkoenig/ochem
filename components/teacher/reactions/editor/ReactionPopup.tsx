@@ -3,8 +3,8 @@ import FormSubmitButton from "../../../common/buttons/FormSubmitButton";
 import PopupBackground from "../../../common/PopupBackground";
 
 interface IProps {
-    popupCloseFunction: () => void
-    createReactionFunction: (reactionName: string) => void
+    closePopup: () => void
+    createReaction: (reactionName: string) => void
 }
 
 export default function ReactionCreationPopup(props: IProps) {
@@ -17,8 +17,8 @@ export default function ReactionCreationPopup(props: IProps) {
 
     function onSubmit(event: React.FormEvent) {
         event.preventDefault();
-        props.createReactionFunction(reactionName)
-        props.popupCloseFunction()
+        props.createReaction(reactionName)
+        props.closePopup()
     }
 
     function stopPropagation(event: SyntheticEvent) {
@@ -28,7 +28,7 @@ export default function ReactionCreationPopup(props: IProps) {
     return (
         
         <PopupBackground
-            popupCloseFunction={props.popupCloseFunction} 
+            popupCloseFunction={props.closePopup} 
         >
             <form onSubmit={onSubmit}>
                 <div

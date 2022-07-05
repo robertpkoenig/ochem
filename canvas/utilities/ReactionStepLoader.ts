@@ -13,7 +13,7 @@ import Utilities from "./Utilities"
 class ReactionStepLoader {
 
     public static loadReactionStepFromPlainObject(reactionStepPlainObject: any): ReactionStep {
-        
+
         const restoredMolecules: Molecule[] = []
 
         if (Object.keys(reactionStepPlainObject).includes("molecules")) {
@@ -49,6 +49,9 @@ class ReactionStepLoader {
 
         const order = reactionStepPlainObject["order"]
         const restoredReactionStep = new ReactionStep(order)
+        // Confirmed curly arrows is array here
+        // console.log('restoredReactionStep.curlyArrows.length : ' + restoredReactionStep.curlyArrows.length)
+        // console.log(restoredReactionStep.curlyArrows.constructor.name)
 
         const uuid = reactionStepPlainObject["uuid"]
         restoredReactionStep.uuid = uuid
@@ -91,15 +94,17 @@ class ReactionStepLoader {
 
         }
 
-        const savedCurlyArrow = reactionStepPlainObject["curlyArrow"]
+        const savedCurlyArrows = reactionStepPlainObject.curlyArrows
 
-        if (savedCurlyArrow != null) {
+        for (const savedCurlyArrow of savedCurlyArrows) {
+            
             const restoredCurlyArrow = new CurlyArrow(savedCurlyArrow.type)
             
             const bondsAndAtoms: (Atom | Bond)[] = [
                                     ...restoredReactionStep.getAllAtoms(),
                                     ...restoredReactionStep.getAllBonds()
                                   ]
+            
             for (const object of bondsAndAtoms) {
                 if (object.uuid === savedCurlyArrow.startObjectId) {
                     restoredCurlyArrow.startObject = object
@@ -109,7 +114,7 @@ class ReactionStepLoader {
                 }
             }
 
-            restoredReactionStep.curlyArrow = restoredCurlyArrow
+            restoredReactionStep.curlyArrows.push(restoredCurlyArrow)
 
         }
 

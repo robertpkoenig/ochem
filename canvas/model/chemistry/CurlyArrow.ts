@@ -20,18 +20,20 @@ class CurlyArrow {
     trianglePointOne: Vector
     trianglePointTwo: Vector
     points: Vector[]
+    correct: boolean
 
     constructor(type: ArrowType) {
         this.type = type
         this.startObject = null
         this.endObject = null
+        this.correct = true
     }
 
     toJSON() {
         return {
             type: this.type,
             startObjectId: this.startObject.uuid,
-            endObjectId: this.endObject.uuid
+            endObjectId: this.endObject.uuid,
         }
     }
 

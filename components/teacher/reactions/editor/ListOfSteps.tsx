@@ -34,24 +34,25 @@ function ListOfSteps(props: IProps) {
         const lastStep = steps[steps.length - 1]
         
         const lastStepJSON = lastStep.toJSON()
-        // console.log(lastStepJSON);
         
+
         const newStep = ReactionStepLoader.loadReactionStepFromPlainObject(lastStepJSON)
-        newStep.curlyArrow = null
+        console.log(newStep);
+        
         newStep.uuid = Utilities.generateUid()
         newStep.order += 1
 
         props.state.reaction.steps.push(newStep)
         props.state.reaction.currentStep = newStep
 
-        ReactionSaver.saveReaction(props.state.reaction)
+        ReactionSaver.saveReaction(props.state.reaction) // THE PROBLEM IS HERE
 
         props.setState({...props.state, reaction: props.state.reaction})
     }
 
     function deleteStep(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, stepId: string) {
 
-        props.state.teacherController.undoManager.addUndoPoint()
+        props.state.controller.undoManager.addUndoPoint()
 
         let stepToDelete: ReactionStep | null = null
 

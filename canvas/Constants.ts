@@ -1,4 +1,6 @@
 export const CANVAS_PARENT_NAME = "p5-canvas"
+export const FRAME_RATE = 30
+export const MILLIS_PER_FRAME = 1000 / FRAME_RATE
 
 export const ATOM_RADIUS = 20
 

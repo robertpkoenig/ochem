@@ -23,7 +23,7 @@ class StraightArrowCreator {
         }
     } 
 
-    completeArrow(mouseVector: Vector) {
+    completeStraightArrow(mouseVector: Vector) {
         this.teacherController.undoManager.addUndoPoint()
         this.draftArrow.endVector = mouseVector
         this.reaction.currentStep.straightArrow = this.draftArrow

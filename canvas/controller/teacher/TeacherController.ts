@@ -65,8 +65,8 @@ class TeacherController {
 
     process() {
 
-        if (this.reaction.currentStep.curlyArrow) { // if there is a curly arrow present
-            this.reaction.currentStep.curlyArrow.update(this.p5, this.reaction.zoom)
+        for (const curlyArrow of this.reaction.currentStep.curlyArrows) {
+            curlyArrow.update(this.p5, this.reaction.zoom)
         }
         // TODO change this update function to sit with the arrowCreator
         if (this.arrowCreator.draftArrow != null) {
@@ -114,10 +114,10 @@ class TeacherController {
             this.panelController.dropElement()  
         }
         if (this.arrowCreator.draftArrow != null) {
-            this.arrowCreator.completeTeacherArrowIfReleasedOverObject()
+            this.arrowCreator.completeTeacherCurlyArrowIfReleasedOverObject()
         }
         if (this.straightArrowCreator.draftArrow) {
-            this.straightArrowCreator.completeArrow(mouseVector)
+            this.straightArrowCreator.completeStraightArrow(mouseVector)
         }
         this.bodyMover.stopDraggingBody()
     }

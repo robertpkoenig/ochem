@@ -4,16 +4,19 @@ import StudentController from "../controller/student/StudentController"
 import { Atom } from "../model/chemistry/atoms/Atom"
 import { Bond } from "../model/chemistry/bonds/Bond"
 import BondType from "../model/chemistry/bonds/BondType"
+import CurlyArrowViewer from "./CurlyArrowViewer"
 
 // Performs student-specific rendering tasks.
 class StudentView {
 
     p5: p5
     controller: StudentController
+    curlyArrowViewer: CurlyArrowViewer
 
-    constructor(p5: p5, controller: StudentController) {
+    constructor(p5: p5, controller: StudentController, curlyArrowViewer: CurlyArrowViewer) {
         this.p5 = p5
         this.controller = controller
+        this.curlyArrowViewer = curlyArrowViewer
     }
 
     render() {
