@@ -64,7 +64,7 @@ class TeacherView {
     private decorateLonePairIfHovered() {
       const hoveredLonePair = this.teacherController.hoverDetector.lonePairCurrentlyHovered
 
-      if (hoveredLonePair != null) {
+      if (hoveredLonePair) {
           if (this.teacherController.pageState.eraserOn) {
               this.drawLonePairOutline(hoveredLonePair)
               this.showEraserTip()

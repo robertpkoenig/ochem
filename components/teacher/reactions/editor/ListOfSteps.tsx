@@ -38,7 +38,6 @@ function ListOfSteps(props: IProps) {
         
 
         const newStep = ReactionStepLoader.loadReactionStepFromPlainObject(lastStepJSON)
-        console.log(newStep);
         
         newStep.uuid = Utilities.generateUid()
         newStep.order += 1

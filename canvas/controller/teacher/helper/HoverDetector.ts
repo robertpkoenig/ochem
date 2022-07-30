@@ -23,8 +23,8 @@ class HoverDetector {
 
         this.reaction = reaction
         this.collisionDetector = collisionDetector
-
         this.ionCurrentlyHovered = null
+        this.lonePairCurrentlyHovered = null
         this.atomCurrentlyHovered = null
         this.bondCurrentlyHovered = null
         this.curlyArrowCurrentlyHovered = null
@@ -85,8 +85,6 @@ class HoverDetector {
         for (const atom of this.reaction.currentStep.getAllAtoms()) {
             if (atom.ionSymbol) {
                 if (this.collisionDetector.mouseHoveredOverIon(atom)) {
-                    console.log("ion hovered");
-                    
                     this.ionCurrentlyHovered = atom
                     return
                 }

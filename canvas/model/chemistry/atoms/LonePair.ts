@@ -10,7 +10,7 @@ class LonePair {
 
   constructor(atom: Atom) {
     this.atom = atom
-    this.angle = 45
+    this.angle = 180
   }
 
   toJSON() {
@@ -32,17 +32,23 @@ class LonePair {
   }
 
   draw(p5: p5) {
+    const relativeVector = new Vector(0, LONE_PAIR_ORBIT_RADIUS)
+  
+    relativeVector.rotate(p5.radians(this.angle))
+
     const posVector = this.getPosVector(p5)
-    const perpVector = new Vector()
-    perpVector.copy(posVector).normalize().perp().scale(10)
-    const leftBallPosition = posVector.add(perpVector)
-    const rightBallPosition = posVector.sub(perpVector)
+
+    const newPerpVector = new Vector().copy(relativeVector).normalize().perp().scale(10)
+    const leftBallPosition = new Vector(posVector.x - newPerpVector.x, posVector.y + newPerpVector.y)
+    const rightBallPosition = new Vector(posVector.x + newPerpVector.x, posVector.y - newPerpVector.y)
     p5.push()
-        p5.noFill()
-        p5.stroke(RED_OUTLINE_COLOR)
-        p5.strokeWeight(OUTLINE_THICKNESS)
-        p5.ellipse(leftBallPosition.x, leftBallPosition.y, ION_RADIUS + OUTLINE_THICKNESS)
-        p5.ellipse(rightBallPosition.x, rightBallPosition.y, ION_RADIUS + OUTLINE_THICKNESS)
+        p5.ellipseMode(p5.CENTER);
+        p5.stroke(0)
+        p5.strokeWeight(1)
+        p5.fill(255, 0, 0)
+        p5.ellipse(leftBallPosition.x, leftBallPosition.y, ION_RADIUS)
+        p5.fill(0, 255, 0)
+        p5.ellipse(rightBallPosition.x, rightBallPosition.y, ION_RADIUS)
     p5.pop()
   }
 
