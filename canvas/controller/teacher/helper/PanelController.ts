@@ -80,7 +80,7 @@ class PanelController {
         // do not create atom if currently outside the canvas
         if (this.p5.mouseX >= 0 && this.p5.mouseX <= this.p5.width &&
             this.p5.mouseY >= 0 && this.p5.mouseY <= this.p5.height) {
-            this.editorController.atomCreator.createNewMoleculeWithOneAtomOfElement(this.selectedElementId)
+            this.editorController.atomCreator.createNewMoleculeWithOneAtomOfElementInEachStep(this.selectedElementId)
         }
 
         this.resetTheDummyAtom(this.selectedElementId)

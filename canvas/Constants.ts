@@ -7,6 +7,8 @@ export const ATOM_RADIUS = 20
 export const ION_ORBIT_RADIUS = 15
 export const ION_RADIUS = 15
 
+export const LONE_PAIR_ORBIT_RADIUS = 25
+
 export const ATOM_REPULSION_FACTOR = 2
 export const BOND_DISTANCE = 100
 export const BOND_PULL_FACTOR = 10

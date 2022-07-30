@@ -1,4 +1,5 @@
 import { PlusIcon, XIcon } from "@heroicons/react/solid"
+import { isPropertySignature } from "typescript"
 import ReactionSaver from "../../../../canvas/controller/teacher/helper/ReactionSaver"
 import ReactionStep from "../../../../canvas/model/ReactionStep"
 import ReactionStepLoader from "../../../../canvas/utilities/ReactionStepLoader"

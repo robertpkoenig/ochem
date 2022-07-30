@@ -29,6 +29,7 @@ function EditorLeftButtons(props: IProps) {
                 arrowType: null,
                 straightArrowSelected: false,
                 selectedIon: null,
+                lonePairSelected: false,
                 angleControlSelected: false,
             })        
     }
@@ -51,6 +52,7 @@ function EditorLeftButtons(props: IProps) {
                     eraserOn: false,
                     straightArrowSelected: false,
                     selectedIon: null,
+                    lonePairSelected: false,
                     angleControlSelected: false,
             }) 
         }
@@ -76,6 +78,7 @@ function EditorLeftButtons(props: IProps) {
                     straightArrowSelected: false,
                     angleControlSelected: false,
                     selectedIon: null,
+                    lonePairSelected: false,
             }) 
         }
        
@@ -103,9 +106,23 @@ function EditorLeftButtons(props: IProps) {
                     arrowType: null,
                     straightArrowSelected: false,
                     angleControlSelected: false,
+                    lonePairSelected: false,
             })
         }
 
+    }
+
+    function toggleLonePair() {
+        props.setState({
+                ...props.state,
+                lonePairSelected: !props.state.lonePairSelected,
+                eraserOn: false,
+                bondType: null,
+                arrowType: null,
+                straightArrowSelected: false,
+                angleControlSelected: false,
+                selectedIon: null,
+            })
     }
 
     function toggleStraightArrow() {
@@ -117,6 +134,7 @@ function EditorLeftButtons(props: IProps) {
                 selectedIon: null,
                 arrowType: null,
                 angleControlSelected: false,
+                lonePairSelected: false,
         })
     }
 
@@ -177,6 +195,15 @@ function EditorLeftButtons(props: IProps) {
         >
             <MinusCircle className="w-4 h-4" />
         </SquareButton>
+
+    const lonePairButton = 
+      <SquareButton
+          imageSrc="/assets/images/lone-pair.svg"
+          imageAltText="lone pair"
+          onMouseDown={toggleLonePair}
+          selected={props.state.lonePairSelected}
+          tip="Lone pair"
+      />
     
     const eraserButton =
         <SquareButton
@@ -233,6 +260,7 @@ function EditorLeftButtons(props: IProps) {
             <hr className="my-2"></hr>
             {selectCationButton}
             {selectAnionButton}
+            {lonePairButton}
             <hr className="my-2"></hr>
             {eraserButton}
             {undoButton}

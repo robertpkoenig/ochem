@@ -16,6 +16,7 @@ class Eraser {
 
     eraseAnythingClicked() {
         this.eraseIonIfClicked()
+        this.eraseLonePairIfClicked()
         this.eraseAtomIfClicked()
         this.eraseBondIfClicked()
         this.eraseArrowIfClicked()
@@ -24,16 +25,29 @@ class Eraser {
 
     eraseIonIfClicked() {
         
-        const ionCurrentlyHovered =
+        const atomForWhichIonCurrentlyHovered =
             this.editorController.hoverDetector.ionCurrentlyHovered
 
-        if (ionCurrentlyHovered != null) {
+        if (atomForWhichIonCurrentlyHovered != null) {
             this.editorController.undoManager.addUndoPoint()
-            ionCurrentlyHovered.ionSymbol = null
+            atomForWhichIonCurrentlyHovered.ionSymbol = null
             ReactionSaver.saveReaction(this.editorController.reaction)
         }
 
     }
+
+    eraseLonePairIfClicked() {
+        
+      const lonePairHovered =
+          this.editorController.hoverDetector.lonePairCurrentlyHovered
+
+      if (lonePairHovered != null) {
+          this.editorController.undoManager.addUndoPoint()
+          lonePairHovered.atom.lonePair = null
+          ReactionSaver.saveReaction(this.editorController.reaction)
+      }
+
+  }
 
     eraseAtomIfClicked() {
         

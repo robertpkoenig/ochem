@@ -13,6 +13,7 @@ import { ITeacherState } from "../../../pages/teacher/reactions/[reactionId]"
 import BodyMover from "../BodyMover"
 import IonCreator from "./helper/IonCreator"
 import StraightArrowCreator from "./helper/StraightArrowCreator"
+import LonePairCreator from "./helper/LonePairCreator"
 
 class TeacherController {
 
@@ -24,13 +25,14 @@ class TeacherController {
     arrowCreator: CurlyArrowCreator
     bodyMover: BodyMover
 
-	// downstream collaborating objects
-	atomCreator: SingleAtomMoleculeCreator
-	bondCreator: BondCreator
+    // downstream collaborating objects
+    atomCreator: SingleAtomMoleculeCreator
+    bondCreator: BondCreator
     panelController: PanelController
     undoManager: UndoManager
     eraser: Eraser
     ionCreator: IonCreator
+    lonePairCreator: LonePairCreator
     straightArrowCreator: StraightArrowCreator
 
     // React page state
@@ -49,13 +51,14 @@ class TeacherController {
         // Downstream collaborating objects
         this.hoverDetector = new HoverDetector(reaction, collisionDetector)
         this.bodyMover = new BodyMover(p5, reaction)
-		this.atomCreator = new SingleAtomMoleculeCreator(p5, reaction, this)
+		    this.atomCreator = new SingleAtomMoleculeCreator(p5, reaction, this)
         this.bondCreator = new BondCreator(reaction, this)
-		this.panelController = new PanelController(p5, reaction, this)
+		    this.panelController = new PanelController(p5, reaction, this)
         this.undoManager = new UndoManager(this)
         this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState, this.undoManager)
         this.eraser = new Eraser(reaction, this)
         this.ionCreator = new IonCreator(reaction, this)
+        this.lonePairCreator = new LonePairCreator(reaction, this)
         this.straightArrowCreator = new StraightArrowCreator(reaction, this)
 
         // React page state
@@ -97,6 +100,9 @@ class TeacherController {
         }
         if (this.pageState.selectedIon) {
             this.ionCreator.createIonIfAtomClicked(this.pageState.selectedIon)
+        }
+        if (this.pageState.lonePairSelected) {
+            this.lonePairCreator.createLonePairIfAtomClicked()
         }
         if (this.pageState.straightArrowSelected) {
             this.straightArrowCreator.startArrow(mouseVector)

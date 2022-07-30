@@ -4,11 +4,13 @@ import Reaction from "../../../model/Reaction";
 import CollisionDetector from "../../../view/CollisinDetector";
 import { CurlyArrow } from "../../../model/chemistry/CurlyArrow";
 import StraightArrow from "../../../model/chemistry/StraightArrow";
+import LonePair from "../../../model/chemistry/atoms/LonePair";
 
 /** Detects what item is hovered */
 class HoverDetector {
 
     ionCurrentlyHovered: Atom
+    lonePairCurrentlyHovered: LonePair
     atomCurrentlyHovered: Atom
     bondCurrentlyHovered: Bond
     reaction: Reaction
@@ -38,10 +40,11 @@ class HoverDetector {
     detectHovering() {
 
         this.detectIonHover()
+        this.detectLonePairHover()
 
         // If it's already hovered over an ion, don't
         // say it's hovered over an atom
-        if (this.ionCurrentlyHovered) {
+        if (this.ionCurrentlyHovered || this.lonePairCurrentlyHovered) {
             this.atomCurrentlyHovered = null
         }
         else {
@@ -51,14 +54,14 @@ class HoverDetector {
         // If an atom is hovered, don't detect a bond hover
         // because bonds go into the atom, and this would
         // result in both a bond and atom highlighted
-        if (this.ionCurrentlyHovered || this.atomCurrentlyHovered) {
+        if (this.ionCurrentlyHovered|| this.lonePairCurrentlyHovered || this.atomCurrentlyHovered) {
             this.bondCurrentlyHovered = null
         }
         else {
             this.detectBondHover()
         }
 
-        if (this.bondCurrentlyHovered || this.atomCurrentlyHovered
+        if (this.bondCurrentlyHovered || this.lonePairCurrentlyHovered || this.atomCurrentlyHovered
             || this.ionCurrentlyHovered) {
             this.curlyArrowCurrentlyHovered = null
         }
@@ -67,7 +70,7 @@ class HoverDetector {
             this.detectCurlyArrowHover()
         }
 
-        if (this.bondCurrentlyHovered || this.atomCurrentlyHovered
+        if (this.bondCurrentlyHovered|| this.lonePairCurrentlyHovered || this.atomCurrentlyHovered
             || this.ionCurrentlyHovered || this.curlyArrowCurrentlyHovered) {
             this.straightArrowCurrentlyHovered = null
         }
@@ -82,12 +85,26 @@ class HoverDetector {
         for (const atom of this.reaction.currentStep.getAllAtoms()) {
             if (atom.ionSymbol) {
                 if (this.collisionDetector.mouseHoveredOverIon(atom)) {
+                    console.log("ion hovered");
+                    
                     this.ionCurrentlyHovered = atom
                     return
                 }
             }
         }
         this.ionCurrentlyHovered = null
+    }
+
+    private detectLonePairHover() {
+      for (const atom of this.reaction.currentStep.getAllAtoms()) {
+          if (atom.lonePair) {
+              if (this.collisionDetector.mouseHoveredOverLonePair(atom.lonePair)) {
+                  this.lonePairCurrentlyHovered = atom.lonePair
+                  return
+              }
+          }
+      }
+      this.lonePairCurrentlyHovered = null
     }
 
     private detectAtomHover() {

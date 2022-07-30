@@ -13,7 +13,6 @@ class Molecule {
     }
 
     toJSON() {
-
         const atomsAsPlainObjectArray = []
         for (const atom of this.atoms) {
             atomsAsPlainObjectArray.push(atom.toJSON())
@@ -28,6 +27,10 @@ class Molecule {
             atoms: atomsAsPlainObjectArray,
             bonds: bondsAsPlainObjectArray,
         }
+    }
+
+    copy() {
+      
     }
 
     // Push everything from molecule two to molecule one

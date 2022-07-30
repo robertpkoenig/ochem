@@ -8,6 +8,7 @@ import p5 from "p5";
 import { CurlyArrow } from "../model/chemistry/CurlyArrow";
 import StraightArrow from "../model/chemistry/StraightArrow";
 import { ARROW_STROKE_WEIGHT, BLUE_OUTLINE_COLOR, ION_ORBIT_RADIUS, ION_RADIUS, OUTLINE_THICKNESS, RED_OUTLINE_COLOR, STROKE_WEIGHT } from "../Constants";
+import LonePair from "../model/chemistry/atoms/LonePair";
 
 /** Performs teacher-specific rendering tasks */
 class TeacherView {
@@ -34,6 +35,7 @@ class TeacherView {
 
     render() {
         this.decorateIonIfHovered()
+        this.decorateLonePairIfHovered()
 
         this.decorateAtomIfHovered()
         this.decorateBondIfHovered()
@@ -59,45 +61,66 @@ class TeacherView {
         }
     }
 
-    private drawIonOutline(atom: Atom) {
-        const x = atom.getPosVector().x + ION_ORBIT_RADIUS
-        const y = atom.getPosVector().y - ION_ORBIT_RADIUS
-        this.p5.push()
-            this.p5.noFill()
-            this.p5.stroke(RED_OUTLINE_COLOR)
-            this.p5.strokeWeight(OUTLINE_THICKNESS)
-            this.p5.ellipse(x, y, ION_RADIUS + OUTLINE_THICKNESS)
-        this.p5.pop()
-    }
+    private decorateLonePairIfHovered() {
+      const hoveredLonePair = this.teacherController.hoverDetector.lonePairCurrentlyHovered
 
-    private decorateAtomIfHovered() {
-    
-        const hoveredAtom = this.teacherController.hoverDetector.atomCurrentlyHovered
+      if (hoveredLonePair != null) {
+          if (this.teacherController.pageState.eraserOn) {
+              this.drawLonePairOutline(hoveredLonePair)
+              this.showEraserTip()
+          }
+      }
 
-        if (hoveredAtom != null) {
+      else if (this.eraserTipVisible) {
+          this.hideEraserTip()
+      }
+  }
 
-            if (this.teacherController.pageState.eraserOn) {
-                this.drawAtomOutline(hoveredAtom, RED_OUTLINE_COLOR)
-                this.showEraserTip()
-            }
-            else {
-                this.drawAtomOutline(hoveredAtom, BLUE_OUTLINE_COLOR)
-            }
+  private drawLonePairOutline(lonePair: LonePair) {
+    const x = lonePair.getPosVector(this.p5).x
+    const y = lonePair.getPosVector(this.p5).y
+    this.p5.push()
+        this.p5.noFill()
+        this.p5.stroke(RED_OUTLINE_COLOR)
+        this.p5.strokeWeight(OUTLINE_THICKNESS)
+        this.p5.ellipse(x, y, ION_RADIUS + OUTLINE_THICKNESS)
+    this.p5.pop()
+  }
 
-        }
+  private drawIonOutline(atom: Atom) {
+      const x = atom.getPosVector().x - ION_ORBIT_RADIUS
+      const y = atom.getPosVector().y - ION_ORBIT_RADIUS
+      this.p5.push()
+          this.p5.noFill()
+          this.p5.stroke(RED_OUTLINE_COLOR)
+          this.p5.strokeWeight(OUTLINE_THICKNESS)
+          this.p5.ellipse(x, y, ION_RADIUS + OUTLINE_THICKNESS)
+      this.p5.pop()
+  }
 
-    }
+  private decorateAtomIfHovered() {
+      const hoveredAtom = this.teacherController.hoverDetector.atomCurrentlyHovered
+      if (hoveredAtom != null) {
+          if (this.teacherController.pageState.eraserOn) {
+              this.drawAtomOutline(hoveredAtom, RED_OUTLINE_COLOR)
+              this.showEraserTip()
+          }
+          else {
+              this.drawAtomOutline(hoveredAtom, BLUE_OUTLINE_COLOR)
+          }
+      }
+  }
 
-    private drawAtomOutline(atom: Atom, color: string) {
-        this.p5.push()
-            this.p5.noFill()
-            this.p5.stroke(color)
-            this.p5.strokeWeight(OUTLINE_THICKNESS)
-            this.p5.ellipse(atom.circle.pos.x,
-                            atom.circle.pos.y,
-                            atom.radius * 2 + OUTLINE_THICKNESS)
-        this.p5.pop()
-    }
+  private drawAtomOutline(atom: Atom, color: string) {
+      this.p5.push()
+          this.p5.noFill()
+          this.p5.stroke(color)
+          this.p5.strokeWeight(OUTLINE_THICKNESS)
+          this.p5.ellipse(atom.circle.pos.x,
+                          atom.circle.pos.y,
+                          atom.radius * 2 + OUTLINE_THICKNESS)
+      this.p5.pop()
+  }
 
     // Sets the position of the eraser tip DOM element based on
     // the p5 mouse position, and sets the eraser tip to visible

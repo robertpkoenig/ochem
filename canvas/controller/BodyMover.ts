@@ -2,6 +2,7 @@ import p5 from "p5";
 import SAT from "sat";
 import { Atom } from "../model/chemistry/atoms/Atom";
 import Reaction from "../model/Reaction";
+import ReactionSaver from "./teacher/helper/ReactionSaver";
 
 /** Logic to move atoms or other objects in canvas */
 class BodyMover {
@@ -28,17 +29,17 @@ class BodyMover {
     }
 
 	stopDraggingBody() {
+    ReactionSaver.saveReaction(this.reaction)
 		this.atomBeingDragged = null
 	}
 
 	dragBodyIfPressed() {
-        if (this.atomBeingDragged != null) {
-            // console.log("pos: ", this.atomBeingDragged.pos.x);
-            
-            this.atomBeingDragged.circle.pos.x = this.p5.mouseX / this.reaction.zoom
-            this.atomBeingDragged.circle.pos.y = this.p5.mouseY / this.reaction.zoom
-		}
+    if (this.atomBeingDragged != null) {
+        // move the atom
+        this.atomBeingDragged.circle.pos.x = this.p5.mouseX / this.reaction.zoom
+        this.atomBeingDragged.circle.pos.y = this.p5.mouseY / this.reaction.zoom
     }
+  }
 	
 }
 

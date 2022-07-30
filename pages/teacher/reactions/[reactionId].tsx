@@ -44,6 +44,7 @@ interface IState {
     straightArrowSelected: boolean
     angleControlSelected: boolean
     selectedIon: Ion
+    lonePairSelected: boolean
     eraserOn: boolean
     selectedElement: HTMLElement
     promptPopupVisible: boolean
@@ -73,6 +74,7 @@ const TeacherReactionPage = (props: IProps) => {
                 straightArrowSelected: false,
                 angleControlSelected: false,
                 selectedIon: null,
+                lonePairSelected: false,
                 eraserOn: false,
                 selectedElement: null,
                 promptPopupVisible: false,
