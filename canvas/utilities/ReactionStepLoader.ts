@@ -25,6 +25,7 @@ class ReactionStepLoader {
                 for (const savedAtom of savedMolecule.atoms) {
                     const newAtom: Atom = AtomFactory.createAtom(
                                                                 savedAtom.name,
+                                                                savedAtom.uuid,
                                                                 savedAtom.x,
                                                                 savedAtom.y,
                                                                 )
@@ -94,7 +95,7 @@ class ReactionStepLoader {
 
         }
 
-        const savedCurlyArrows = reactionStepPlainObject.curlyArrows
+        const savedCurlyArrows = reactionStepPlainObject["curlyArrows"]
 
         for (const savedCurlyArrow of savedCurlyArrows) {
             

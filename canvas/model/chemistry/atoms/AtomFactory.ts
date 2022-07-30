@@ -3,20 +3,18 @@ import { Elements, IAtomicElement } from "./elements"
 
 class AtomFactory {
     
-    static createAtom(name: string, x: number, y: number): Atom {
-        let newAtom = this.createAtomFromElement(name)
+    static createAtom(name: string, atomUid: string, x: number, y: number): Atom {
+        let newAtom = this.createAtomFromElement(name, atomUid)
         newAtom.setPosCoordinates(x, y)
         return newAtom
     }
 
-    private static createAtomFromElement(name: string): Atom {
+    private static createAtomFromElement(name: string, atomUid: string): Atom {
 
         const element: IAtomicElement = Elements[name]
         if (!element) throw new Error("Attempted to get nonexistent element")
 
-        return new Atom(
-            element
-        ) 
+        return new Atom(element, atomUid) 
 
     }
 

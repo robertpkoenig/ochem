@@ -6,9 +6,11 @@ import CurlyArrowCreator from "../CurlyArrowCreator"
 import BodyMover from "../BodyMover"
 import HoverDetector from "../teacher/helper/HoverDetector"
 import { IStudentState } from "../../../pages/student/reactions/[reactionId]"
-import { addDelayedAction } from "../delayedActions"
+import { TemporaryProcess, temporaryProcesses } from "../delayedActions"
 import { addArrowToListOfCurlyArrows, clearCurlyArrows, curlyArrows, removeArrowFromCurlyArrows } from "../../view/curlyArrows"
 import { addToFeedbackItems, CorrectArrowFeedback, IncorrectArrowFeedback, removeFromFeedbackItems } from "../../view/feedback"
+import { FRAME_RATE } from "../../Constants"
+import { Atom } from "../../model/chemistry/atoms/Atom"
 
 /** Handles student input in canvas */
 class StudentController {
@@ -115,6 +117,60 @@ class StudentController {
         const nextCurlyArrowIndex = curlyArrows.length
         const nextCurlyArrow = this.reaction.currentStep.curlyArrows[nextCurlyArrowIndex]
         this.arrowCreator.completeStudentArrowIfReleasedOverObject()
+        const reaction = this.reaction
+        const correctArrow = this.arrowCreator.draftArrow
+
+        const nextStep = reaction.steps[reaction.currentStep.order + 1]
+
+        const positionOfAtomsInNextStep: {[atomUid: string]: Vector} = {}
+
+        for (const molecule of nextStep.molecules) {
+          for (const atom of molecule.atoms) {
+            positionOfAtomsInNextStep[atom.uuid] = atom.getPosVector().clone()
+          }
+        }
+
+        function moveAtoms() {
+          for (const molecule of reaction.currentStep.molecules) {
+            for (const atom of molecule.atoms) {
+              
+              const positionOfAtomInNextStep = positionOfAtomsInNextStep[atom.uuid]
+  
+              // Get the positions of the two atoms
+              const posOne = atom.getPosVector()
+              const posTwo = positionOfAtomInNextStep
+    
+              // Calculate the distance between the two points
+              const distanceVector = posOne.clone().sub(posTwo)
+
+              const distanceVectorScaledToDifference = distanceVector.scale(0.08)
+  
+              atom.getPosVector().sub(distanceVectorScaledToDifference)
+            }
+          }
+        }
+
+        function changeAtomPositionsInNextStepToMatchCurrentStep() {
+          for (const molecule of nextStep.molecules) {
+            for (const atom of molecule.atoms) {
+              const correspondingAtomInCurrentStep = reaction.currentStep.getAllAtoms().find(a => a.uuid == atom.uuid)
+              atom.circle.pos = correspondingAtomInCurrentStep.getPosVector()
+            }
+          }
+        }
+
+        const animateAtomsProcess: TemporaryProcess = {
+          functionCalledEachFrame: function () {
+            moveAtoms()
+          },
+          functionCalledAtEnd: function (): void {},
+          remainingFramesBeforeActionExecuted: 3000
+        }
+
+        function addAnimationToTempProcesses() {
+          temporaryProcesses.push(animateAtomsProcess)
+        }
+
         if (this.arrowCreator.draftArrow != null) {
           const curlyArrowIsCorrect = 
             this.arrowCreator.draftArrow.startObject === nextCurlyArrow.startObject &&
@@ -123,20 +179,34 @@ class StudentController {
             addArrowToListOfCurlyArrows(this.arrowCreator.draftArrow)
             const correctArrowFeedback = new CorrectArrowFeedback(this.arrowCreator.draftArrow, this.p5)
             addToFeedbackItems(correctArrowFeedback)
-            addDelayedAction(() => {
-              removeFromFeedbackItems(correctArrowFeedback)
-              this.moveToNextStepIfReady()
-            }, 2000)
+            temporaryProcesses.push({
+              functionCalledEachFrame: () => {},
+              functionCalledAtEnd: () => {
+                removeFromFeedbackItems(correctArrowFeedback)
+                if (curlyArrows.length == this.reaction.currentStep.curlyArrows.length) {
+                  curlyArrows.length = 0
+                  changeAtomPositionsInNextStepToMatchCurrentStep()
+                  reaction.currentStep = reaction.steps[reaction.currentStep.order + 1]
+                  this.setPageState({...this.pageState})
+                  addAnimationToTempProcesses()
+                }
+              },
+              remainingFramesBeforeActionExecuted: 1000 / FRAME_RATE
+            })
           } else {
             const incorrectArrow = this.arrowCreator.draftArrow
             incorrectArrow.correct = false
             addArrowToListOfCurlyArrows(this.arrowCreator.draftArrow)
             const incorrectArrowFeedback = new IncorrectArrowFeedback(this.arrowCreator.draftArrow, this.p5)
             addToFeedbackItems(incorrectArrowFeedback)
-            addDelayedAction(() => {
-              removeFromFeedbackItems(incorrectArrowFeedback)
-              removeArrowFromCurlyArrows(incorrectArrow)
-            }, 1000)
+            temporaryProcesses.push({
+              functionCalledEachFrame: function() {},
+              functionCalledAtEnd: function() {
+                removeFromFeedbackItems(incorrectArrowFeedback)
+                removeArrowFromCurlyArrows(incorrectArrow)
+              },
+              remainingFramesBeforeActionExecuted: 1000 / FRAME_RATE
+            })
           }
         }
         this.arrowCreator.draftArrow = null
@@ -147,7 +217,7 @@ class StudentController {
                 nextCurlyArrow.endObject) 
         {
 
-          addDelayedAction(() => console.log("delayedActiontriggered"), 1000)
+          // addDelayedAction(() => console.log("delayedActiontriggered"), 1000)
         }
         else if (this.arrowCreator.draftArrow != null &&
                  this.arrowCreator.draftArrow.endObject != null) {
@@ -155,6 +225,10 @@ class StudentController {
             this.arrowCreator.draftArrow = null
         }
         this.arrowCreator.draftArrow = null
+    }
+
+    animateMovementOfAtomsFromOneStepToNext() {
+      
     }
 
     moveToNextStepIfReady() {

@@ -2,19 +2,22 @@ import { Vector } from "sat"
 import { Body } from "../../physics/Body"
 import { IAtomicElement } from "./elements"
 import { v4 as uuid } from 'uuid'
+import LonePair from "./LonePair"
 
 class Atom extends Body {
 
     public element: IAtomicElement
     public uuid: string
     public ionSymbol: string
+    public lonePair: LonePair
 
     constructor(
-        element: IAtomicElement
+        element: IAtomicElement,
+        atomUid: string
     ) {
         super(element.mass, element.radius)
         this.element = element
-        this.uuid = uuid()
+        this.uuid = atomUid
 
         this.ionSymbol = null
     }
@@ -26,6 +29,7 @@ class Atom extends Body {
             name: this.element.name,
             id: this.uuid,
             ion: this.ionSymbol,
+            lonePair: this.lonePair ? this.lonePair.toJSON() : null,
         }
     }
 

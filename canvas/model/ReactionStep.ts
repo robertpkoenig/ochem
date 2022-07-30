@@ -4,6 +4,7 @@ import { CurlyArrow } from "./chemistry/CurlyArrow"
 import Molecule from "./chemistry/Molecule"
 import { v4 as uuid } from 'uuid'
 import StraightArrow from "./chemistry/StraightArrow"
+import { Vector } from "sat"
 
 class ReactionStep {
 

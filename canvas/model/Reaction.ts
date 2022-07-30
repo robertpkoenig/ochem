@@ -1,3 +1,4 @@
+import { Atom } from "./chemistry/atoms/Atom";
 import ReactionStep from "./ReactionStep";
 
 class Reaction {
@@ -55,9 +56,7 @@ class Reaction {
         const stepsAsPlainObjectArray = []
 
         for (const step of this.steps) {
-            console.log(step);
-            
-            stepsAsPlainObjectArray.push(step.toJSON())
+          stepsAsPlainObjectArray.push(step.toJSON())
         }
 
         return {

@@ -22,7 +22,8 @@ class DeleteManager {
     }
 
     private static removeReferencesToAtom(reaction: Reaction, atomToDelete: Atom) {
-        for (const molecule of reaction.currentStep.molecules) {
+      for (const step of reaction.steps) {
+        for (const molecule of step.molecules) {
             if (molecule.atoms.includes(atomToDelete)) {
                 // remove this atom from the molecule
                 molecule.atoms = molecule.atoms.filter((atom: Atom) => atom != atomToDelete)
@@ -33,19 +34,24 @@ class DeleteManager {
                 return
             }
         }
+      }
     }
 
     private static deleteCurlyArrowsThatStartOrEndOnThisAtom(atom: Atom, reaction: Reaction) {
-        for (const curlyArrow of reaction.currentStep.curlyArrows) {
+      for (const step of reaction.steps) {
+        for (const curlyArrow of step.curlyArrows) {
             if (curlyArrow.startObject == atom || curlyArrow.endObject == atom) {
                 reaction.currentStep.curlyArrows = reaction.currentStep.curlyArrows.filter(currArrow => currArrow != curlyArrow)
             }
         }
+      }
     }
 
     private static removeReferencesToMolecule(reaction: Reaction, molecule: Molecule) {
-        reaction.currentStep.molecules = 
+      for (const step of reaction.steps) {
+        step.molecules = 
             reaction.currentStep.molecules.filter((currMolecule: Molecule) => currMolecule != molecule)
+      }
     }
 
     public static deleteBond(reaction: Reaction, bondToDelete: Bond) {
