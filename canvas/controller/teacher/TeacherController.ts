@@ -10,10 +10,13 @@ import Eraser from "./helper/Eraser"
 import CurlyArrowCreator from "../CurlyArrowCreator"
 import p5 from "p5"
 import { ITeacherState } from "../../../pages/teacher/reactions/[reactionId]"
-import BodyMover from "../BodyMover"
+import AtomMover from "./helper/AtomMover"
 import IonCreator from "./helper/IonCreator"
 import StraightArrowCreator from "./helper/StraightArrowCreator"
 import LonePairCreator from "./helper/LonePairCreator"
+import { ArrowType } from "../../model/chemistry/CurlyArrow"
+import moveLonePairIfPressed from "./helper/moveLonePair"
+import ReactionSaver from "./helper/ReactionSaver"
 
 class TeacherController {
 
@@ -23,7 +26,7 @@ class TeacherController {
     collisionDetector: CollisionDetector
     hoverDetector: HoverDetector
     arrowCreator: CurlyArrowCreator
-    bodyMover: BodyMover
+    atomMover: AtomMover
 
     // downstream collaborating objects
     atomCreator: SingleAtomMoleculeCreator
@@ -50,7 +53,7 @@ class TeacherController {
 
         // Downstream collaborating objects
         this.hoverDetector = new HoverDetector(reaction, collisionDetector)
-        this.bodyMover = new BodyMover(p5, reaction)
+        this.atomMover = new AtomMover(p5, reaction)
 		    this.atomCreator = new SingleAtomMoleculeCreator(p5, reaction, this)
         this.bondCreator = new BondCreator(reaction, this)
 		    this.panelController = new PanelController(p5, reaction, this)
@@ -83,7 +86,8 @@ class TeacherController {
             this.straightArrowCreator.draftArrow.update(this.p5, this.reaction.zoom)
         }
       
-        this.bodyMover.dragBodyIfPressed()
+        this.atomMover.dragBodyIfPressed()
+        moveLonePairIfPressed(this.hoverDetector, this.p5)
         this.hoverDetector.detectHovering()
     }
 
@@ -93,7 +97,7 @@ class TeacherController {
         }
         if (this.pageState.bondType == null &&
             this.pageState.arrowType == null) {
-            this.bodyMover.startDraggingBodyIfPressed(mouseVector)
+            this.atomMover.startDraggingBodyIfPressed(mouseVector)
         }
         if (this.pageState.eraserOn) {
             this.eraser.eraseAnythingClicked()
@@ -125,19 +129,31 @@ class TeacherController {
         if (this.straightArrowCreator.draftArrow) {
             this.straightArrowCreator.completeStraightArrow(mouseVector)
         }
-        this.bodyMover.stopDraggingBody()
+        this.atomMover.stopDraggingBody()
+        ReactionSaver.saveReaction(this.reaction)
     }
 
     updateMouseStyle() {
 
         const currentlyOverAtom = this.hoverDetector.atomCurrentlyHovered != null
         const currentlyOverBond = this.hoverDetector.bondCurrentlyHovered != null
+        const currentlyOverLonePair = this.hoverDetector.lonePairCurrentlyHovered != null
 
         const currentlyDrawingBondOrArrowOrIonOrAngle = 
             this.bondCreator.startAtom != null ||
             this.arrowCreator.draftArrow != null ||
             this.pageState.selectedIon ||
             this.pageState.angleControlSelected
+
+        const onlyMovingHandOrArrowIsActive = 
+            (
+              this.pageState.bondType == null &&
+              this.pageState.eraserOn == false &&
+              this.pageState.lonePairSelected == false &&
+              this.pageState.selectedIon == null &&
+              this.pageState.straightArrowSelected == false &&
+              this.pageState.arrowType == null
+            )
 
         if (currentlyDrawingBondOrArrowOrIonOrAngle) {
             this.p5.cursor("crosshair")
@@ -164,6 +180,14 @@ class TeacherController {
         // Hovering a bond and arrow type is selected
         else if (currentlyOverBond && this.pageState.arrowType != null) {
             this.p5.cursor("crosshair")
+        }
+
+        else if (currentlyOverLonePair) {
+          if (this.pageState.arrowType != null) this.p5.cursor("crosshair")
+          if (onlyMovingHandOrArrowIsActive) {
+            if (this.p5.mouseIsPressed) this.p5.cursor("grabbing")
+            else this.p5.cursor("grab")
+          }
         }
 
         else {

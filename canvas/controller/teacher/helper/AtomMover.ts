@@ -1,11 +1,11 @@
 import p5 from "p5";
 import SAT from "sat";
-import { Atom } from "../model/chemistry/atoms/Atom";
-import Reaction from "../model/Reaction";
-import ReactionSaver from "./teacher/helper/ReactionSaver";
+import { Atom } from "../../../model/chemistry/atoms/Atom";
+import Reaction from "../../../model/Reaction";
+import ReactionSaver from "./ReactionSaver";
 
 /** Logic to move atoms or other objects in canvas */
-class BodyMover {
+class AtomMover {
 
 	p5: p5
 	reaction: Reaction
@@ -43,4 +43,4 @@ class BodyMover {
 	
 }
 
-export default BodyMover
+export default AtomMover

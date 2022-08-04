@@ -34,7 +34,7 @@ class ReactionStepLoader {
                     newAtom.uuid = savedAtom.id
 
                     if (savedAtom.lonePair != null) {
-                      const lonePair = new LonePair(newAtom)
+                      const lonePair = new LonePair(newAtom, savedAtom.lonePair.uuid, savedAtom.lonePair.angle)
                       newAtom.lonePair = lonePair
                     }
 
@@ -108,20 +108,28 @@ class ReactionStepLoader {
             
             const restoredCurlyArrow = new CurlyArrow(savedCurlyArrow.type)
             
-            const bondsAndAtoms: (Atom | Bond)[] = [
-                                    ...restoredReactionStep.getAllAtoms(),
-                                    ...restoredReactionStep.getAllBonds()
-                                  ]
-            
-            for (const object of bondsAndAtoms) {
+            const possibleStartObjects: (Atom | Bond | LonePair)[] = [
+                ...restoredReactionStep.getAllAtoms(),
+                ...restoredReactionStep.getAllBonds(),
+                ...restoredReactionStep.getAllLonePairs(),
+              ]
+
+            for (const object of possibleStartObjects) {
                 if (object.uuid === savedCurlyArrow.startObjectId) {
                     restoredCurlyArrow.startObject = object
                 }
+            }
+
+            const possibleEndObjects: (Atom | Bond)[] = [
+                ...restoredReactionStep.getAllAtoms(),
+                ...restoredReactionStep.getAllBonds(),
+              ]
+            
+            for (const object of possibleEndObjects) {
                 if (object.uuid === savedCurlyArrow.endObjectId) {
                     restoredCurlyArrow.endObject = object
                 }
             }
-
             restoredReactionStep.curlyArrows.push(restoredCurlyArrow)
 
         }

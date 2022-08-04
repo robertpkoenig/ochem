@@ -5,7 +5,7 @@ import p5 from "p5"
 import { CurlyArrow } from "../model/chemistry/CurlyArrow"
 import { Atom } from "../model/chemistry/atoms/Atom"
 import StraightArrow from "../model/chemistry/StraightArrow"
-import { ION_ORBIT_RADIUS, ION_RADIUS } from "../Constants"
+import { ION_ORBIT_RADIUS, ION_RADIUS, LONE_PAIR_COLLISION_RADIUS } from "../Constants"
 import LonePair from "../model/chemistry/atoms/LonePair"
 
 // Contains methods for checking if various elements
@@ -49,8 +49,8 @@ class CollisionDetector {
 
     mouseHoveredOverLonePair(lonePair: LonePair) {
         const mouseVector = new Vector(this.p5.mouseX / this.reaction.zoom, this.p5.mouseY / this.reaction.zoom)
-        const lonePairAbsoluteCoordinateVector = lonePair.getPosVector(this.p5)
-        const lonePairCircle = new SAT.Circle(lonePairAbsoluteCoordinateVector, ION_RADIUS / 2)
+        const lonePairAbsoluteCoordinateVector = lonePair.getPosVector()
+        const lonePairCircle = new SAT.Circle(lonePairAbsoluteCoordinateVector, 10000)
         return SAT.pointInCircle(mouseVector, lonePairCircle)
     }
 

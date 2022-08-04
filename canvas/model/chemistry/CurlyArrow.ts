@@ -2,6 +2,7 @@ import { Polygon, Vector } from "sat"
 import { Atom } from "./atoms/Atom"
 import { Bond } from "./bonds/Bond"
 import p5 from 'p5'
+import LonePair from "./atoms/LonePair"
 
 enum ArrowType {
     SINGLE = "SINGLE",
@@ -13,7 +14,7 @@ class CurlyArrow {
     type: ArrowType
     startVector: Vector
     endVector: Vector
-    startObject: Atom | Bond
+    startObject: Atom | Bond | LonePair
     endObject: Atom | Bond
     anchorOne: Vector
     anchorTwo: Vector
@@ -37,7 +38,7 @@ class CurlyArrow {
         }
     }
 
-    setStartObject(startObject: Atom | Bond) {
+    setStartObject(startObject: Atom | Bond | LonePair) {
         this.startObject = startObject
     }
 

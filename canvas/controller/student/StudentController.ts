@@ -3,7 +3,7 @@ import { Vector } from "sat"
 import CollisionDetector from "../../view/CollisinDetector"
 import Reaction from "../../model/Reaction"
 import CurlyArrowCreator from "../CurlyArrowCreator"
-import BodyMover from "../BodyMover"
+import AtomMover from "../teacher/helper/AtomMover"
 import HoverDetector from "../teacher/helper/HoverDetector"
 import { IStudentState } from "../../../pages/student/reactions/[reactionId]"
 import { TemporaryProcess, temporaryProcesses } from "../delayedActions"
@@ -21,7 +21,7 @@ class StudentController {
     collisionDetector: CollisionDetector
     hoverDetector: HoverDetector
     arrowCreator: CurlyArrowCreator
-    bodyMover: BodyMover
+    bodyMover: AtomMover
 
     // React page state
     pageState: IStudentState

@@ -1,7 +1,8 @@
 lone pairs
 
-- draw lone pair correctly
-- make lone pair valid arrow origin or end
+WHERE I AM
+
+- trying to get moveLonePair to work
 
 
 - adjust overall layout of the student and teacher page so that notifications are on the page, and the canvas is not constrained

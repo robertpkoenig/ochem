@@ -65,15 +65,12 @@ class View {
     }
 
     render() {
-        
         if (this.userType == UserType.TEACHER) {
             this.teacherView.render()
         }
-
         if (this.userType == UserType.STUDENT) {
             this.studentView.render()
         }
-
         this.renderMolecules()
         this.renderCurlyArrows()
         this.renderDraftCurlyArrow()

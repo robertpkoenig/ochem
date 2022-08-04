@@ -37,6 +37,7 @@ class CurlyArrowCreator {
     startArrowIfObjectClicked() {
        this.startArrowIfAtomClicked() 
        this.startArrowIfBondClicked() 
+       this.startArrowIfLonePairClicked()
 	}
 
     private startArrowIfAtomClicked() {
@@ -55,6 +56,15 @@ class CurlyArrowCreator {
             newArrow.setStartObject(hoveredBond)
             this.draftArrow = newArrow
         }
+    }
+
+    private startArrowIfLonePairClicked() {
+      const hoveredLonePair = this.hoverDetector.lonePairCurrentlyHovered
+      if (hoveredLonePair != null) {
+        const newArrow = new CurlyArrow (this.pageState.arrowType)
+        newArrow.setStartObject(hoveredLonePair)
+        this.draftArrow = newArrow
+      }
     }
 
     completeTeacherCurlyArrowIfReleasedOverObject() {

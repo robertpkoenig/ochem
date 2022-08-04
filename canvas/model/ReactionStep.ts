@@ -5,6 +5,7 @@ import Molecule from "./chemistry/Molecule"
 import { v4 as uuid } from 'uuid'
 import StraightArrow from "./chemistry/StraightArrow"
 import { Vector } from "sat"
+import LonePair from "./chemistry/atoms/LonePair"
 
 class ReactionStep {
 
@@ -46,6 +47,16 @@ class ReactionStep {
             bonds.push(...molecule.bonds)
         }
         return bonds
+    }
+
+    getAllLonePairs(): LonePair[] {
+      const lonePairs: LonePair[] = []
+      for (const molecule of this.molecules) {
+        for (const atom of molecule.atoms) {
+          if (atom.lonePair) lonePairs.push(atom.lonePair)
+        }
+      }
+      return lonePairs
     }
 
     replaceWithNewModel(newModel: ReactionStep) {
