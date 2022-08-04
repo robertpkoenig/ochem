@@ -2,8 +2,7 @@ lone pairs
 
 WHERE I AM
 
-- trying to get moveLonePair to work
-
+- 
 
 - adjust overall layout of the student and teacher page so that notifications are on the page, and the canvas is not constrained
 - add a hand button to the controller (1)

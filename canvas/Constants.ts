@@ -14,7 +14,7 @@ export const LONE_PAIR_OUTLINE_RADIUS = 25
 export const LONE_PAIR_COLLISION_RADIUS = 10
 
 export const ATOM_REPULSION_FACTOR = 2
-export const BOND_DISTANCE = 100
+export const BOND_DISTANCE = 80
 export const BOND_PULL_FACTOR = 10
 export const THRESHOLD_DISTANCE = 100
 
