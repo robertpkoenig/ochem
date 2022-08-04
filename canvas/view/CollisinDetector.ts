@@ -50,7 +50,7 @@ class CollisionDetector {
     mouseHoveredOverLonePair(lonePair: LonePair) {
         const mouseVector = new Vector(this.p5.mouseX / this.reaction.zoom, this.p5.mouseY / this.reaction.zoom)
         const lonePairAbsoluteCoordinateVector = lonePair.getPosVector()
-        const lonePairCircle = new SAT.Circle(lonePairAbsoluteCoordinateVector, 10000)
+        const lonePairCircle = new SAT.Circle(lonePairAbsoluteCoordinateVector, LONE_PAIR_COLLISION_RADIUS)
         return SAT.pointInCircle(mouseVector, lonePairCircle)
     }
 
