@@ -12,8 +12,6 @@ function moveLonePairIfPressed(hoverDetector: HoverDetector, p5: p5) {
   const difVector = mouseVector.sub(atomVector)
   const angle = p5.degrees(difVector.heading()) - 90
 
-  console.log(angle);
-
   lonePair.angle = angle
 
 }
