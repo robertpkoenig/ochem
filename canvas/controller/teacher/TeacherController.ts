@@ -53,7 +53,7 @@ class TeacherController {
 
         // Downstream collaborating objects
         this.hoverDetector = new HoverDetector(reaction, collisionDetector)
-        this.atomMover = new AtomMover(p5, reaction)
+        this.atomMover = new AtomMover(p5, reaction, this.hoverDetector)
 		    this.atomCreator = new SingleAtomMoleculeCreator(p5, reaction, this)
         this.bondCreator = new BondCreator(reaction, this)
 		    this.panelController = new PanelController(p5, reaction, this)
@@ -86,7 +86,7 @@ class TeacherController {
             this.straightArrowCreator.draftArrow.update(this.p5, this.reaction.zoom)
         }
       
-        this.atomMover.dragBodyIfPressed()
+        this.atomMover.dragAllAtomsRequired()
         moveLonePairIfPressed(this.hoverDetector, this.p5)
         this.hoverDetector.detectHovering()
     }
@@ -97,7 +97,7 @@ class TeacherController {
         }
         if (this.pageState.bondType == null &&
             this.pageState.arrowType == null) {
-            this.atomMover.startDraggingBodyIfPressed(mouseVector)
+            this.atomMover.startDraggingBodyIfPressed()
         }
         if (this.pageState.eraserOn) {
             this.eraser.eraseAnythingClicked()

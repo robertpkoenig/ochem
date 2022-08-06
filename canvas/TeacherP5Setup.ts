@@ -9,6 +9,7 @@ import { ITeacherState } from '../pages/teacher/reactions/[reactionId]'
 import UserType from './model/UserType'
 import { CANVAS_PARENT_NAME } from './Constants'
 import TeacherController from './controller/teacher/TeacherController'
+import keyboardState from './KeyboardState'
 
 function createTeacherP5Context(
     pageState: ITeacherState,
@@ -59,7 +60,7 @@ function createTeacherP5Context(
             controller.process()
         
             view.render()
-    
+
         }
     
         // Triggered whenever p5 senses a mousePress anywhere on the page
@@ -77,6 +78,11 @@ function createTeacherP5Context(
         // Triggered when a keyboard key is pressed
         p5.keyPressed = () => {
             if (p5.key == "=") Utilities.printReactionState(reaction)
+            if (p5.keyCode == p5.SHIFT) keyboardState.shiftPressed = true
+        }
+
+        p5.keyReleased = () => {
+            if (p5.keyCode == p5.SHIFT) keyboardState.shiftPressed = false
         }
     }
 }

@@ -3,13 +3,14 @@ lone pairs
 WHERE I AM
 
 - 
-
+- student lone pair hover
 - adjust overall layout of the student and teacher page so that notifications are on the page, and the canvas is not constrained
 - add a hand button to the controller (1)
-- option to add lone pairs, and make them a clickable target (16)
-- bulk atom moves with shift select or click drag (8)
 - additional help explaining how curly arrows are drawn (3)
-- add option for contextual information / question for each step (5)
+- add option for hint for each step (5)
+- get analytics working (10)
+- test everything and fix (10)
+- take screenshots and ask steve best option for bond length
 
 
 
@@ -22,3 +23,13 @@ Refactor
 - remove all classes, make everything just functions
 - if showing image inside a square button, just make that part of the children
 - get everything to 2 space tab
+
+
+Feature ideas
+
+- special feedback for certain wrong arrows
+- contextual questions that are optional
+- explenation for each step
+- for each reaction, have an explenation page where the student can just quickly read about it
+- link(s) in each reaction page to outside resources
+- 
