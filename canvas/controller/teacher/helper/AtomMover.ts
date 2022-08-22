@@ -1,9 +1,11 @@
 import p5 from "p5";
+import { Underline } from "react-feather";
 import keyboardState from "../../../KeyboardState";
 import { Atom } from "../../../model/chemistry/atoms/Atom";
 import Reaction from "../../../model/Reaction";
 import HoverDetector from "./HoverDetector";
 import ReactionSaver from "./ReactionSaver";
+import UndoManager from "./UndoManager";
 
 interface Vector {
   x: number,
@@ -18,13 +20,15 @@ class AtomMover {
   hoverDetector: HoverDetector
 	atomsBeingDraggedAndTheirStartPositions: Map<Atom, Vector>
   mouseStartPosition: {x: number, y: number}
+  undoManager: UndoManager
 
-	constructor(p5: p5, reaction: Reaction, hoverDetector: HoverDetector) {
+	constructor(p5: p5, reaction: Reaction, hoverDetector: HoverDetector, undoManager: UndoManager) {
 		this.p5 = p5
 		this.reaction = reaction
     this.hoverDetector = hoverDetector
 		this.atomsBeingDraggedAndTheirStartPositions = new Map<Atom, Vector>()
     this.mouseStartPosition = null
+    this.undoManager = undoManager
 	}
 
   // get position for each atom
@@ -63,6 +67,7 @@ class AtomMover {
   }
 
 	stopDraggingBody() {
+    this.undoManager.addUndoPoint()
     ReactionSaver.saveReaction(this.reaction)
 		this.atomsBeingDraggedAndTheirStartPositions.clear()
 	}
