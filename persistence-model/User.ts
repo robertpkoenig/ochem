@@ -9,7 +9,8 @@ interface User {
     university: string,
     moduleIds: string[],
     completedReactionIds: string[],
-    userId: string
+    userId: string,
+    introPopupSeen: boolean
 
 }
 

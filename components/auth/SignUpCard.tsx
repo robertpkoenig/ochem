@@ -54,7 +54,8 @@ export default function SignUpCard() {
                 university: universityValue,
                 moduleIds: [],
                 completedReactionIds: [],
-                userId: userCredential.user.uid
+                userId: userCredential.user.uid,
+                introPopupSeen: true
             }
             // Create user database document
             setDoc(doc(db, "users", userCredential.user.uid), newUser).then(() => {

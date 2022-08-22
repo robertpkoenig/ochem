@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect, useState } from "react"
+import React, { Fragment, useContext, useEffect, useState } from "react"
 import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
 import Reaction from "../../../canvas/model/Reaction"
 import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
 import { GetServerSideProps } from 'next'
-import { doc, getDoc, getFirestore } from "firebase/firestore"
+import { doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore"
 import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
 import p5 from "p5"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
@@ -16,6 +16,10 @@ import WrongArrowNotification from "../../../components/student/reaction/WrongAr
 import StudentReactionHeader from "../../../components/student/reaction/StudentReactionHeader"
 import StudentController from "../../../canvas/controller/student/StudentController"
 import { ExclamationCircleIcon } from "@heroicons/react/solid"
+import PopupBackground from "../../../components/common/PopupBackground"
+import { User } from "react-feather"
+import { AuthContext } from "../../../context/authContext"
+import IntroPopup from "../../../components/student/reaction/IntroPopup"
 
 // Gets the reaction Id from the URL path during server side rendering
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -41,11 +45,15 @@ interface IStudentState {
 // This is page where a student uses a reaction exercise
 function StudentReactionPage(props: IProps) {
 
+
+    const { user } = useContext(AuthContext)
+
     const db = getFirestore()
 
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ successToastVis, setSuccessToastVis ] = useState<boolean>(false)
     const [ failureToastVis, setFailureToastVis ] = useState<boolean>(false)
+    const [ introPopupVis, setIntroPopupVis ] = useState<boolean>(false)
 
     const [state, setState] = 
         useState<IStudentState>(() => (
@@ -87,6 +95,16 @@ function StudentReactionPage(props: IProps) {
       }
     }, [state])
 
+    useEffect(() => {
+      if (user && "introPopupSeen" in user && !user.introPopupSeen) {
+        toggleIntroPopup()
+        const docRef = doc(db, "users", user.userId);
+        updateDoc(docRef, {
+          introPopupSeen: true
+        })
+      }
+    })
+
     // This starts the exercise over
     function resetReaction() {
         state.reaction.currentStep = state.reaction.steps[0]
@@ -107,14 +125,24 @@ function StudentReactionPage(props: IProps) {
 
     const reactionComplete = state.reaction?.currentStep.order == state.reaction?.steps.length - 1
 
+    function toggleIntroPopup() {
+      setIntroPopupVis(!introPopupVis)
+    }
+
     return (
         <ScreenWithLoadingAllRender loading={loading}>
             <Fragment>
-              <StudentReactionHeader reaction={state.reaction} />
+              <StudentReactionHeader
+                reaction={state.reaction}
+                togglePopup={toggleIntroPopup}
+              />
               <div className="min-h-screen bg-gray-100">
                 {stepPrompt}
                 <main className="-mt-32">
                   <div className="w-1200 h-700 mx-auto pb-12 flex flex-row gap-5">
+                    <ShowIf condition={introPopupVis}>
+                      <IntroPopup togglePopup={toggleIntroPopup} />
+                    </ShowIf>
                     {/* p5 canvas */}
                     <div id={CANVAS_PARENT_NAME} className="bg-white h-700 rounded-lg shadow flex-grow relative">
 

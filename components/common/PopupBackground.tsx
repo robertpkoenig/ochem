@@ -21,7 +21,9 @@ export default function PopupBackground(props: IProps) {
             <div className="flex flex-col gap-2 ">
 
                 <div className="flex flex-row-reverse ">
-                    <button className="bg-white w-10 h-10 rounded-full shadow flex place-content-center place-items-center transition-all text-gray-400 hover:text-gray-600">
+                    <button 
+                      className="bg-white w-10 h-10 rounded-full shadow flex place-content-center place-items-center transition-all text-gray-400 hover:text-gray-600"
+                    >
                         <XIcon className="h-5 w-5"/>
                     </button>
                 </div>

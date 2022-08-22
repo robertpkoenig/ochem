@@ -94,10 +94,6 @@ export default function ModulePage() {
         setCompletedReactionids(copyOfCheckedReactions)
 
         // The list of checked reactions is stored in the user.
-        // This could be refactored into multiple documents for each module
-        // the user is party to, however, this is very unlikely to ever
-        // be needed since students will at most be using Ochem for two
-        // modules in their entire life.
         const db = getFirestore()
         const docRef = doc(db, "users", user.userId);
         updateDoc(docRef, {

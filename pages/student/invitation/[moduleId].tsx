@@ -99,6 +99,7 @@ export default function Invitation() {
             moduleIds: [moduleId],
             completedReactionIds: [],
             userId: userId,
+            introPopupSeen: false
         }
         setDoc(doc(db, "users", userId), newUser).then(() => {
             router.push("/student/modules/" + moduleId)
