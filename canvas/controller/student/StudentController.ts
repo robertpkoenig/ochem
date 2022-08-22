@@ -75,34 +75,12 @@ class StudentController {
 
         const currentlyOverAtom = this.hoverDetector.atomCurrentlyHovered != null
         const currentlyOverBond = this.hoverDetector.bondCurrentlyHovered != null
+        const currentlyOverLonePair = this.hoverDetector.lonePairCurrentlyHovered != null
 
         const currentlyDrawingArrow = 
             this.arrowCreator.draftArrow != null
 
-        if (currentlyDrawingArrow) {
-            this.p5.cursor("crosshair")
-        }
-
-        // Hovering atom and eraser off
-        else if (currentlyOverAtom) {
-            
-          // if a bond is currently being drawn, draw a cross hair
-          if (this.pageState.arrowType != null) {            
-              this.p5.cursor("crosshair")
-          }
-
-          else if (this.p5.mouseIsPressed) {
-              this.p5.cursor("grabbing")
-          }
-
-          else {
-              this.p5.cursor("grab")
-          }
-
-        }
-
-        // Hovering a bond and arrow type is selected
-        else if (currentlyOverBond && this.pageState.arrowType != null) {
+        if (currentlyOverBond || currentlyOverAtom || currentlyOverLonePair || currentlyDrawingArrow) {
           this.p5.cursor("crosshair")
         }
 

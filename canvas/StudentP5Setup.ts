@@ -12,7 +12,7 @@ import StudentController from './controller/student/StudentController'
 import { processAllDelayedActions } from './controller/delayedActions'
 import { viewAllCurlyArrows } from './view/curlyArrows'
 import { showAllFeedbackItems } from './view/feedback'
-import { checkImage, loadImages } from './view/images'
+import { loadImages } from './view/images'
 
 function createP5Context(
     pageState: IStudentState,

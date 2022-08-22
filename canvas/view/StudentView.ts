@@ -1,9 +1,11 @@
 import p5 from "p5"
-import { BLUE_OUTLINE_COLOR, OUTLINE_THICKNESS, STROKE_WEIGHT } from "../Constants"
+import { BLUE_OUTLINE_COLOR, LONE_PAIR_OUTLINE_RADIUS, OUTLINE_THICKNESS, STROKE_WEIGHT } from "../Constants"
 import StudentController from "../controller/student/StudentController"
 import { Atom } from "../model/chemistry/atoms/Atom"
+import LonePair from "../model/chemistry/atoms/LonePair"
 import { Bond } from "../model/chemistry/bonds/Bond"
 import BondType from "../model/chemistry/bonds/BondType"
+import { ArrowType } from "../model/chemistry/CurlyArrow"
 import CurlyArrowViewer from "./CurlyArrowViewer"
 
 // Performs student-specific rendering tasks.
@@ -22,6 +24,7 @@ class StudentView {
     render() {
         this.decorateAtomIfHovered()
         this.decorateBondIfHovered()
+        this.decorateLonePairIfHovered()
     }
 
     decorateAtomIfHovered() {
@@ -85,6 +88,24 @@ class StudentView {
     
         this.p5.pop()
 
+    }
+
+    private decorateLonePairIfHovered() {
+      const hoveredLonePair = this.controller.hoverDetector.lonePairCurrentlyHovered
+      if (hoveredLonePair) this.drawLonePairOutline(hoveredLonePair)
+    }
+
+
+    private drawLonePairOutline(lonePair: LonePair) {
+      const curylArrowSelected = this.controller.pageState.arrowType === ArrowType.DOUBLE
+      const x = lonePair.getPosVector().x
+      const y = lonePair.getPosVector().y
+      this.p5.push()
+          this.p5.fill(BLUE_OUTLINE_COLOR)
+          this.p5.stroke(BLUE_OUTLINE_COLOR)
+          this.p5.strokeWeight(OUTLINE_THICKNESS)
+          this.p5.ellipse(x, y, LONE_PAIR_OUTLINE_RADIUS)
+      this.p5.pop()
     }
 
 }
