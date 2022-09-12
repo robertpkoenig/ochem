@@ -120,7 +120,7 @@ function ListOfSteps(props: IProps) {
         <div className="flex flex-row gap-4 items-center">
             <nav className="flex flex-row items-center">
                 <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                    <ShowIf condition={props.state.reaction != null}>
+                    <ShowIf if={props.state.reaction != null}>
                         {listOfStepButtons}
                     </ShowIf>
                 </ol>

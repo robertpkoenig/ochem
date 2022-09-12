@@ -33,7 +33,7 @@ function SquareButton(props: IProps) {
         >
             {tooltip}
             {props.children}
-            <ShowIf condition={props.imageSrc != null}>
+            <ShowIf if={props.imageSrc != null}>
                 <img
                     className='w-4 h-4'
                     src={props.imageSrc}

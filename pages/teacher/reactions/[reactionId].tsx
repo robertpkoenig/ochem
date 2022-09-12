@@ -163,7 +163,7 @@ const TeacherReactionPage = (props: IProps) => {
                     <div className="py-5">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-3 ">
                             
-                            <ShowIf condition={!!state.reaction?.prompt}>
+                            <ShowIf if={!!state.reaction?.prompt}>
                                 <Prompt 
                                     state={state} 
                                     togglePrompt={togglePromptPopup} 
@@ -178,7 +178,7 @@ const TeacherReactionPage = (props: IProps) => {
                                     setState={setState}
                                 />
 
-                                <ShowIf condition={state.reaction?.prompt == null}> 
+                                <ShowIf if={state.reaction?.prompt == null}> 
                                     <div
                                         onMouseDown={togglePromptPopup}
                                         className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
@@ -211,7 +211,7 @@ const TeacherReactionPage = (props: IProps) => {
                 </main>
             </div>
 
-            <ShowIf condition={state.promptPopupVisible}>
+            <ShowIf if={state.promptPopupVisible}>
                 <PromptPopup
                     popupCloseFunction={togglePromptPopup}
                     setPromptTextFunction={setPromptText}
@@ -219,7 +219,7 @@ const TeacherReactionPage = (props: IProps) => {
                 />
             </ShowIf>
 
-            <ShowIf condition={state.renamePopupVisible}>
+            <ShowIf if={state.renamePopupVisible}>
                 <ReactionRenamePopup
                     state={state}
                     setState={setState}

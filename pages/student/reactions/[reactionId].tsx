@@ -8,7 +8,7 @@ import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoa
 import p5 from "p5"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
 import { REACTIONS } from "../../../persistence-model/FirebaseConstants"
-import ShowIf from "../../../components/common/ShowIf"
+import Show from "../../../components/common/ShowIf"
 import ProgressIndicators from "../../../components/student/reaction/ProgressIndicators"
 import ExcerciseFinishedNotification from "../../../components/student/reaction/ExcerciseFinishedNotification"
 import CorrectArrowNotification from "../../../components/student/reaction/CorrectArrowNotification"
@@ -121,7 +121,7 @@ function StudentReactionPage(props: IProps) {
         </div>
     
     const invisibleDivToBlockCanvasWhenFinishedExcercise =
-        <div className="z-20 h-full absolute bg-black w-1200 rounded-md" />
+        <div className="z-20 h-full absolute w-1200 rounded-md" />
 
     const reactionComplete = state.reaction?.currentStep.order == state.reaction?.steps.length - 1
 
@@ -140,39 +140,39 @@ function StudentReactionPage(props: IProps) {
                 {stepPrompt}
                 <main className="-mt-32">
                   <div className="w-1200 h-700 mx-auto pb-12 flex flex-row gap-5">
-                    <ShowIf condition={introPopupVis}>
+                    <Show if={introPopupVis}>
                       <IntroPopup togglePopup={toggleIntroPopup} />
-                    </ShowIf>
+                    </Show>
                     {/* p5 canvas */}
                     <div id={CANVAS_PARENT_NAME} className="bg-white h-700 rounded-lg shadow flex-grow relative">
 
-                      <ShowIf condition={state.reaction?.currentStep.order == state.reaction?.steps.length - 1}>
+                      <Show if={state.reaction?.currentStep.order == state.reaction?.steps.length - 1}>
                           {invisibleDivToBlockCanvasWhenFinishedExcercise}
-                      </ShowIf>
+                      </Show>
 
                       <div className="w-full p-5 absolute flex justify-between gap-3">
                           <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
                               <ProgressIndicators reaction={state.reaction} />
                               <CorrectArrowNotification successToastVis={successToastVis} />
                           </div>
-                          <ShowIf condition={state.reaction?.currentStep.curlyArrows.length > 1} >
+                          <Show if={state.reaction?.currentStep.curlyArrows.length > 1} >
                             <div className="flex gap-1 px-2 py-1 bg-orange-300 text-orange-700 text-xs rounded">
                               <ExclamationCircleIcon className="w-4 h-4" />
                               This step requires more than one arrow
                             </div>
-                          </ShowIf >
+                          </Show >
                       </div>
 
-                      <ShowIf condition={failureToastVis}>
+                      <Show if={failureToastVis}>
                           <WrongArrowNotification />
-                      </ShowIf>
+                      </Show>
 
-                      <ShowIf condition={reactionComplete}>
+                      <Show if={reactionComplete}>
                           <ExcerciseFinishedNotification
                               reaction={state.reaction}
                               resetReaction={resetReaction}
                           />
-                      </ShowIf>
+                      </Show>
 
                     </div>
                   </div>

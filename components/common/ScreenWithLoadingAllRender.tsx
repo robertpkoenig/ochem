@@ -17,7 +17,7 @@ export default function ScreenWithLoadingAllRender(props: IProps) {
 
     return (
         <Fragment>
-            <ShowIf condition={props.loading}>
+            <ShowIf if={props.loading}>
                 <LoadingScreen />
             </ShowIf>
             

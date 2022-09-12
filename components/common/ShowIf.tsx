@@ -1,14 +1,14 @@
 import { ReactNode } from "react"
 
 interface IProps {
-    condition: boolean,
+    if: boolean,
     children: ReactNode
 }
 
 function ShowIf(props: IProps) {
     return (
         <>
-            {props.condition && props.children}
+            {props.if && props.children}
         </>
     )
 }
