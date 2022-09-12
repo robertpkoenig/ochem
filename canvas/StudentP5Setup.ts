@@ -50,7 +50,6 @@ function createP5Context(
     
         // This is run continuously while the p5 instance is active
         p5.draw = () => {
-            
             // Clear the canvas
             p5.scale(reaction.zoom)
             p5.background(255)
@@ -60,7 +59,8 @@ function createP5Context(
             physicsEngine.makeBondLengthCorrect()
             physicsEngine.applyAllForces()
 
-            controller.process()
+            if (reaction.currentStep != reaction.steps.at(-1))
+              controller.process()
 
             processAllDelayedActions()
         
