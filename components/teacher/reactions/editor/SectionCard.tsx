@@ -166,9 +166,14 @@ export default function SectionCard(props: IProps) {
             doc(db, MODULES, props.module.uuid)
         updateDoc(sectionRecordDocLocation, newSectionUpdateObject)
 
+        const description = ""
+        const hint = ""
+
         // Create a new full reaction object
         const newReaction = new Reaction(
             reactionName,
+            description,
+            hint,
             reactionId,
             props.module.uuid,
             props.module.title,
@@ -257,15 +262,7 @@ export default function SectionCard(props: IProps) {
                 </div>
 
                     <div>
-
-                        {
-                        reactionList
-                        ?
-                        reactionList
-                        :
-                        reactionListEmptyState
-                        }
-
+                        {reactionList ? reactionList : reactionListEmptyState}
                     </div>
 
                     <div>

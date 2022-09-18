@@ -44,6 +44,8 @@ class ReactionLoader {
             throw new Error("Could not find the current step")
 
         const name = reactionRawObject["name"]
+        const description = reactionRawObject["description"]
+        const hint = reactionRawObject["hint"]
         const uuid = reactionRawObject["uuid"]
         const moduleId = reactionRawObject["moduleId"]
         const moduleName = reactionRawObject["moduleName"]
@@ -57,6 +59,8 @@ class ReactionLoader {
 
         const restoredReaction = new Reaction(
             name,
+            description,
+            hint,
             uuid,
             moduleId,
             moduleName,

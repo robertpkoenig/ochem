@@ -3,11 +3,10 @@ import ReactionSaver from "../../../canvas/controller/teacher/helper/ReactionSav
 import BondType from "../../../canvas/model/chemistry/bonds/BondType"
 import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
 import Reaction from "../../../canvas/model/Reaction"
-import UserType from "../../../canvas/model/UserType"
 import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
 import { doc, getDoc, getFirestore } from "firebase/firestore"
 import PromptPopup from "../../../components/teacher/reactions/editor/PromptPopup"
-import ReactionRenamePopup from "../../../components/teacher/reactions/editor/ReactionRenamePopup"
+import ReactionEditPopup from "../../../components/teacher/reactions/editor/ReactionEditPopup"
 import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
 import Ion from "../../../canvas/model/chemistry/atoms/Ion"
 import p5 from "p5"
@@ -18,7 +17,7 @@ import EditorTopPanel from "../../../components/teacher/reactions/editor/EditorT
 import AtomicElements from "../../../components/teacher/reactions/editor/AtomicElements"
 import EditorLeftButtons from "../../../components/teacher/reactions/editor/EditorLeftButtons"
 import ListOfSteps from "../../../components/teacher/reactions/editor/ListOfSteps"
-import ShowIf from "../../../components/common/ShowIf"
+import Show from "../../../components/common/Show"
 import Prompt from "../../../components/teacher/reactions/editor/Prompt"
 import TeacherController from "../../../canvas/controller/teacher/TeacherController"
 
@@ -163,13 +162,13 @@ const TeacherReactionPage = (props: IProps) => {
                     <div className="py-5">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-3 ">
                             
-                            <ShowIf if={!!state.reaction?.prompt}>
+                            <Show if={!!state.reaction?.prompt}>
                                 <Prompt 
                                     state={state} 
                                     togglePrompt={togglePromptPopup} 
                                     setPromptText={setPromptText}                                    
                                 />
-                            </ShowIf>
+                            </Show>
             
                             <div className="flex flex-row justify-between">
 
@@ -178,13 +177,13 @@ const TeacherReactionPage = (props: IProps) => {
                                     setState={setState}
                                 />
 
-                                <ShowIf if={state.reaction?.prompt == null}> 
+                                <Show if={state.reaction?.prompt == null}> 
                                     <div
                                         onMouseDown={togglePromptPopup}
                                         className="text-indigo-300 text-sm cursor-pointer hover:text-indigo-100">
                                         + Add prompt
                                     </div>
-                                </ShowIf>
+                                </Show>
 
                             </div>
                         </div>
@@ -211,21 +210,21 @@ const TeacherReactionPage = (props: IProps) => {
                 </main>
             </div>
 
-            <ShowIf if={state.promptPopupVisible}>
+            <Show if={state.promptPopupVisible}>
                 <PromptPopup
                     popupCloseFunction={togglePromptPopup}
                     setPromptTextFunction={setPromptText}
                     initialText={state.reaction?.prompt}
                 />
-            </ShowIf>
+            </Show>
 
-            <ShowIf if={state.renamePopupVisible}>
-                <ReactionRenamePopup
+            <Show if={state.renamePopupVisible}>
+                <ReactionEditPopup
                     state={state}
                     setState={setState}
                     toggleReactionRenamePopup={toggleReactionRenamePopup}
                 />
-            </ShowIf>
+            </Show>
 
         </ScreenWithLoadingAllRender>
     )

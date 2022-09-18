@@ -6,6 +6,8 @@ class Reaction {
     public steps: ReactionStep[]
     public currentStep: ReactionStep | null
     public name: string
+    public description: string
+    public hint: string
     public uuid: string
     public moduleId: string
     public moduleName: string
@@ -17,6 +19,8 @@ class Reaction {
     public zoom: number
 
     constructor(name: string,
+                description: string,
+                hint: string,
                 uuid: string,
                 moduleId: string,
                 moduleName: string,
@@ -29,6 +33,8 @@ class Reaction {
                 prompt: string,
                 zoom: number = 1) {
         this.name = name
+        this.description = description
+        this.hint = hint
         this.uuid = uuid
         this.moduleId = moduleId
         this.moduleName = moduleName
@@ -63,6 +69,8 @@ class Reaction {
             steps: stepsAsPlainObjectArray,
             currentStepId: this.currentStep.uuid,
             name: this.name,
+            description: this.description || "",
+            hint: this.hint || "",
             uuid: this.uuid,
             moduleId: this.moduleId,
             moduleName: this.moduleName,
@@ -83,6 +91,8 @@ class Reaction {
     copy() {
         return new Reaction(
             this.name,
+            this.description,
+            this.hint,
             this.uuid,
             this.moduleId,
             this.moduleName,

@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import LoadingScreen from "./LoadingScreen";
-import ShowIf from "./ShowIf";
+import Show from "./Show";
 
 interface IProps {
     loading: boolean,
@@ -17,9 +17,9 @@ export default function ScreenWithLoadingAllRender(props: IProps) {
 
     return (
         <Fragment>
-            <ShowIf if={props.loading}>
+            <Show if={props.loading}>
                 <LoadingScreen />
-            </ShowIf>
+            </Show>
             
             {props.children}
         </Fragment>

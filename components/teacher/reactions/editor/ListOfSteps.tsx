@@ -6,7 +6,7 @@ import ReactionStepLoader from "../../../../canvas/utilities/ReactionStepLoader"
 import Utilities from "../../../../canvas/utilities/Utilities"
 import classNames from "../../../../functions/helper/classNames"
 import { ITeacherState } from "../../../../pages/teacher/reactions/[reactionId]"
-import ShowIf from "../../../common/ShowIf"
+import Show from "../../../common/Show"
 
 interface IProps {
     state: ITeacherState
@@ -120,9 +120,9 @@ function ListOfSteps(props: IProps) {
         <div className="flex flex-row gap-4 items-center">
             <nav className="flex flex-row items-center">
                 <ol className="rounded-md flex gap-2 text-indigo-400 ">
-                    <ShowIf if={props.state.reaction != null}>
+                    <Show if={props.state.reaction != null}>
                         {listOfStepButtons}
-                    </ShowIf>
+                    </Show>
                 </ol>
             </nav>
             <button

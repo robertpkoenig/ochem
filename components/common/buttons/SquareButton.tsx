@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 import classNames from "../../../functions/helper/classNames"
-import ShowIf from "../ShowIf"
+import Show from "../Show"
 
 // Square buttons on the left panel of the editor screen
 interface IProps {
@@ -33,13 +33,13 @@ function SquareButton(props: IProps) {
         >
             {tooltip}
             {props.children}
-            <ShowIf if={props.imageSrc != null}>
+            <Show if={props.imageSrc != null}>
                 <img
                     className='w-4 h-4'
                     src={props.imageSrc}
                     alt={props.imageAltText}
                 />
-            </ShowIf>
+            </Show>
         </button> 
     )
 }

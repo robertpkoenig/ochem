@@ -1,17 +1,18 @@
-lone pairs
+DEADLINE - 10th October
 
-WHERE I AM
+CURRENT
+============================================
+- test everything and fix except analytics (10)
+  - empty state for student view of module
+  - get out of cross hairs when done reaction
+  - retry does not work
+  - 
 
-- 
-- student lone pair hover
-- adjust overall layout of the student and teacher page so that notifications are on the page, and the canvas is not constrained
-- add a hand button to the controller (1)
-- additional help explaining how curly arrows are drawn (3)
-- add option for hint for each step (5)
+NEXT
+============================================
+- double half headed arrow (5)
 - get analytics working (10)
-- test everything and fix (10)
-- take screenshots and ask steve best option for bond length
-
+- add a hand button to the controller (1)
 
 
 Refactor
@@ -26,10 +27,15 @@ Refactor
 
 
 Feature ideas
-
 - special feedback for certain wrong arrows
+- hint for each step
 - contextual questions that are optional
 - explenation for each step
 - for each reaction, have an explenation page where the student can just quickly read about it
 - link(s) in each reaction page to outside resources
-- 
+
+port for auth: 9099
+port for firestore: 8080
+port for emulator: 7070
+
+firebase emulators:start

@@ -10,29 +10,32 @@ interface IProps {
 
 function StudentReactionHeader(props: IProps) {
     return (
-        <header className="bg-indigo-600">
+        <header className="py-4">
             <div className="w-1200 mx-auto">
-                <div className="flex flex-col justify-left border-b border-indigo-400">
-                    <div className="flex justify-between items-center text-indigo-200 text-xs font-light mt-3 mb-2">
+                <div className="flex flex-col gap-0 justify-left">
+                    <div className="flex justify-between items-center text-gray-500 text-xs font-light">
                       <Link href={"/student/modules/" + props.reaction?.moduleId}>
-                          <a className=" flex gap-1 items-center hover:text-white">
+                          <a className=" flex gap-1 items-center hover:text-indigo-700">
                               <ArrowLeftIcon className="w-3 h-3" />
                               {props.reaction?.moduleName + " | " + props.reaction?.sectionName}
                           </a>
                       </Link>
                       <button 
                         onClick={props.togglePopup}
-                        className="hover:text-white flex gap-1 items-center"
+                        className="text-gray-600 hover:text-indigo-800 flex gap-1 items-center"
                       >
                         <QuestionMarkCircleIcon className="w-3 h-3" />
-                        Instructions
+                        Help
                       </button>
                     </div>
-                    <div className="w-full flex flex-row justify-between mb-3">
+                    <div className="w-full flex flex-row justify-between">
                         <div>
-                            <h1 className="text-2xl font-semibold text-white">
+                            <h1 className="text-2xl font-semibold text-gray-700">
                                 { props.reaction?.name }
                             </h1>
+                            <h2 className="text-sm font-normal text-gray-700">
+                                { props.reaction?.description }
+                            </h2>
                         </div>
                     </div>
                 </div>

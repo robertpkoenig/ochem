@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from "react"
+import React, { Fragment as div, useContext, useEffect, useState } from "react"
 import { ArrowType } from "../../../canvas/model/chemistry/CurlyArrow"
 import Reaction from "../../../canvas/model/Reaction"
 import ReactionLoader from "../../../canvas/utilities/ReactionLoader"
@@ -8,18 +8,15 @@ import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoa
 import p5 from "p5"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
 import { REACTIONS } from "../../../persistence-model/FirebaseConstants"
-import Show from "../../../components/common/ShowIf"
+import Show from "../../../components/common/Show"
 import ProgressIndicators from "../../../components/student/reaction/ProgressIndicators"
 import ExcerciseFinishedNotification from "../../../components/student/reaction/ExcerciseFinishedNotification"
 import CorrectArrowNotification from "../../../components/student/reaction/CorrectArrowNotification"
-import WrongArrowNotification from "../../../components/student/reaction/WrongArrowNotification"
 import StudentReactionHeader from "../../../components/student/reaction/StudentReactionHeader"
 import StudentController from "../../../canvas/controller/student/StudentController"
 import { ExclamationCircleIcon } from "@heroicons/react/solid"
-import PopupBackground from "../../../components/common/PopupBackground"
-import { User } from "react-feather"
 import { AuthContext } from "../../../context/authContext"
-import IntroPopup from "../../../components/student/reaction/IntroPopup"
+import HelpPopup from "../../../components/student/reaction/HelpPopup"
 
 // Gets the reaction Id from the URL path during server side rendering
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -51,8 +48,6 @@ function StudentReactionPage(props: IProps) {
     const db = getFirestore()
 
     const [ loading, setLoading ] = useState<boolean>(true)
-    const [ successToastVis, setSuccessToastVis ] = useState<boolean>(false)
-    const [ failureToastVis, setFailureToastVis ] = useState<boolean>(false)
     const [ introPopupVis, setIntroPopupVis ] = useState<boolean>(false)
 
     const [state, setState] = 
@@ -110,15 +105,6 @@ function StudentReactionPage(props: IProps) {
         state.reaction.currentStep = state.reaction.steps[0]
         setState({...state, reaction: state.reaction})
     }
-
-    const stepPrompt =
-        <div className="bg-indigo-600 pb-32">
-            <div className="py-5">
-                <div className="w-1200 mx-auto flex flex-row gap-4 items-center text-white font-light">
-                    {state.reaction?.prompt}
-                </div>
-            </div>
-        </div>
     
     const reactionComplete = state.reaction?.currentStep == state.reaction?.steps.at(-1)
 
@@ -130,29 +116,27 @@ function StudentReactionPage(props: IProps) {
         <div className="w-full p-5 absolute flex justify-between gap-3">
             <div className="flex flex-row items-center gap-2 text-sm text-gray-500">
                 <ProgressIndicators reaction={state.reaction} />
-                <CorrectArrowNotification successToastVis={successToastVis} />
             </div>
             <Show if={state.reaction?.currentStep.curlyArrows.length > 1} >
-            <div className="flex gap-1 px-2 py-1 bg-orange-300 text-orange-700 text-xs rounded">
-                <ExclamationCircleIcon className="w-4 h-4" />
-                This step requires more than one arrow
-            </div>
+              <div className="flex gap-1 px-2 py-1 bg-orange-300 text-orange-700 text-xs rounded">
+                  <ExclamationCircleIcon className="w-4 h-4" />
+                  This step requires more than one arrow
+              </div>
             </Show >
         </div>
 
     return (
         <ScreenWithLoadingAllRender loading={loading}>
-            <Fragment>
+            <div className="bg-gray-100">
               <StudentReactionHeader
                 reaction={state.reaction}
                 togglePopup={toggleIntroPopup}
               />
-              <div className="min-h-screen bg-gray-100">
-                {stepPrompt}
-                <main className="-mt-32">
+              <div className="min-h-screen">
+                <main className="">
                   <div className="w-1200 h-700 mx-auto pb-12 flex flex-row gap-5">
                     <Show if={introPopupVis}>
-                      <IntroPopup togglePopup={toggleIntroPopup} />
+                      <HelpPopup reaciton={state.reaction} togglePopup={toggleIntroPopup} />
                     </Show>
                     {/* p5 canvas */}
                     <div id={CANVAS_PARENT_NAME} className="bg-white h-700 rounded-lg shadow flex-grow relative">
@@ -172,7 +156,7 @@ function StudentReactionPage(props: IProps) {
                   </div>
                 </main>
               </div>
-            </Fragment>
+            </div>
         </ScreenWithLoadingAllRender>
     )
 
