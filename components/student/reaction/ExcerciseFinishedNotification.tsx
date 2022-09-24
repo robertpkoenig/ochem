@@ -21,14 +21,15 @@ function ExcerciseFinishedNotification(props: IProps) {
             </div>
             <div className="flex flex-row gap-4">
 
-                <Button
+                {/* For some reason, retry button is flaky */}
+                {/* <Button
                     size={'small'}
                     importance={'secondary'}
                     text={'Retry'}
                     icon={null}
-                    onClick={props.resetReaction}
+                    onClick={() => location.reload()}
                     extraClasses={''}
-                />
+                /> */}
 
                 <Link href={"/student/modules/" + props.reaction?.moduleId}>
                     <a>
