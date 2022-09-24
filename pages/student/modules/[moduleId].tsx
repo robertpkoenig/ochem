@@ -10,6 +10,7 @@ import ScreenWithLoading from "../../../components/common/ScreenWithLoading";
 import EmptyState from "../../../components/common/EmptyState";
 import UserType from "../../../canvas/model/UserType";
 import { DATE_RECORDS, MODULES, MODULE_ANALYTICS_RECORDS } from "../../../persistence-model/FirebaseConstants";
+import Show from "../../../components/common/Show";
 
 // This page displays all module content for the student.
 // The student can practice exercises and tick them off.
@@ -102,38 +103,35 @@ export default function ModulePage() {
 
     }
 
-    const sectionListEmptyState = <EmptyState text="This module has no sections" />
+    const emptyStateMessage = 
+      <div className="text-center">
+          <p className="font-bold">Whoops!</p>
+          <p>Your lecturer has not published any content for this module</p>
+          <p>Please tell them to click 'publish' on some of their reactions</p>
+      </div>
 
+    const sectionListEmptyState = <EmptyState text={emptyStateMessage} />
+
+    // TODO refactor this
+    // Why are these sections and reactionListings all values of objects and not arrays?
     let sectionList: React.ReactNode = null
 
-    // The list of section cards
-    if (module && module.sections && completedReactionIds) {
-        const filteredSectionObjects = 
-            Object.values(module.sections).filter(section => {
-                const filteredReactionObjects = Object.values(section.reactionListings)
-                    .filter(reaction => {
-                        return reaction.visible
-                    })
-                return filteredReactionObjects.length > 0
-            })
-        const orderedSectionObjects = filteredSectionObjects.sort((a,b) => {
-            return a.order - b.order
-        })
-        sectionList = (
-            <div className="flex flex-col gap-5 ">
-                {filteredSectionObjects.map((sectionListing: Section) => 
-                    <div key={sectionListing.order}>
-                        <StudentSectionCard
-                                section={sectionListing}
-                                module={module}
-                                completedReactionIds={completedReactionIds}
-                                checkAdditionFunction={toggleReactionInCheckedReactions}
-                        />
-                    </div>
-                )}
-            </div>
-        )
-    }
+    const sections = Object.values(module?.sections || [])
+    const nonEmptySections = sections.filter(section => {
+      const reactionListings = Object.values(section.reactionListings)
+      return reactionListings.filter(reactionListing => reactionListing.visible).length > 0
+    })
+    const orderedNonEmptySections = nonEmptySections.sort((a,b) => a.order - b.order)
+
+    const sectionCards = orderedNonEmptySections.map(section => {
+        return <StudentSectionCard
+            module={module}
+            section={section}
+            completedReactionIds={completedReactionIds}
+            checkAdditionFunction={toggleReactionInCheckedReactions} // What is this?
+        />
+    })
+
 
     return (
         <ScreenWithLoading loading={loading} >
@@ -141,7 +139,14 @@ export default function ModulePage() {
                 title={module?.title}
                 subtitle={module?.subtitle ? module.subtitle : null}
             >
-                {module && module.sections ? sectionList : sectionListEmptyState}
+              <Show if={sectionCards.length > 0}>
+                <div className="flex flex-col gap-5 ">
+                  {sectionCards}
+                </div>
+              </Show>
+              <Show if={sectionCards.length == 0}>
+                {sectionListEmptyState}
+              </Show>
             </PageLayout>
         </ScreenWithLoading>
     )

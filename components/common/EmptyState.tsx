@@ -1,5 +1,7 @@
+import { ReactNode } from "react"
+
 interface IProps {
-    text: string
+    text: ReactNode
 }
 
 export default function EmptyState(props: IProps) {

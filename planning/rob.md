@@ -3,16 +3,15 @@ DEADLINE - 10th October
 CURRENT
 ============================================
 - test everything and fix except analytics (10)
-  - empty state for student view of module
   - get out of cross hairs when done reaction
   - retry does not work
-  - 
 
 NEXT
 ============================================
 - double half headed arrow (5)
 - get analytics working (10)
 - add a hand button to the controller (1)
+- refactor student module page
 
 
 Refactor
