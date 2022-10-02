@@ -67,9 +67,11 @@ class AtomMover {
   }
 
 	stopDraggingBody() {
-    this.undoManager.addUndoPoint()
-    ReactionSaver.saveReaction(this.reaction)
-		this.atomsBeingDraggedAndTheirStartPositions.clear()
+    if (this.atomsBeingDraggedAndTheirStartPositions.size > 0) {
+      this.undoManager.addUndoPoint()
+      ReactionSaver.saveReaction(this.reaction)
+		  this.atomsBeingDraggedAndTheirStartPositions.clear()
+    }
 	}
 
 	dragAllAtomsRequired() {
