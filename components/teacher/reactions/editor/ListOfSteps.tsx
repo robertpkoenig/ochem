@@ -38,6 +38,7 @@ function ListOfSteps(props: IProps) {
         
 
         const newStep = ReactionStepLoader.loadReactionStepFromPlainObject(lastStepJSON)
+        newStep.curlyArrows = [] // remove curly arrows from new step
         
         newStep.uuid = Utilities.generateUid()
         newStep.order += 1
