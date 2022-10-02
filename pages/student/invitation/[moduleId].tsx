@@ -1,7 +1,7 @@
 import { FormEvent, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { arrayUnion, doc, FirebaseFirestore, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
+import { arrayUnion, doc, Firestore, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
 import { AuthContext } from '../../../context/authContext'
 import ScreenWithLoading from '../../../components/common/ScreenWithLoading'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
@@ -89,7 +89,7 @@ export default function Invitation() {
             });
     }
 
-    function createUserObject(userId: string, db: FirebaseFirestore) {
+    function createUserObject(userId: string, db: Firestore) {
         const newUser: User = {
             type: UserType.STUDENT,
             firstName: firstNameValue,
@@ -106,7 +106,7 @@ export default function Invitation() {
         })
     }
 
-    function addStudentToAnalyticsRecord(userId: string, db: FirebaseFirestore) {
+    function addStudentToAnalyticsRecord(userId: string, db: Firestore) {
         updateDoc(doc(db, MODULE_ANALYTICS_RECORDS, moduleId), {
             studentIds: arrayUnion(userId)
         })

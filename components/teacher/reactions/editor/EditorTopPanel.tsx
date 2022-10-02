@@ -1,6 +1,6 @@
 import { Switch } from "@headlessui/react"
 import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/solid"
-import { doc, FirebaseFirestore, updateDoc } from "firebase/firestore"
+import { doc, Firestore, updateDoc } from "firebase/firestore"
 import Link from "next/link"
 import ReactionSaver from "../../../../canvas/controller/teacher/helper/ReactionSaver"
 import { ITeacherState } from "../../../../pages/teacher/reactions/[reactionId]"
@@ -9,7 +9,7 @@ interface IProps {
     state: ITeacherState,
     setState: (state: ITeacherState) => void,
     toggleReactionRenamePopup: () => void,
-    db: FirebaseFirestore,
+    db: Firestore,
 }
 
 function EditorTopPanel(props: IProps) {

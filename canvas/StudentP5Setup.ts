@@ -59,7 +59,7 @@ function createP5Context(
             physicsEngine.makeBondLengthCorrect()
             physicsEngine.applyAllForces()
 
-            if (reaction.currentStep != reaction.steps.at(-1))
+            if (reaction.currentStep != reaction.steps[reaction.steps.length - 1])
               controller.process()
 
             processAllDelayedActions()

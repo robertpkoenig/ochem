@@ -11,7 +11,6 @@ import { REACTIONS } from "../../../persistence-model/FirebaseConstants"
 import Show from "../../../components/common/Show"
 import ProgressIndicators from "../../../components/student/reaction/ProgressIndicators"
 import ExcerciseFinishedNotification from "../../../components/student/reaction/ExcerciseFinishedNotification"
-import CorrectArrowNotification from "../../../components/student/reaction/CorrectArrowNotification"
 import StudentReactionHeader from "../../../components/student/reaction/StudentReactionHeader"
 import StudentController from "../../../canvas/controller/student/StudentController"
 import { ExclamationCircleIcon } from "@heroicons/react/solid"
@@ -106,7 +105,7 @@ function StudentReactionPage(props: IProps) {
         setState({...state, reaction: state.reaction})
     }
     
-    const reactionComplete = state.reaction?.currentStep == state.reaction?.steps.at(-1)
+    const reactionComplete = state.reaction?.currentStep == state.reaction?.steps[state.reaction?.steps.length - 1]
 
     function toggleIntroPopup() {
       setIntroPopupVis(!introPopupVis)
