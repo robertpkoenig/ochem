@@ -3,8 +3,6 @@ DEADLINE - 10th October
 CURRENT
 ============================================
 - test everything and fix except analytics (10)
-  - get out of cross hairs when done reaction
-  - retry does not work
 
 NEXT
 ============================================
@@ -12,7 +10,7 @@ NEXT
 - get analytics working (10)
 - add a hand button to the controller (1)
 - refactor student module page
-
+- teachers should see the module invite page as a preview
 
 Refactor
 - look into make the hover detector logic simpler
