@@ -25,7 +25,7 @@ class TeacherController {
     reaction: Reaction
     collisionDetector: CollisionDetector
     hoverDetector: HoverDetector
-    arrowCreator: CurlyArrowCreator
+    curlyArrowCreator: CurlyArrowCreator
     atomMover: AtomMover
 
     // downstream collaborating objects
@@ -58,7 +58,7 @@ class TeacherController {
 		    this.panelController = new PanelController(p5, reaction, this)
         this.undoManager = new UndoManager(this)
         this.atomMover = new AtomMover(p5, reaction, this.hoverDetector, this.undoManager)
-        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState, this.undoManager)
+        this.curlyArrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState, this.undoManager)
         this.eraser = new Eraser(reaction, this)
         this.ionCreator = new IonCreator(reaction, this)
         this.lonePairCreator = new LonePairCreator(reaction, this)
@@ -75,8 +75,8 @@ class TeacherController {
             curlyArrow.update(this.p5, this.reaction.zoom)
         }
         // TODO change this update function to sit with the arrowCreator
-        if (this.arrowCreator.draftArrow != null) {
-            this.arrowCreator.draftArrow.update(this.p5, this.reaction.zoom)
+        if (this.curlyArrowCreator.draftArrow != null) {
+            this.curlyArrowCreator.draftArrow.update(this.p5, this.reaction.zoom)
         }
 
         this.panelController.moveSelectedElementIfOneIsSelected()
@@ -86,9 +86,11 @@ class TeacherController {
             this.straightArrowCreator.draftArrow.update(this.p5, this.reaction.zoom)
         }
       
-        this.atomMover.dragAllAtomsRequired()
-        moveLonePairIfPressed(this.hoverDetector, this.p5)
-        moveIonIfPressed(this.hoverDetector, this.p5)
+        if (this.curlyArrowCreator.draftArrow === null) {
+          this.atomMover.dragAllAtomsRequired()
+          moveLonePairIfPressed(this.hoverDetector, this.p5)
+          moveIonIfPressed(this.hoverDetector, this.p5)
+        }
         this.hoverDetector.detectHovering()
     }
 
@@ -113,7 +115,7 @@ class TeacherController {
             this.straightArrowCreator.startArrow(mouseVector)
         }
         if (this.pageState.arrowType != null) {
-            this.arrowCreator.startArrowIfObjectClicked()
+            this.curlyArrowCreator.startArrowIfObjectClicked()
         }
     }
 
@@ -124,8 +126,8 @@ class TeacherController {
         if (this.panelController.selectedElementId != null) {
             this.panelController.dropElement()  
         }
-        if (this.arrowCreator.draftArrow != null) {
-            this.arrowCreator.completeTeacherCurlyArrowIfReleasedOverObject()
+        if (this.curlyArrowCreator.draftArrow != null) {
+            this.curlyArrowCreator.completeTeacherCurlyArrowIfReleasedOverObject()
         }
         if (this.straightArrowCreator.draftArrow) {
             this.straightArrowCreator.completeStraightArrow(mouseVector)
@@ -143,7 +145,7 @@ class TeacherController {
 
         const currentlyDrawingBondOrArrowOrIonOrAngle = 
             this.bondCreator.startAtom != null ||
-            this.arrowCreator.draftArrow != null ||
+            this.curlyArrowCreator.draftArrow != null ||
             this.pageState.selectedIonType ||
             this.pageState.angleControlSelected
 
@@ -185,8 +187,8 @@ class TeacherController {
         }
 
         else if (currentlyOverLonePair || currentlyOverIon) {
-          if (this.pageState.arrowType != null) this.p5.cursor("crosshair")
-          if (onlyMovingHandOrArrowIsActive) {
+          if (this.pageState.arrowType !== null) this.p5.cursor("crosshair")
+          else if (onlyMovingHandOrArrowIsActive) {
             if (this.p5.mouseIsPressed) this.p5.cursor("grabbing")
             else this.p5.cursor("grab")
           }

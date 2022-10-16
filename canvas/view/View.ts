@@ -94,7 +94,7 @@ class View {
 
     renderDraftCurlyArrow() {
         const draftArrow = 
-            this.controller.arrowCreator.draftArrow
+            this.controller.curlyArrowCreator.draftArrow
         const index = this.reaction.currentStep.curlyArrows.length
         const showIndex = index > 1 && this.userType == UserType.TEACHER
         if (draftArrow != null) {

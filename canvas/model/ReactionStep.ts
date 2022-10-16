@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid'
 import StraightArrow from "./chemistry/StraightArrow"
 import { Vector } from "sat"
 import LonePair from "./chemistry/atoms/LonePair"
+import Ion from "./chemistry/atoms/Ion"
 
 class ReactionStep {
 
@@ -57,6 +58,10 @@ class ReactionStep {
         }
       }
       return lonePairs
+    }
+
+    getAllIons(): Ion[] {
+      return this.molecules.flatMap(molecule => molecule.atoms.flatMap(atom => atom.ion ? [atom.ion] : []))
     }
 
     replaceWithNewModel(newModel: ReactionStep) {

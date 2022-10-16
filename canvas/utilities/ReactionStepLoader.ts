@@ -110,10 +110,11 @@ class ReactionStepLoader {
             
             const restoredCurlyArrow = new CurlyArrow(savedCurlyArrow.type)
             
-            const possibleStartObjects: (Atom | Bond | LonePair)[] = [
+            const possibleStartObjects: (Atom | Bond | LonePair | Ion)[] = [
                 ...restoredReactionStep.getAllAtoms(),
                 ...restoredReactionStep.getAllBonds(),
                 ...restoredReactionStep.getAllLonePairs(),
+                ...restoredReactionStep.getAllIons(),
               ]
 
             for (const object of possibleStartObjects) {
@@ -122,9 +123,11 @@ class ReactionStepLoader {
                 }
             }
 
-            const possibleEndObjects: (Atom | Bond)[] = [
+            const possibleEndObjects: (Atom | Bond | LonePair | Ion)[] = [
                 ...restoredReactionStep.getAllAtoms(),
                 ...restoredReactionStep.getAllBonds(),
+                ...restoredReactionStep.getAllLonePairs(),
+                ...restoredReactionStep.getAllIons(),
               ]
             
             for (const object of possibleEndObjects) {

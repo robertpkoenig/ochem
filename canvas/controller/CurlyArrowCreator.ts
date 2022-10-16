@@ -38,6 +38,7 @@ class CurlyArrowCreator {
        this.startArrowIfAtomClicked() 
        this.startArrowIfBondClicked() 
        this.startArrowIfLonePairClicked()
+       this.startArrowIfIonClicked()
 	}
 
     private startArrowIfAtomClicked() {
@@ -67,9 +68,20 @@ class CurlyArrowCreator {
       }
     }
 
+    private startArrowIfIonClicked() {
+      const hoveredIon = this.hoverDetector.ionCurrentlyHovered
+      if (hoveredIon != null) {
+        const newArrow = new CurlyArrow (this.pageState.arrowType)
+        newArrow.setStartObject(hoveredIon)
+        this.draftArrow = newArrow
+      }
+    }
+
     completeTeacherCurlyArrowIfReleasedOverObject() {
         this.completeArrowIfReleasedOverAtom()
         this.completeArrowIfReleasedOverBond()
+        this.completeArrowIfReleasedOverLonePair()
+        this.completeArrowIfReleasedOverIon()
         this.draftArrow = null
 	}
 
@@ -78,14 +90,14 @@ class CurlyArrowCreator {
         const atomCurrentlyHovered = 
             this.hoverDetector.atomCurrentlyHovered
 
-		if (atomCurrentlyHovered != null &&
-            this.draftArrow.startObject != atomCurrentlyHovered
-        ) {
-            this.undoManager.addUndoPoint()
-            this.draftArrow.setEndObject(atomCurrentlyHovered)
-            this.reaction.currentStep.curlyArrows.push(this.draftArrow)
-            ReactionSaver.saveReaction(this.reaction)
-		}
+      if (atomCurrentlyHovered != null &&
+              this.draftArrow.startObject != atomCurrentlyHovered
+          ) {
+              this.undoManager.addUndoPoint()
+              this.draftArrow.setEndObject(atomCurrentlyHovered)
+              this.reaction.currentStep.curlyArrows.push(this.draftArrow)
+              ReactionSaver.saveReaction(this.reaction)
+      }
 
     }
 
@@ -94,21 +106,47 @@ class CurlyArrowCreator {
         const bondCurrentlyHovered = 
             this.hoverDetector.bondCurrentlyHovered
 
-		if (bondCurrentlyHovered != null &&
-            this.draftArrow.startObject != bondCurrentlyHovered
-        ) {
-            this.undoManager.addUndoPoint()
-            this.draftArrow.setEndObject(bondCurrentlyHovered)
-            this.reaction.currentStep.curlyArrows.push(this.draftArrow)
-            ReactionSaver.saveReaction(this.reaction)
-		}
+        if (bondCurrentlyHovered != null &&
+                this.draftArrow.startObject != bondCurrentlyHovered
+            ) {
+                this.undoManager.addUndoPoint()
+                this.draftArrow.setEndObject(bondCurrentlyHovered)
+                this.reaction.currentStep.curlyArrows.push(this.draftArrow)
+                ReactionSaver.saveReaction(this.reaction)
+        }
 
+    }
+
+    private completeArrowIfReleasedOverLonePair() {
+        const lonePairCurrentlyHovered = 
+            this.hoverDetector.lonePairCurrentlyHovered
+        if (lonePairCurrentlyHovered != null &&
+                this.draftArrow.startObject != lonePairCurrentlyHovered
+            ) {
+                this.undoManager.addUndoPoint()
+                this.draftArrow.setEndObject(lonePairCurrentlyHovered)
+                this.reaction.currentStep.curlyArrows.push(this.draftArrow)
+                ReactionSaver.saveReaction(this.reaction)
+        }
+    }
+
+    private completeArrowIfReleasedOverIon() {
+        const ionCurrentlyHovered = 
+            this.hoverDetector.ionCurrentlyHovered
+        if (ionCurrentlyHovered != null &&
+                this.draftArrow.startObject != ionCurrentlyHovered
+            ) {
+                this.undoManager.addUndoPoint()
+                this.draftArrow.setEndObject(ionCurrentlyHovered)
+                this.reaction.currentStep.curlyArrows.push(this.draftArrow)
+                ReactionSaver.saveReaction(this.reaction)
+        }
     }
 
     completeStudentArrowIfReleasedOverObject() {
         this.completeStudentArrowIfReleasedOverAtom()
         this.completeStudentArrowIfReleasedOverBond()
-	}
+	  }
 
     private completeStudentArrowIfReleasedOverAtom() {
 

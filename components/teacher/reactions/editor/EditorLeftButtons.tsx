@@ -175,7 +175,7 @@ function EditorLeftButtons(props: IProps) {
             imageAltText={"straight arrow"} 
             onMouseDown={toggleStraightArrow}
             selected={props.state.straightArrowSelected}
-            tip="Straight arrow"
+            tip="Reaction arrow"
         />
 
     const selectCationButton =

@@ -3,6 +3,7 @@ import { Atom } from "./atoms/Atom"
 import { Bond } from "./bonds/Bond"
 import p5 from 'p5'
 import LonePair from "./atoms/LonePair"
+import Ion from "./atoms/Ion"
 
 enum ArrowType {
     SINGLE = "SINGLE",
@@ -14,8 +15,8 @@ class CurlyArrow {
     type: ArrowType
     startVector: Vector
     endVector: Vector
-    startObject: Atom | Bond | LonePair
-    endObject: Atom | Bond
+    startObject: Atom | Bond | LonePair | Ion
+    endObject: Atom | Bond | LonePair | Ion
     anchorOne: Vector
     anchorTwo: Vector
     trianglePointOne: Vector
@@ -38,11 +39,11 @@ class CurlyArrow {
         }
     }
 
-    setStartObject(startObject: Atom | Bond | LonePair) {
+    setStartObject(startObject: Atom | Bond | LonePair | Ion) {
         this.startObject = startObject
     }
 
-    setEndObject(endObject: Atom | Bond) {
+    setEndObject(endObject: Atom | Bond | LonePair | Ion) {
         this.endObject = endObject
     }
 
