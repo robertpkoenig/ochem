@@ -1,16 +1,41 @@
 DEADLINE - 10th October
 
+BUGS
+============================================
+- create a step with three atoms, create new step with those atoms copied in, add bonds to them in first step, delete atom in second step, and bonds in first step unconnected will then be deleted
+- deleting atom in later step managed to corrupt the data structure somehow. This was a complex reaction.
+
 CURRENT
 ============================================
-- test everything and fix except analytics (10)
+- start arrows from -/+
+- move around the - and the +
+- duplicate reactions
+- make delete a hot key, not a menu item
+- undo is not working
+- analytics
+- forgot password
+- bug fixes
+
+STEVE ISSUES
+============================================
+
+Clarification:
+- Deleting in later step deletes structure in earlier step 
+
+Todo:
+- change straight arrow to reaction arrow
+- add ability to draw a plus sign on the screen
+
+Long todo:
+- Can students draw product? (no)
+- Copy/duplicate would be useful (yes)
 
 NEXT
 ============================================
 - double half headed arrow (5)
-- get analytics working (10)
 - add a hand button to the controller (1)
 - refactor student module page
-- teachers should see the module invite page as a preview
+- There should be a "preview" indicator on the student pages for the teacher
 
 Refactor
 - look into make the hover detector logic simpler
@@ -21,7 +46,6 @@ Refactor
 - remove all classes, make everything just functions
 - if showing image inside a square button, just make that part of the children
 - get everything to 2 space tab
-
 
 Feature ideas
 - special feedback for certain wrong arrows

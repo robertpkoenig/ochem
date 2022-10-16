@@ -1,5 +1,5 @@
 import { Vector } from "sat"
-import { ION_ORBIT_RADIUS, ION_RADIUS, LONE_PAIR_BALL_DISTANCE, LONE_PAIR_BALL_RADIUS, LONE_PAIR_ORBIT_RADIUS, OUTLINE_THICKNESS, RED_OUTLINE_COLOR } from "../../../Constants"
+import { LONE_PAIR_BALL_DISTANCE, LONE_PAIR_BALL_RADIUS, LONE_PAIR_ORBIT_RADIUS } from "../../../Constants"
 import { Atom } from "./Atom"
 import p5 from "p5";
 

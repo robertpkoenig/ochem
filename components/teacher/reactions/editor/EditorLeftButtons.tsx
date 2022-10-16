@@ -1,5 +1,5 @@
 import { Minus, MinusCircle, Plus, PlusCircle, RotateCcw, RotateCw, ZoomIn, ZoomOut } from "react-feather";
-import Ion from "../../../../canvas/model/chemistry/atoms/Ion";
+import Ion, { IonType } from "../../../../canvas/model/chemistry/atoms/Ion";
 import BondType from "../../../../canvas/model/chemistry/bonds/BondType";
 import { ArrowType } from "../../../../canvas/model/chemistry/CurlyArrow";
 import { ITeacherState } from "../../../../pages/teacher/reactions/[reactionId]";
@@ -28,7 +28,7 @@ function EditorLeftButtons(props: IProps) {
                 bondType: null,
                 arrowType: null,
                 straightArrowSelected: false,
-                selectedIon: null,
+                selectedIonType: null,
                 lonePairSelected: false,
                 angleControlSelected: false,
             })        
@@ -51,7 +51,7 @@ function EditorLeftButtons(props: IProps) {
                     arrowType: null,
                     eraserOn: false,
                     straightArrowSelected: false,
-                    selectedIon: null,
+                    selectedIonType: null,
                     lonePairSelected: false,
                     angleControlSelected: false,
             }) 
@@ -77,30 +77,30 @@ function EditorLeftButtons(props: IProps) {
                     eraserOn: false,
                     straightArrowSelected: false,
                     angleControlSelected: false,
-                    selectedIon: null,
+                    selectedIonType: null,
                     lonePairSelected: false,
             }) 
         }
        
     }
 
-    function selectIon(ion: Ion) {
+    function selectIon(ionType: IonType) {
 
         // If the ion type is already selected, and the user
         // is pressing this ion type button again, simply set
         // the ion type to null, as the user is turning off the
         // ion drawing altogether
-        if (props.state.selectedIon == ion) {
+        if (props.state.selectedIonType == ionType) {
             props.setState({
                     ...props.state,
-                    selectedIon: null
+                    selectedIonType: null
             })  
         }
 
         else {
             props.setState({
                     ...props.state,
-                    selectedIon: ion,
+                    selectedIonType: ionType,
                     eraserOn: false,
                     bondType: null,
                     arrowType: null,
@@ -121,7 +121,7 @@ function EditorLeftButtons(props: IProps) {
                 arrowType: null,
                 straightArrowSelected: false,
                 angleControlSelected: false,
-                selectedIon: null,
+                selectedIonType: null,
             })
     }
 
@@ -131,7 +131,7 @@ function EditorLeftButtons(props: IProps) {
                 straightArrowSelected: !props.state.straightArrowSelected,
                 eraserOn: false,
                 bondType: null,
-                selectedIon: null,
+                selectedIonType: null,
                 arrowType: null,
                 angleControlSelected: false,
                 lonePairSelected: false,
@@ -180,8 +180,8 @@ function EditorLeftButtons(props: IProps) {
 
     const selectCationButton =
         <SquareButton
-            onMouseDown={() => selectIon(Ion.CATION)}
-            selected={props.state.selectedIon ==  Ion.CATION}
+            onMouseDown={() => selectIon('+')}
+            selected={props.state.selectedIonType ==  '+'}
             tip="Cation"
         >
             <PlusCircle className="w-4 h-4" />
@@ -189,8 +189,8 @@ function EditorLeftButtons(props: IProps) {
 
     const selectAnionButton =
         <SquareButton
-            onMouseDown={() => selectIon(Ion.ANION)}
-            selected={props.state.selectedIon ==  Ion.ANION}
+            onMouseDown={() => selectIon('-')}
+            selected={props.state.selectedIonType ==  '-'}
             tip="Anion"
         >
             <MinusCircle className="w-4 h-4" />

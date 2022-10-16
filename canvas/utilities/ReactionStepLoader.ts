@@ -2,6 +2,7 @@ import { Vector } from "sat"
 import { BOND_DISTANCE } from "../Constants"
 import { Atom } from "../model/chemistry/atoms/Atom"
 import { AtomFactory } from "../model/chemistry/atoms/AtomFactory"
+import Ion from "../model/chemistry/atoms/Ion"
 import LonePair from "../model/chemistry/atoms/LonePair"
 import { Bond } from "../model/chemistry/bonds/Bond"
 import { CurlyArrow } from "../model/chemistry/CurlyArrow"
@@ -24,14 +25,15 @@ class ReactionStepLoader {
                 restoredMolecules.push(newMolecule)
 
                 for (const savedAtom of savedMolecule.atoms) {
-                    const newAtom: Atom = AtomFactory.createAtom(
-                                                                savedAtom.name,
-                                                                savedAtom.uuid,
-                                                                savedAtom.x,
-                                                                savedAtom.y,
-                                                                )
-                    newAtom.ionSymbol = savedAtom.ion
+                    const newAtom: Atom = 
+                      AtomFactory.createAtom(savedAtom.name, savedAtom.uuid, savedAtom.x, savedAtom.y)
+                    newAtom.ion = savedAtom.ion
                     newAtom.uuid = savedAtom.id
+
+                    if (savedAtom.ion != null) {
+                      const ion = new Ion(savedAtom.ion.type, newAtom, savedAtom.ion.uuid, savedAtom.ion.angle)
+                      newAtom.ion = ion
+                    }
 
                     if (savedAtom.lonePair != null) {
                       const lonePair = new LonePair(newAtom, savedAtom.lonePair.uuid, savedAtom.lonePair.angle)

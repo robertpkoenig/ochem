@@ -9,6 +9,7 @@ import { ArrowType, CurlyArrow } from "../model/chemistry/CurlyArrow";
 import StraightArrow from "../model/chemistry/StraightArrow";
 import { ARROW_STROKE_WEIGHT, BLUE_OUTLINE_COLOR, ION_ORBIT_RADIUS, ION_RADIUS, LONE_PAIR_OUTLINE_RADIUS, OUTLINE_THICKNESS, RED_OUTLINE_COLOR, STROKE_WEIGHT } from "../Constants";
 import LonePair from "../model/chemistry/atoms/LonePair";
+import Ion from "../model/chemistry/atoms/Ion";
 
 /** Performs teacher-specific rendering tasks */
 class TeacherView {
@@ -51,8 +52,11 @@ class TeacherView {
 
         if (hoveredIon != null) {
             if (this.teacherController.pageState.eraserOn) {
-                this.drawIonOutline(hoveredIon)
+                this.drawIonOutline(hoveredIon, RED_OUTLINE_COLOR)
                 this.showEraserTip()
+            }
+            else if (this.onlyMovingHandOrCurlyArrowActive()) {
+              this.drawIonOutline(hoveredIon, BLUE_OUTLINE_COLOR)
             }
         }
 
@@ -64,23 +68,12 @@ class TeacherView {
     private decorateLonePairIfHovered() {
       const hoveredLonePair = this.teacherController.hoverDetector.lonePairCurrentlyHovered
 
-      const onlyMovingHandOrArrowIsActive = 
-        this.teacherController.pageState.arrowType == ArrowType.DOUBLE ||
-        (
-          this.teacherController.pageState.bondType == null &&
-          this.teacherController.pageState.eraserOn == false &&
-          this.teacherController.pageState.lonePairSelected == false &&
-          this.teacherController.pageState.selectedIon == null &&
-          this.teacherController.pageState.straightArrowSelected == false
-        )
-
-
       if (hoveredLonePair) {
           if (this.teacherController.pageState.eraserOn) {
               this.drawLonePairOutline(hoveredLonePair, RED_OUTLINE_COLOR)
               this.showEraserTip()
           }
-          else if (onlyMovingHandOrArrowIsActive) {
+          else if (this.onlyMovingHandOrCurlyArrowActive()) {
             this.drawLonePairOutline(hoveredLonePair, BLUE_OUTLINE_COLOR)
           }
       }
@@ -90,11 +83,21 @@ class TeacherView {
       }
   }
 
+  private onlyMovingHandOrCurlyArrowActive() {
+    return this.teacherController.pageState.arrowType == ArrowType.DOUBLE ||
+      (
+        this.teacherController.pageState.bondType == null &&
+        this.teacherController.pageState.eraserOn == false &&
+        this.teacherController.pageState.lonePairSelected == false &&
+        this.teacherController.pageState.selectedIonType == null &&
+        this.teacherController.pageState.straightArrowSelected == false
+      );
+  }
+
   private drawLonePairOutline(lonePair: LonePair, color: string) {
     const eraserOn = this.teacherController.pageState.eraserOn
     const curylArrowSelected = this.teacherController.pageState.arrowType === ArrowType.DOUBLE
-    const x = lonePair.getPosVector().x
-    const y = lonePair.getPosVector().y
+    const { x, y } = lonePair.getPosVector()
     this.p5.push()
         this.p5.fill(color)
         this.p5.stroke(color)
@@ -103,12 +106,11 @@ class TeacherView {
     this.p5.pop()
   }
 
-  private drawIonOutline(atom: Atom) {
-      const x = atom.getPosVector().x - ION_ORBIT_RADIUS
-      const y = atom.getPosVector().y - ION_ORBIT_RADIUS
+  private drawIonOutline(ion: Ion, color: string) {
+    const { x, y } = ion.getPosVector()
       this.p5.push()
-          this.p5.noFill()
-          this.p5.stroke(RED_OUTLINE_COLOR)
+          this.p5.fill(color)
+          this.p5.stroke(color)
           this.p5.strokeWeight(OUTLINE_THICKNESS)
           this.p5.ellipse(x, y, ION_RADIUS + OUTLINE_THICKNESS)
       this.p5.pop()
@@ -365,7 +367,10 @@ class TeacherView {
                          )
 
         this.p5.pop()
+    }
 
+    private onlyMovingHandOrArrowIsActive() {
+      
     }
 
 }

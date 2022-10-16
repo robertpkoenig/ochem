@@ -8,7 +8,7 @@ import { doc, getDoc, getFirestore } from "firebase/firestore"
 import PromptPopup from "../../../components/teacher/reactions/editor/PromptPopup"
 import ReactionEditPopup from "../../../components/teacher/reactions/editor/ReactionEditPopup"
 import ScreenWithLoadingAllRender from "../../../components/common/ScreenWithLoadingAllRender"
-import Ion from "../../../canvas/model/chemistry/atoms/Ion"
+import Ion, { IonType } from "../../../canvas/model/chemistry/atoms/Ion"
 import p5 from "p5"
 import { useEffect, useState } from "react"
 import { CANVAS_PARENT_NAME } from "../../../canvas/Constants"
@@ -42,7 +42,7 @@ interface IState {
     arrowType: ArrowType
     straightArrowSelected: boolean
     angleControlSelected: boolean
-    selectedIon: Ion
+    selectedIonType: IonType
     lonePairSelected: boolean
     eraserOn: boolean
     selectedElement: HTMLElement
@@ -72,7 +72,7 @@ const TeacherReactionPage = (props: IProps) => {
                 arrowType: null,
                 straightArrowSelected: false,
                 angleControlSelected: false,
-                selectedIon: null,
+                selectedIonType: null,
                 lonePairSelected: false,
                 eraserOn: false,
                 selectedElement: null,

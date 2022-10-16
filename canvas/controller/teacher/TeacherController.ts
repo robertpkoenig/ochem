@@ -14,9 +14,9 @@ import AtomMover from "./helper/AtomMover"
 import IonCreator from "./helper/IonCreator"
 import StraightArrowCreator from "./helper/StraightArrowCreator"
 import LonePairCreator from "./helper/LonePairCreator"
-import { ArrowType } from "../../model/chemistry/CurlyArrow"
 import moveLonePairIfPressed from "./helper/moveLonePair"
 import ReactionSaver from "./helper/ReactionSaver"
+import { moveIonIfPressed } from "./helper/moveIon"
 
 class TeacherController {
 
@@ -88,6 +88,7 @@ class TeacherController {
       
         this.atomMover.dragAllAtomsRequired()
         moveLonePairIfPressed(this.hoverDetector, this.p5)
+        moveIonIfPressed(this.hoverDetector, this.p5)
         this.hoverDetector.detectHovering()
     }
 
@@ -102,8 +103,8 @@ class TeacherController {
         if (this.pageState.eraserOn) {
             this.eraser.eraseAnythingClicked()
         }
-        if (this.pageState.selectedIon) {
-            this.ionCreator.createIonIfAtomClicked(this.pageState.selectedIon)
+        if (this.pageState.selectedIonType) {
+            this.ionCreator.createIonIfAtomClicked(this.pageState.selectedIonType)
         }
         if (this.pageState.lonePairSelected) {
             this.lonePairCreator.createLonePairIfAtomClicked()
@@ -138,11 +139,12 @@ class TeacherController {
         const currentlyOverAtom = this.hoverDetector.atomCurrentlyHovered != null
         const currentlyOverBond = this.hoverDetector.bondCurrentlyHovered != null
         const currentlyOverLonePair = this.hoverDetector.lonePairCurrentlyHovered != null
+        const currentlyOverIon = this.hoverDetector.ionCurrentlyHovered != null
 
         const currentlyDrawingBondOrArrowOrIonOrAngle = 
             this.bondCreator.startAtom != null ||
             this.arrowCreator.draftArrow != null ||
-            this.pageState.selectedIon ||
+            this.pageState.selectedIonType ||
             this.pageState.angleControlSelected
 
         const onlyMovingHandOrArrowIsActive = 
@@ -150,7 +152,7 @@ class TeacherController {
               this.pageState.bondType == null &&
               this.pageState.eraserOn == false &&
               this.pageState.lonePairSelected == false &&
-              this.pageState.selectedIon == null &&
+              this.pageState.selectedIonType == null &&
               this.pageState.straightArrowSelected == false &&
               this.pageState.arrowType == null
             )
@@ -182,7 +184,7 @@ class TeacherController {
             this.p5.cursor("crosshair")
         }
 
-        else if (currentlyOverLonePair) {
+        else if (currentlyOverLonePair || currentlyOverIon) {
           if (this.pageState.arrowType != null) this.p5.cursor("crosshair")
           if (onlyMovingHandOrArrowIsActive) {
             if (this.p5.mouseIsPressed) this.p5.cursor("grabbing")

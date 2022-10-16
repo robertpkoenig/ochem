@@ -5,11 +5,12 @@ import CollisionDetector from "../../../view/CollisinDetector";
 import { CurlyArrow } from "../../../model/chemistry/CurlyArrow";
 import StraightArrow from "../../../model/chemistry/StraightArrow";
 import LonePair from "../../../model/chemistry/atoms/LonePair";
+import Ion from "../../../model/chemistry/atoms/Ion";
 
 /** Detects what item is hovered */
 class HoverDetector {
 
-    ionCurrentlyHovered: Atom
+    ionCurrentlyHovered: Ion
     lonePairCurrentlyHovered: LonePair
     atomCurrentlyHovered: Atom
     bondCurrentlyHovered: Bond
@@ -83,10 +84,11 @@ class HoverDetector {
 
     private detectIonHover() {
         for (const atom of this.reaction.currentStep.getAllAtoms()) {
-            if (atom.ionSymbol) {
-                if (this.collisionDetector.mouseHoveredOverIon(atom)) {
-                    this.ionCurrentlyHovered = atom
-                    return
+            if (atom.ion) {
+                if (this.collisionDetector.mouseHoveredOverIon(atom.ion)) {
+                  console.log('Hello');
+                  this.ionCurrentlyHovered = atom.ion
+                  return
                 }
             }
         }

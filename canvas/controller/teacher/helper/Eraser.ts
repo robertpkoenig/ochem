@@ -25,12 +25,12 @@ class Eraser {
 
     eraseIonIfClicked() {
         
-        const atomForWhichIonCurrentlyHovered =
+        const ion =
             this.editorController.hoverDetector.ionCurrentlyHovered
 
-        if (atomForWhichIonCurrentlyHovered != null) {
+        if (ion != null) {
             this.editorController.undoManager.addUndoPoint()
-            atomForWhichIonCurrentlyHovered.ionSymbol = null
+            ion.atom.ion = null
             ReactionSaver.saveReaction(this.editorController.reaction)
         }
 

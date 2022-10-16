@@ -4,7 +4,7 @@ export const MILLIS_PER_FRAME = 1000 / FRAME_RATE
 
 export const ATOM_RADIUS = 20
 
-export const ION_ORBIT_RADIUS = 15
+export const ION_ORBIT_RADIUS = 20
 export const ION_RADIUS = 15
 
 export const LONE_PAIR_ORBIT_RADIUS = 26

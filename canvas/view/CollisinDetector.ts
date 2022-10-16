@@ -7,6 +7,7 @@ import { Atom } from "../model/chemistry/atoms/Atom"
 import StraightArrow from "../model/chemistry/StraightArrow"
 import { ION_ORBIT_RADIUS, ION_RADIUS, LONE_PAIR_COLLISION_RADIUS } from "../Constants"
 import LonePair from "../model/chemistry/atoms/LonePair"
+import Ion from "../model/chemistry/atoms/Ion"
 
 // Contains methods for checking if various elements
 // visually overlap. It utilizes an open source collision
@@ -38,12 +39,10 @@ class CollisionDetector {
         return SAT.pointInCircle(mousePosition, atom.circle)
     }
 
-    mouseHoveredOverIon(atom: Atom) {
+    mouseHoveredOverIon(ion: Ion) {
         const mouseVector = new Vector(this.p5.mouseX / this.reaction.zoom, this.p5.mouseY / this.reaction.zoom)
-        const ionX = atom.getPosVector().x - ION_ORBIT_RADIUS
-        const ionY = atom.getPosVector().y - ION_ORBIT_RADIUS
-        const ionCoordinateVector = new Vector(ionX, ionY)
-        const ionCircle = new SAT.Circle(ionCoordinateVector, ION_RADIUS / 2)
+        const ionCoordinateVector = ion.getPosVector()
+        const ionCircle = new SAT.Circle(ionCoordinateVector, ION_RADIUS)
         return SAT.pointInCircle(mouseVector, ionCircle)
     }
 

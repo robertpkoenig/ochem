@@ -1,6 +1,8 @@
 import Reaction from "../../../model/Reaction";
 import ReactionSaver from "./ReactionSaver";
 import TeacherController from "../TeacherController";
+import Ion, { IonType } from "../../../model/chemistry/atoms/Ion";
+import { v4 as uuid } from 'uuid'
 
 /** Add ions to atoms */
 class IonCreator {
@@ -14,11 +16,12 @@ class IonCreator {
     }
 
     // Cation is positive, Anion is negative
-    createIonIfAtomClicked(ionString: string) {
+    createIonIfAtomClicked(type: IonType) {
         this.teacherController.undoManager.addUndoPoint()
         const atomClicked = this.teacherController.hoverDetector.atomCurrentlyHovered
         if (atomClicked != null) {
-            atomClicked.ionSymbol = ionString
+            const ion = new Ion(type, atomClicked, uuid())
+            atomClicked.ion = ion
         }
         ReactionSaver.saveReaction(this.reaction)
     }
