@@ -28,8 +28,10 @@ class ReactionLoader {
         })
 
         let currentStep: ReactionStep | null = null
-        const currentStepId: string | null = 
-            reactionRawObject["currentStepId"]
+        const currentStepId: string = restoredSteps[0].uuid
+
+        console.log('currentStepId : ' + currentStepId)
+        console.log(reactionRawObject);
 
         if (!currentStepId)
             throw new Error("current step was undefined in the reaction") 

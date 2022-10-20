@@ -10,6 +10,7 @@ import Molecule from "../model/chemistry/Molecule"
 import StraightArrow from "../model/chemistry/StraightArrow"
 import ReactionStep from "../model/ReactionStep"
 import Utilities from "./Utilities"
+import { v4 as uuidv4 } from 'uuid'
 
 /** De-serializes a single step in a reaction */
 class ReactionStepLoader {
@@ -31,7 +32,11 @@ class ReactionStepLoader {
                     newAtom.uuid = savedAtom.id
 
                     if (savedAtom.ion != null) {
-                      const ion = new Ion(savedAtom.ion.type, newAtom, savedAtom.ion.uuid, savedAtom.ion.angle)
+                      const type = savedAtom.ion?.type ?? savedAtom.ionSymbol
+                      const ionUid = savedAtom.ion?.uuid ?? uuidv4()
+                      const angle = savedAtom.ion?.angle ?? 90
+
+                      const ion = new Ion(type, newAtom, ionUid, angle)
                       newAtom.ion = ion
                     }
 
