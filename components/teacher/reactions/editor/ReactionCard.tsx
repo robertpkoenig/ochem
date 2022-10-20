@@ -171,7 +171,6 @@ export default function ReactionCard (props: IReactionCardProps) {
   
           // Duplicate the core reaction object in firebase
           const reactionDoc = await getDoc(doc(db, REACTIONS, props.reactionListing.uuid))
-          console.log(reactionDoc.data());
           const coreReaction = ReactionLoader.loadReactionFromObject(reactionDoc.data())
           
           const newReaction = coreReaction
