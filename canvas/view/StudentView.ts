@@ -1,7 +1,8 @@
 import p5 from "p5"
-import { BLUE_OUTLINE_COLOR, LONE_PAIR_OUTLINE_RADIUS, OUTLINE_THICKNESS, STROKE_WEIGHT } from "../Constants"
+import { BLUE_OUTLINE_COLOR, ION_RADIUS, LONE_PAIR_OUTLINE_RADIUS, OUTLINE_THICKNESS, STROKE_WEIGHT } from "../Constants"
 import StudentController from "../controller/student/StudentController"
 import { Atom } from "../model/chemistry/atoms/Atom"
+import Ion from "../model/chemistry/atoms/Ion"
 import LonePair from "../model/chemistry/atoms/LonePair"
 import { Bond } from "../model/chemistry/bonds/Bond"
 import BondType from "../model/chemistry/bonds/BondType"
@@ -25,6 +26,7 @@ class StudentView {
         this.decorateAtomIfHovered()
         this.decorateBondIfHovered()
         this.decorateLonePairIfHovered()
+        this.decorateIonIfHovered()
     }
 
     decorateAtomIfHovered() {
@@ -95,6 +97,22 @@ class StudentView {
       if (hoveredLonePair) this.drawLonePairOutline(hoveredLonePair)
     }
 
+    private decorateIonIfHovered() {
+      const hoveredIon = this.controller.hoverDetector.ionCurrentlyHovered
+      if (hoveredIon != null) {
+        this.drawIonOutline(hoveredIon, BLUE_OUTLINE_COLOR)
+      }
+    }
+
+    private drawIonOutline(ion: Ion, color: string) {
+      const { x, y } = ion.getPosVector()
+        this.p5.push()
+            this.p5.fill(color)
+            this.p5.stroke(color)
+            this.p5.strokeWeight(OUTLINE_THICKNESS)
+            this.p5.ellipse(x, y, ION_RADIUS + OUTLINE_THICKNESS)
+        this.p5.pop()
+    }
 
     private drawLonePairOutline(lonePair: LonePair) {
       const curylArrowSelected = this.controller.pageState.arrowType === ArrowType.DOUBLE

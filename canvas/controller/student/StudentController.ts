@@ -76,11 +76,12 @@ class StudentController {
         const currentlyOverAtom = this.hoverDetector.atomCurrentlyHovered != null
         const currentlyOverBond = this.hoverDetector.bondCurrentlyHovered != null
         const currentlyOverLonePair = this.hoverDetector.lonePairCurrentlyHovered != null
+        const currentlyOverIon = this.hoverDetector.ionCurrentlyHovered != null
 
         const currentlyDrawingArrow = 
             this.curlyArrowCreator.draftArrow != null
 
-        if (currentlyOverBond || currentlyOverAtom || currentlyOverLonePair || currentlyDrawingArrow) {
+        if (currentlyOverBond || currentlyOverAtom || currentlyOverLonePair || currentlyDrawingArrow || currentlyOverIon) {
           this.p5.cursor("crosshair")
         }
 
