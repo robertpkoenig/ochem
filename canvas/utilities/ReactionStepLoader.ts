@@ -32,7 +32,7 @@ class ReactionStepLoader {
                     newAtom.uuid = savedAtom.id
 
                     if (savedAtom.ion != null) {
-                      const type = savedAtom.ion?.type ?? savedAtom.ionSymbol
+                      const type = savedAtom.ion?.type ?? savedAtom.ion
                       const ionUid = savedAtom.ion?.uuid ?? uuidv4()
                       const angle = savedAtom.ion?.angle ?? 90
 
