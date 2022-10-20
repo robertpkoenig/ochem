@@ -1,4 +1,4 @@
-import { PlusIcon, XIcon } from "@heroicons/react/solid"
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { isPropertySignature } from "typescript"
 import ReactionSaver from "../../../../canvas/controller/teacher/helper/ReactionSaver"
 import ReactionStep from "../../../../canvas/model/ReactionStep"
@@ -112,7 +112,7 @@ function ListOfSteps(props: IProps) {
                         props.state.reaction.steps.length > 1 && "group-hover:visible")}
                     style={{transform: "translate(40%, -40%)"}}
                 >
-                    <XIcon className="w-2 h-2" />
+                    <XMarkIcon className="w-2 h-2" />
                 </button>
             </li>
         ))

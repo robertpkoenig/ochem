@@ -13,7 +13,7 @@ import ProgressIndicators from "../../../components/student/reaction/ProgressInd
 import ExcerciseFinishedNotification from "../../../components/student/reaction/ExcerciseFinishedNotification"
 import StudentReactionHeader from "../../../components/student/reaction/StudentReactionHeader"
 import StudentController from "../../../canvas/controller/student/StudentController"
-import { ExclamationCircleIcon } from "@heroicons/react/solid"
+import { ExclamationCircleIcon } from "@heroicons/react/24/solid"
 import { AuthContext } from "../../../context/authContext"
 import HelpPopup from "../../../components/student/reaction/HelpPopup"
 

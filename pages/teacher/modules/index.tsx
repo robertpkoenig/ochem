@@ -1,7 +1,7 @@
 
 import PageLayout from '../../../components/common/PageLayout'
 import React, { ReactNode, useContext, useEffect, useState } from 'react'
-import { PlusIcon } from '@heroicons/react/solid'
+import { PlusIcon } from '@heroicons/react/24/solid'
 import ModulePopup from '../../../components/teacher/reactions/editor/ModulePopup'
 import PopupBackground from '../../../components/common/PopupBackground'
 import { v4 as uuid } from 'uuid'

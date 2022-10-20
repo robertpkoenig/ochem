@@ -1,4 +1,4 @@
-import { CalendarIcon, UsersIcon } from "@heroicons/react/outline";
+import { CalendarIcon, UsersIcon } from "@heroicons/react/24/outline";
 import React, { useContext, useEffect, useState } from "react";
 import PageLayout from "../../../components/common/PageLayout";
 import ScreenWithLoading from "../../../components/common/ScreenWithLoading";

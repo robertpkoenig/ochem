@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Section from "../../../persistence-model/SectionListing";
 import Module from "../../../persistence-model/Module";
 import SectionCard from "../../../components/teacher/reactions/editor/SectionCard";
-import { PlusIcon } from "@heroicons/react/solid";
+import { PlusIcon } from "@heroicons/react/24/solid";
 import SectionPopup from "../../../components/teacher/reactions/editor/SectionPopup";
 import { v4 as uuid } from 'uuid'
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";

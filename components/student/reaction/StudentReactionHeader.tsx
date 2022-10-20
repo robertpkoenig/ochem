@@ -1,5 +1,5 @@
-import { QuestionMarkCircleIcon } from "@heroicons/react/outline"
-import { ArrowLeftIcon } from "@heroicons/react/solid"
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline"
+import { ArrowLeftIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import Reaction from "../../../canvas/model/Reaction"
 

@@ -1,5 +1,5 @@
 
-import { ChartBarIcon, EyeIcon, PaperAirplaneIcon, PencilIcon } from "@heroicons/react/outline"
+import { ChartBarIcon, EyeIcon, PaperAirplaneIcon, PencilIcon } from "@heroicons/react/24/outline"
 import { doc, getFirestore, updateDoc } from "firebase/firestore"
 import Link from "next/link"
 import React, { useState } from "react"

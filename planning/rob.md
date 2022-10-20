@@ -7,8 +7,6 @@ BUGS
 
 CURRENT
 ============================================
-- start arrows from -/+
-- move around the - and the +
 - duplicate reactions
 - make delete a hot key, not a menu item
 - undo is not working

@@ -1,4 +1,4 @@
-import { ChartBarIcon, FolderIcon, PencilAltIcon } from "@heroicons/react/outline"
+import { ChartBarIcon, FolderIcon, PencilIcon } from "@heroicons/react/24/outline"
 import React from "react"
 import classNames from "../../functions/helper/classNames"
 
@@ -6,7 +6,7 @@ const features = [
     {   
         index: 1,
         name: 'Intuitive Editor',
-        icon: PencilAltIcon,
+        icon: PencilIcon,
         text: `Drag and drop atoms, create bonds, and specify curly arrows. Create a prompt for the reaction.
                Ochem then generates the student interaction, with feedback for each arrow they draw.`,
         img: "/assets/screenshots/editor.png",

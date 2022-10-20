@@ -5,18 +5,21 @@ import ReactionListing from '../../../../persistence-model/ReactionListing';
 import Section from '../../../../persistence-model/SectionListing';
 import PopupBackground from '../../../common/PopupBackground';
 import DeleteReactionPopup from './DeleteReactionPopup';
-import { deleteDoc, doc, getFirestore, updateDoc } from 'firebase/firestore';
-import { PencilAltIcon } from '@heroicons/react/outline';
+import { deleteDoc, doc, getDoc, getFirestore, updateDoc } from 'firebase/firestore';
 import Button from '../../../common/buttons/Button';
 import RoundButton from '../../../common/buttons/RoundButton';
-import { ChevronDownIcon, ChevronUpIcon, XIcon } from '@heroicons/react/solid';
-import { REACTIONS, REACTION_LISTINGS, SECTIONS } from '../../../../persistence-model/FirebaseConstants';
+import { ArrowDownOnSquareStackIcon, ChevronDownIcon, ChevronUpIcon, PencilIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { MODULES, REACTIONS, REACTION_LISTINGS, SECTIONS } from '../../../../persistence-model/FirebaseConstants';
+import { v4 as uuid } from 'uuid';
+import ReactionSaver from '../../../../canvas/controller/teacher/helper/ReactionSaver';
+import ReactionLoader from '../../../../canvas/utilities/ReactionLoader';
 
 export interface IReactionCardProps {
     reactionListing: ReactionListing
     section: Section
     module: Module
     updateModule: (moduleCopy: Module) => void
+    userId: string
 }
 
 export default function ReactionCard (props: IReactionCardProps) {
@@ -128,6 +131,57 @@ export default function ReactionCard (props: IReactionCardProps) {
 
     }
 
+    async function duplicateReaction() {
+        
+          // Create copy of the module
+          const moduleCopy: Module = Object.assign(props.module)
+  
+          // Create a new uuid for the reaction
+          const newReactionUid = uuid()
+
+          const numReactionsInThisSection = Object.keys(props.section.reactionListings).length
+
+          // Create copy of the reaction
+          const newReactionListing: ReactionListing = 
+            {
+              name: props.reactionListing.name + " (copy)",
+              order: numReactionsInThisSection,
+              uuid: newReactionUid,
+              visible: false,
+              creationDate: new Date().toISOString(),
+              authorId: props.userId
+            }
+  
+          // Add the new reaction to the section
+          moduleCopy.sections[props.section.uuid].reactionListings[newReactionUid] = newReactionListing
+      
+          // Replace the upstream module state with the module
+          // with this reaction in this section
+          props.updateModule(moduleCopy)
+  
+          // Update the module in firebase
+          const moduleDocRef = doc(db, MODULES, props.module.uuid);
+  
+          const sectionUpdateObject: any = {}
+          const reactionListingsRefString = SECTIONS + "." + props.section.uuid +
+          "." + REACTION_LISTINGS
+          sectionUpdateObject[reactionListingsRefString] = props.section.reactionListings
+  
+          updateDoc(moduleDocRef, sectionUpdateObject);
+  
+          // Duplicate the core reaction object in firebase
+          const reactionDoc = await getDoc(doc(db, REACTIONS, props.reactionListing.uuid))
+          console.log(reactionDoc.data());
+          const coreReaction = ReactionLoader.loadReactionFromObject(reactionDoc.data())
+          
+          const newReaction = coreReaction
+          newReaction.uuid = newReactionUid
+          newReaction.name = newReaction.name + " (copy)"
+
+          // add the new reaction to firebase
+          ReactionSaver.saveReaction(newReaction)
+    }
+
     const publishedIndicator = 
         <div className="flex flex-row gap-1 items-center group">
             <div className="invisible text-xs font-light text-gray-500 group-hover:visible">
@@ -187,10 +241,16 @@ export default function ReactionCard (props: IReactionCardProps) {
 
                     {/* Delete button */}
                     <RoundButton
-                        icon={XIcon}
+                        icon={XMarkIcon}
                         onClick={toggleReactionDeletionPopup}                    
                     />
                     
+                    {/* Delete button */}
+                    <RoundButton
+                        icon={ArrowDownOnSquareStackIcon}
+                        onClick={duplicateReaction}                    
+                    />
+
                 </div>
 
                 <div className="flex flex-row gap-2">
@@ -200,7 +260,7 @@ export default function ReactionCard (props: IReactionCardProps) {
                                 size={"small"}
                                 importance={"primary"}
                                 text={"Edit"}
-                                icon={PencilAltIcon}
+                                icon={PencilIcon}
                                 onClick={null}
                                 extraClasses={""} />
                         </a>

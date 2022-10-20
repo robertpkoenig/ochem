@@ -5,8 +5,8 @@ import PopupBackground from "../../../common/PopupBackground"
 import DeleteReactionPopup from "./DeleteReactionPopup"
 
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
-import { XIcon } from "@heroicons/react/solid"
-import { PencilAltIcon } from "@heroicons/react/outline"
+import { XMarkIcon } from "@heroicons/react/24/solid"
+import { PencilIcon } from "@heroicons/react/24/outline"
 import Button from "../../../common/buttons/Button"
 import RoundButton from "../../../common/buttons/RoundButton"
 import { MODULE_LISTINGS } from "../../../../persistence-model/FirebaseConstants"
@@ -65,7 +65,7 @@ function ModuleCard(props: IProps) {
                 <div className="flex flex-row items-center gap-4">
 
                     <RoundButton
-                        icon={XIcon}
+                        icon={XMarkIcon}
                         onClick={toggleDeleteModulePopup}
                     />
 
@@ -75,7 +75,7 @@ function ModuleCard(props: IProps) {
                                 size={"small"}
                                 importance={"primary"}
                                 text={"Edit"}
-                                icon={PencilAltIcon}
+                                icon={PencilIcon}
                                 extraClasses={""}
                                 onClick={null}                            
                             />

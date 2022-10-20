@@ -1,4 +1,4 @@
-import { PlusIcon, ChevronDownIcon, ChevronUpIcon, XIcon } from '@heroicons/react/solid';
+import { PlusIcon, ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import Module from '../../../../persistence-model/Module';
 import ReactionListing from '../../../../persistence-model/ReactionListing';
 import Section from '../../../../persistence-model/SectionListing';
@@ -9,7 +9,7 @@ import DeleteReactionPopup from './DeleteReactionPopup';
 import Reaction from '../../../../canvas/model/Reaction';
 import ReactionStep from '../../../../canvas/model/ReactionStep';
 import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
-import { PencilIcon } from '@heroicons/react/outline';
+import { PencilIcon } from '@heroicons/react/24/outline';
 import SectionRenamePopup from './SectionRenamePopup';
 import EmptyState from '../../../common/EmptyState';
 import { useState } from 'react';
@@ -217,6 +217,7 @@ export default function SectionCard(props: IProps) {
                                     section={props.section}
                                     module={props.module}
                                     updateModule={props.setModuleFunction}
+                                    userId={props.userId}
                                 />
                             </li>
                         )}
@@ -253,7 +254,7 @@ export default function SectionCard(props: IProps) {
                             />
 
                             <RoundButton
-                                icon={XIcon}
+                                icon={XMarkIcon}
                                 onClick={toggleSectionDeletePopup}                    
                             />
                            

@@ -1,5 +1,5 @@
 import { Switch } from "@headlessui/react"
-import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/solid"
+import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/24/solid"
 import { doc, Firestore, updateDoc } from "firebase/firestore"
 import Link from "next/link"
 import ReactionSaver from "../../../../canvas/controller/teacher/helper/ReactionSaver"

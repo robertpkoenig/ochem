@@ -1,4 +1,4 @@
-import { CheckCircleIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
+import { CheckCircleIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import Button from "../../../common/buttons/Button";
 import PopupBackground from "../../../common/PopupBackground";
@@ -61,7 +61,7 @@ export default function SharePopup(props: IProps) {
                         size={"medium"}
                         importance={"primary"}
                         text={"Copy Link"}
-                        icon={ClipboardCopyIcon}
+                        icon={ClipboardIcon}
                         onClick={copyLinkText}
                         extraClasses={"w-auto"}
                     />

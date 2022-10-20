@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react"
-import { CheckCircleIcon } from "@heroicons/react/solid"
+import { CheckCircleIcon } from "@heroicons/react/24/solid"
 import { IStudentState } from "../../../pages/student/reactions/[reactionId]"
 
 interface IProps {

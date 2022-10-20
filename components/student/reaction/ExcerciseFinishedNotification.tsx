@@ -1,4 +1,4 @@
-import { CheckCircleIcon } from "@heroicons/react/solid"
+import { CheckCircleIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import Reaction from "../../../canvas/model/Reaction"
 import Button from "../../common/buttons/Button"

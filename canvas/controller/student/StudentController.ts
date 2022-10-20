@@ -20,7 +20,7 @@ class StudentController {
     reaction: Reaction
     collisionDetector: CollisionDetector
     hoverDetector: HoverDetector
-    arrowCreator: CurlyArrowCreator
+    curlyArrowCreator: CurlyArrowCreator
     bodyMover: AtomMover
 
     // React page state
@@ -43,7 +43,7 @@ class StudentController {
         this.setPageState = setPageState
 
         this.hoverDetector = new HoverDetector(reaction, collisionDetector)
-        this.arrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState, null) // no undo for student
+        this.curlyArrowCreator = new CurlyArrowCreator(reaction, this.hoverDetector, pageState, null) // no undo for student
     }
 
     process() {
@@ -51,8 +51,8 @@ class StudentController {
             curlyArrow.update(this.p5, this.reaction.zoom)
         }
         // TODO change this update function to sit with the arrowCreator
-        if (this.arrowCreator.draftArrow != null) {
-            this.arrowCreator.draftArrow.update(this.p5, this.reaction.zoom)
+        if (this.curlyArrowCreator.draftArrow != null) {
+            this.curlyArrowCreator.draftArrow.update(this.p5, this.reaction.zoom)
         }
         this.updateMouseStyle()
         this.hoverDetector.detectHovering()
@@ -60,12 +60,12 @@ class StudentController {
 
     routeMousePressed(mouseVector: Vector) {
         if (this.pageState.arrowType != null) {
-            this.arrowCreator.startArrowIfObjectClicked()
+            this.curlyArrowCreator.startArrowIfObjectClicked()
         }
     }
 
     routeMouseReleased(mouseVector: Vector) {
-        if (this.arrowCreator.draftArrow != null) {
+        if (this.curlyArrowCreator.draftArrow != null) {
             this.testStudentArrowIfCompleted()
         }
     }
@@ -78,7 +78,7 @@ class StudentController {
         const currentlyOverLonePair = this.hoverDetector.lonePairCurrentlyHovered != null
 
         const currentlyDrawingArrow = 
-            this.arrowCreator.draftArrow != null
+            this.curlyArrowCreator.draftArrow != null
 
         if (currentlyOverBond || currentlyOverAtom || currentlyOverLonePair || currentlyDrawingArrow) {
           this.p5.cursor("crosshair")
@@ -94,9 +94,9 @@ class StudentController {
     testStudentArrowIfCompleted() {
         const nextCurlyArrowIndex = curlyArrows.length
         const nextCurlyArrow = this.reaction.currentStep.curlyArrows[nextCurlyArrowIndex]
-        this.arrowCreator.completeStudentArrowIfReleasedOverObject()
+        this.curlyArrowCreator.completeStudentArrowIfReleasedOverObject()
         const reaction = this.reaction
-        const correctArrow = this.arrowCreator.draftArrow
+        const correctArrow = this.curlyArrowCreator.draftArrow
 
         const nextStep = reaction.steps[reaction.currentStep.order + 1]
 
@@ -149,13 +149,13 @@ class StudentController {
           temporaryProcesses.push(animateAtomsProcess)
         }
 
-        if (this.arrowCreator.draftArrow != null) {
+        if (this.curlyArrowCreator.draftArrow != null) {
           const curlyArrowIsCorrect = 
-            this.arrowCreator.draftArrow.startObject === nextCurlyArrow.startObject &&
-            this.arrowCreator.draftArrow.endObject === nextCurlyArrow.endObject
+            this.curlyArrowCreator.draftArrow.startObject === nextCurlyArrow.startObject &&
+            this.curlyArrowCreator.draftArrow.endObject === nextCurlyArrow.endObject
           if (curlyArrowIsCorrect) {
-            addArrowToListOfCurlyArrows(this.arrowCreator.draftArrow)
-            const correctArrowFeedback = new CorrectArrowFeedback(this.arrowCreator.draftArrow, this.p5)
+            addArrowToListOfCurlyArrows(this.curlyArrowCreator.draftArrow)
+            const correctArrowFeedback = new CorrectArrowFeedback(this.curlyArrowCreator.draftArrow, this.p5)
             addToFeedbackItems(correctArrowFeedback)
             temporaryProcesses.push({
               functionCalledEachFrame: () => {},
@@ -172,10 +172,10 @@ class StudentController {
               remainingFramesBeforeActionExecuted: 1000 / FRAME_RATE
             })
           } else {
-            const incorrectArrow = this.arrowCreator.draftArrow
+            const incorrectArrow = this.curlyArrowCreator.draftArrow
             incorrectArrow.correct = false
-            addArrowToListOfCurlyArrows(this.arrowCreator.draftArrow)
-            const incorrectArrowFeedback = new IncorrectArrowFeedback(this.arrowCreator.draftArrow, this.p5)
+            addArrowToListOfCurlyArrows(this.curlyArrowCreator.draftArrow)
+            const incorrectArrowFeedback = new IncorrectArrowFeedback(this.curlyArrowCreator.draftArrow, this.p5)
             addToFeedbackItems(incorrectArrowFeedback)
             temporaryProcesses.push({
               functionCalledEachFrame: function() {},
@@ -187,22 +187,22 @@ class StudentController {
             })
           }
         }
-        this.arrowCreator.draftArrow = null
-        if (this.arrowCreator.draftArrow != null &&
-            this.arrowCreator.draftArrow.startObject ===
+        this.curlyArrowCreator.draftArrow = null
+        if (this.curlyArrowCreator.draftArrow != null &&
+            this.curlyArrowCreator.draftArrow.startObject ===
                 nextCurlyArrow.startObject &&
-            this.arrowCreator.draftArrow.endObject ===
+            this.curlyArrowCreator.draftArrow.endObject ===
                 nextCurlyArrow.endObject) 
         {
 
           // addDelayedAction(() => console.log("delayedActiontriggered"), 1000)
         }
-        else if (this.arrowCreator.draftArrow != null &&
-                 this.arrowCreator.draftArrow.endObject != null) {
+        else if (this.curlyArrowCreator.draftArrow != null &&
+                 this.curlyArrowCreator.draftArrow.endObject != null) {
             // todo
-            this.arrowCreator.draftArrow = null
+            this.curlyArrowCreator.draftArrow = null
         }
-        this.arrowCreator.draftArrow = null
+        this.curlyArrowCreator.draftArrow = null
     }
 
     animateMovementOfAtomsFromOneStepToNext() {

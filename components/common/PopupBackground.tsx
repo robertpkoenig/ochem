@@ -1,4 +1,4 @@
-import { XIcon } from '@heroicons/react/outline'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 import { SyntheticEvent } from 'react'
 
 interface IProps {
@@ -24,7 +24,7 @@ export default function PopupBackground(props: IProps) {
                     <button 
                       className="bg-white w-10 h-10 rounded-full shadow flex place-content-center place-items-center transition-all text-gray-400 hover:text-gray-600"
                     >
-                        <XIcon className="h-5 w-5"/>
+                        <XMarkIcon className="h-5 w-5"/>
                     </button>
                 </div>
 
