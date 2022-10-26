@@ -1,8 +1,8 @@
-import 'tailwindcss/tailwind.css'
-import type { AppProps } from 'next/app'
-import React from 'react'
-import { AuthProvider } from '../context/authContext'
-import Head from 'next/head'
+import "tailwindcss/tailwind.css";
+import type { AppProps } from "next/app";
+import React from "react";
+import { AuthProvider } from "../context/authContext";
+import Head from "next/head";
 
 /* 
     This is the entry point for the Next.js appliction.
@@ -12,16 +12,16 @@ import Head from 'next/head'
 */
 
 function MyApp({ Component, pageProps }: AppProps) {
-    return (
-        <>
-            <Head>
-                <title>Ochem.io</title>
-            </Head>
+  return (
+    <>
+      <Head>
+        <title>Ochem.io</title>
+      </Head>
 
-            <AuthProvider>
-                <Component {...pageProps} />
-            </AuthProvider>
-        </>
-    )
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
+    </>
+  );
 }
-export default MyApp
+export default MyApp;

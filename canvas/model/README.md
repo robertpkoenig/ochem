@@ -1,5 +1,4 @@
-DATA HIERARCHY
---------------
+## DATA HIERARCHY
 
     Reaction
         ReactionStep
@@ -9,8 +8,7 @@ DATA HIERARCHY
             CurlyArrow
             StraightArrows[]
 
-DEFINITIONS
------------
+## DEFINITIONS
 
 - Reaction: Each excercise pertains to one reaction
 - Reaction Step: Defined by a beginning/intermediate/terminal molecule configuration, and curly arrow denoting the electron movement that transforms the molecule into the configuration seen in the next step

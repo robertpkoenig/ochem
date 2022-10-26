@@ -1,9 +1,9 @@
 interface IKeyboardState {
-  shiftPressed: boolean
+  shiftPressed: boolean;
 }
 
 const keyboardState: IKeyboardState = {
   shiftPressed: false,
-}
+};
 
-export default keyboardState
+export default keyboardState;

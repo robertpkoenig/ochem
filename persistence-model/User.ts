@@ -1,17 +1,15 @@
 import UserType from "../canvas/model/UserType";
 
 interface User {
-
-    type: UserType,
-    firstName: string,
-    lastName: string,
-    email: string,
-    university: string,
-    moduleIds: string[],
-    completedReactionIds: string[],
-    userId: string,
-    introPopupSeen: boolean
-
+  type: UserType;
+  firstName: string;
+  lastName: string;
+  email: string;
+  university: string;
+  moduleIds: string[];
+  completedReactionIds: string[];
+  userId: string;
+  introPopupSeen: boolean;
 }
 
-export default User
+export default User;

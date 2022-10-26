@@ -1,16 +1,12 @@
-import { ReactNode } from "react"
+import { ReactNode } from "react";
 
 interface IProps {
-    if: boolean,
-    children: ReactNode
+  if: boolean;
+  children: ReactNode;
 }
 
 function Show(props: IProps) {
-    return (
-        <>
-            {props.if && props.children}
-        </>
-    )
+  return <>{props.if && props.children}</>;
 }
 
-export default Show
+export default Show;

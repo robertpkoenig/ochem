@@ -1,85 +1,79 @@
-import Reaction from "../model/Reaction"
-import ReactionStep from "../model/ReactionStep"
-import ReactionStepLoader from "./ReactionStepLoader"
+import Reaction from "../model/Reaction";
+import ReactionStep from "../model/ReactionStep";
+import ReactionStepLoader from "./ReactionStepLoader";
 
-/** 
+/**
  * De-serializes a reaction from JSON.
  * This is complicated because molecules are a graph with circular references.
  */
 class ReactionLoader {
+  public static loadReactionFromJSON(reactionJSON: string): Reaction {
+    const reactionRawObject = JSON.parse(reactionJSON);
+    return this.loadReactionFromObject(reactionRawObject);
+  }
 
-    public static loadReactionFromJSON(reactionJSON: string): Reaction {
-        const reactionRawObject = JSON.parse(reactionJSON)
-        return this.loadReactionFromObject(reactionRawObject)
+  public static loadReactionFromObject(reactionRawObject: any): Reaction {
+    const restoredSteps: ReactionStep[] = [];
+
+    for (const rawStepObject of reactionRawObject["steps"]) {
+      const restoredStepClassInstance =
+        ReactionStepLoader.loadReactionStepFromPlainObject(rawStepObject);
+      restoredSteps.push(restoredStepClassInstance);
     }
 
-    public static loadReactionFromObject(reactionRawObject: any): Reaction {
+    restoredSteps.sort((a, b) => {
+      return a.order - b.order;
+    });
 
-        const restoredSteps: ReactionStep[] = []
+    let currentStep: ReactionStep | null = null;
+    const currentStepId: string = restoredSteps[0].uuid;
 
-        for (const rawStepObject of reactionRawObject["steps"]) {
-            const restoredStepClassInstance = 
-                ReactionStepLoader.loadReactionStepFromPlainObject(rawStepObject)
-            restoredSteps.push(restoredStepClassInstance)
-        }
+    if (!currentStepId)
+      throw new Error("current step was undefined in the reaction");
 
-        restoredSteps.sort((a, b) => {
-            return a.order - b.order
-        })
-
-        let currentStep: ReactionStep | null = null
-        const currentStepId: string = restoredSteps[0].uuid
-
-        if (!currentStepId)
-            throw new Error("current step was undefined in the reaction") 
-
-        for (const restoredStep of restoredSteps) {
-            if (restoredStep.uuid === currentStepId) {
-                currentStep = restoredStep
-            }
-        }
-
-        if (!currentStep)
-            throw new Error("Could not find the current step")
-
-        const name = reactionRawObject["name"]
-        const description = reactionRawObject["description"]
-        const hint = reactionRawObject["hint"]
-        const uuid = reactionRawObject["uuid"]
-        const moduleId = reactionRawObject["moduleId"]
-        const moduleName = reactionRawObject["moduleName"]
-        const sectionId = reactionRawObject["sectionId"]
-        const sectionName = reactionRawObject["sectionName"]
-        const authorId = reactionRawObject["authorId"]
-        const published = reactionRawObject["published"]
-        const prompt = reactionRawObject["prompt"]
-        const zoom = reactionRawObject["zoom"] || 1
-
-
-        const restoredReaction = new Reaction(
-            name,
-            description,
-            hint,
-            uuid,
-            moduleId,
-            moduleName,
-            sectionId,
-            sectionName,
-            authorId,
-            published,
-            restoredSteps,
-            currentStep,
-            prompt,
-            zoom
-        )
-        
-        restoredReaction.steps = restoredSteps
-        restoredReaction.currentStep = currentStep
-
-        return restoredReaction
-
+    for (const restoredStep of restoredSteps) {
+      if (restoredStep.uuid === currentStepId) {
+        currentStep = restoredStep;
+      }
     }
 
+    if (!currentStep) throw new Error("Could not find the current step");
+
+    const name = reactionRawObject["name"];
+    const description = reactionRawObject["description"];
+    const hint = reactionRawObject["hint"];
+    const uuid = reactionRawObject["uuid"];
+    const moduleId = reactionRawObject["moduleId"];
+    const moduleName = reactionRawObject["moduleName"];
+    const sectionId = reactionRawObject["sectionId"];
+    const sectionName = reactionRawObject["sectionName"];
+    const authorId = reactionRawObject["authorId"];
+    const published = reactionRawObject["published"];
+    const prompt = reactionRawObject["prompt"];
+    const zoom = reactionRawObject["zoom"] || 1;
+
+    const restoredReaction = new Reaction(
+      name,
+      description,
+      hint,
+      uuid,
+      moduleId,
+      moduleName,
+      sectionId,
+      sectionName,
+      authorId,
+      published,
+      restoredSteps,
+      currentStep,
+      prompt,
+      zoom
+    );
+
+    restoredReaction.steps = restoredSteps;
+    restoredReaction.currentStep = currentStep;
+
+    return restoredReaction;
+  }
 }
 
-export default ReactionLoader
+export default ReactionLoader;

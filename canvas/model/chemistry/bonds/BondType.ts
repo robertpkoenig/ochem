@@ -1,10 +1,7 @@
-
 enum BondType {
-
-    SINGLE = "SINGLE",
-    DOUBLE = "DOUBLE",
-    TRIPLE = "TRIPLE",
-
+  SINGLE = "SINGLE",
+  DOUBLE = "DOUBLE",
+  TRIPLE = "TRIPLE",
 }
 
-export default BondType
+export default BondType;

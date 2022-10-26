@@ -9,144 +9,146 @@ import Ion from "../../../model/chemistry/atoms/Ion";
 
 /** Detects what item is hovered */
 class HoverDetector {
+  ionCurrentlyHovered: Ion;
+  lonePairCurrentlyHovered: LonePair;
+  atomCurrentlyHovered: Atom;
+  bondCurrentlyHovered: Bond;
+  reaction: Reaction;
+  collisionDetector: CollisionDetector;
+  curlyArrowCurrentlyHovered: CurlyArrow;
+  straightArrowCurrentlyHovered: StraightArrow;
 
-    ionCurrentlyHovered: Ion
-    lonePairCurrentlyHovered: LonePair
-    atomCurrentlyHovered: Atom
-    bondCurrentlyHovered: Bond
-    reaction: Reaction
-    collisionDetector: CollisionDetector
-    curlyArrowCurrentlyHovered: CurlyArrow;
-    straightArrowCurrentlyHovered: StraightArrow
+  constructor(reaction: Reaction, collisionDetector: CollisionDetector) {
+    this.reaction = reaction;
+    this.collisionDetector = collisionDetector;
+    this.ionCurrentlyHovered = null;
+    this.lonePairCurrentlyHovered = null;
+    this.atomCurrentlyHovered = null;
+    this.bondCurrentlyHovered = null;
+    this.curlyArrowCurrentlyHovered = null;
+    this.straightArrowCurrentlyHovered = null;
+  }
 
-    constructor(reaction: Reaction,
-                collisionDetector: CollisionDetector) {
+  /**
+   * The mouse can be over multiple objects at once.
+   * The hover detector and the view implement a 'z-index' functionality to
+   * create the illusion of objects being below or above others.
+   */
+  detectHovering() {
+    this.detectIonHover();
+    this.detectLonePairHover();
 
-        this.reaction = reaction
-        this.collisionDetector = collisionDetector
-        this.ionCurrentlyHovered = null
-        this.lonePairCurrentlyHovered = null
-        this.atomCurrentlyHovered = null
-        this.bondCurrentlyHovered = null
-        this.curlyArrowCurrentlyHovered = null
-        this.straightArrowCurrentlyHovered = null
-
+    // If it's already hovered over an ion, don't
+    // say it's hovered over an atom
+    if (this.ionCurrentlyHovered || this.lonePairCurrentlyHovered) {
+      this.atomCurrentlyHovered = null;
+    } else {
+      this.detectAtomHover();
     }
 
-    /** 
-     * The mouse can be over multiple objects at once.
-     * The hover detector and the view implement a 'z-index' functionality to
-     * create the illusion of objects being below or above others.
-     */
-    detectHovering() {
-
-        this.detectIonHover()
-        this.detectLonePairHover()
-
-        // If it's already hovered over an ion, don't
-        // say it's hovered over an atom
-        if (this.ionCurrentlyHovered || this.lonePairCurrentlyHovered) {
-            this.atomCurrentlyHovered = null
-        }
-        else {
-            this.detectAtomHover()
-        }
-
-        // If an atom is hovered, don't detect a bond hover
-        // because bonds go into the atom, and this would
-        // result in both a bond and atom highlighted
-        if (this.ionCurrentlyHovered|| this.lonePairCurrentlyHovered || this.atomCurrentlyHovered) {
-            this.bondCurrentlyHovered = null
-        }
-        else {
-            this.detectBondHover()
-        }
-
-        if (this.bondCurrentlyHovered || this.lonePairCurrentlyHovered || this.atomCurrentlyHovered
-            || this.ionCurrentlyHovered) {
-            this.curlyArrowCurrentlyHovered = null
-        }
-
-        else {
-            this.detectCurlyArrowHover()
-        }
-
-        if (this.bondCurrentlyHovered|| this.lonePairCurrentlyHovered || this.atomCurrentlyHovered
-            || this.ionCurrentlyHovered || this.curlyArrowCurrentlyHovered) {
-            this.straightArrowCurrentlyHovered = null
-        }
-
-        else {
-            this.detectStraightArrowHover()
-        }
-
+    // If an atom is hovered, don't detect a bond hover
+    // because bonds go into the atom, and this would
+    // result in both a bond and atom highlighted
+    if (
+      this.ionCurrentlyHovered ||
+      this.lonePairCurrentlyHovered ||
+      this.atomCurrentlyHovered
+    ) {
+      this.bondCurrentlyHovered = null;
+    } else {
+      this.detectBondHover();
     }
 
-    private detectIonHover() {
-        for (const atom of this.reaction.currentStep.getAllAtoms()) {
-            if (atom.ion) {
-                if (this.collisionDetector.mouseHoveredOverIon(atom.ion)) {
-                  this.ionCurrentlyHovered = atom.ion
-                  return
-                }
-            }
-        }
-        this.ionCurrentlyHovered = null
+    if (
+      this.bondCurrentlyHovered ||
+      this.lonePairCurrentlyHovered ||
+      this.atomCurrentlyHovered ||
+      this.ionCurrentlyHovered
+    ) {
+      this.curlyArrowCurrentlyHovered = null;
+    } else {
+      this.detectCurlyArrowHover();
     }
 
-    private detectLonePairHover() {
-      for (const atom of this.reaction.currentStep.getAllAtoms()) {
-          if (atom.lonePair) {
-              if (this.collisionDetector.mouseHoveredOverLonePair(atom.lonePair)) {
-                  this.lonePairCurrentlyHovered = atom.lonePair
-                  return
-              }
-          }
+    if (
+      this.bondCurrentlyHovered ||
+      this.lonePairCurrentlyHovered ||
+      this.atomCurrentlyHovered ||
+      this.ionCurrentlyHovered ||
+      this.curlyArrowCurrentlyHovered
+    ) {
+      this.straightArrowCurrentlyHovered = null;
+    } else {
+      this.detectStraightArrowHover();
+    }
+  }
+
+  private detectIonHover() {
+    for (const atom of this.reaction.currentStep.getAllAtoms()) {
+      if (atom.ion) {
+        if (this.collisionDetector.mouseHoveredOverIon(atom.ion)) {
+          this.ionCurrentlyHovered = atom.ion;
+          return;
+        }
       }
-      this.lonePairCurrentlyHovered = null
     }
+    this.ionCurrentlyHovered = null;
+  }
 
-    private detectAtomHover() {
-        for (const atom of this.reaction.currentStep.getAllAtoms()) {
-            if (atom.element.name == "dummy") continue
-            if (this.collisionDetector.mouseHoveredOverAtom(atom)) {
-                this.atomCurrentlyHovered = atom
-                return
-            }
+  private detectLonePairHover() {
+    for (const atom of this.reaction.currentStep.getAllAtoms()) {
+      if (atom.lonePair) {
+        if (this.collisionDetector.mouseHoveredOverLonePair(atom.lonePair)) {
+          this.lonePairCurrentlyHovered = atom.lonePair;
+          return;
         }
-        this.atomCurrentlyHovered = null
+      }
     }
+    this.lonePairCurrentlyHovered = null;
+  }
 
-    private detectBondHover() {
-        for (const bond of this.reaction.currentStep.getAllBonds()) {
-            if (this.collisionDetector.mouseHoveredOverBond(bond)) {
-                this.bondCurrentlyHovered = bond
-                return
-            }
-        }
-        this.bondCurrentlyHovered = null
+  private detectAtomHover() {
+    for (const atom of this.reaction.currentStep.getAllAtoms()) {
+      if (atom.element.name == "dummy") continue;
+      if (this.collisionDetector.mouseHoveredOverAtom(atom)) {
+        this.atomCurrentlyHovered = atom;
+        return;
+      }
     }
+    this.atomCurrentlyHovered = null;
+  }
 
-    private detectCurlyArrowHover() {
-        let curlyArrowHovered = null    
-        for (const curlyArrow of this.reaction.currentStep.curlyArrows) {
-            if (this.collisionDetector.mouseHoveredOverArrow(curlyArrow)) {
-                curlyArrowHovered = curlyArrow
-            }
-        }
-        this.curlyArrowCurrentlyHovered = curlyArrowHovered
+  private detectBondHover() {
+    for (const bond of this.reaction.currentStep.getAllBonds()) {
+      if (this.collisionDetector.mouseHoveredOverBond(bond)) {
+        this.bondCurrentlyHovered = bond;
+        return;
+      }
     }
+    this.bondCurrentlyHovered = null;
+  }
 
-    detectStraightArrowHover() {
-        const arrow = this.reaction.currentStep.straightArrow
-        if (arrow != null && this.collisionDetector.mouseHoveredOverStraightArrow(arrow)) {
-            this.straightArrowCurrentlyHovered = arrow
-        }
-        else {
-            this.straightArrowCurrentlyHovered = null
-        }
+  private detectCurlyArrowHover() {
+    let curlyArrowHovered = null;
+    for (const curlyArrow of this.reaction.currentStep.curlyArrows) {
+      if (this.collisionDetector.mouseHoveredOverArrow(curlyArrow)) {
+        curlyArrowHovered = curlyArrow;
+      }
     }
+    this.curlyArrowCurrentlyHovered = curlyArrowHovered;
+  }
 
+  detectStraightArrowHover() {
+    const arrow = this.reaction.currentStep.straightArrow;
+    if (
+      arrow != null &&
+      this.collisionDetector.mouseHoveredOverStraightArrow(arrow)
+    ) {
+      this.straightArrowCurrentlyHovered = arrow;
+    } else {
+      this.straightArrowCurrentlyHovered = null;
+    }
+  }
 }
 
-export default HoverDetector
+export default HoverDetector;

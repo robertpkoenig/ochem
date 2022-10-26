@@ -4,12 +4,10 @@ import Reaction from "../../../model/Reaction";
 
 /** Saves a reaction to Firebase */
 class ReactionSaver {
-
-    public static saveReaction(reaction: Reaction) {
-        const db = getFirestore()
-        setDoc(doc(db, REACTIONS, reaction.uuid), reaction.toJSON());
-    }
-
+  public static saveReaction(reaction: Reaction) {
+    const db = getFirestore();
+    setDoc(doc(db, REACTIONS, reaction.uuid), reaction.toJSON());
+  }
 }
 
-export default ReactionSaver
+export default ReactionSaver;

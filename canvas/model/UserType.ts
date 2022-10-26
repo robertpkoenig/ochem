@@ -1,8 +1,6 @@
 enum UserType {
-
-    STUDENT = "STUDENT",
-    TEACHER = "TEACHER"
-    
+  STUDENT = "STUDENT",
+  TEACHER = "TEACHER",
 }
 
-export default UserType
+export default UserType;

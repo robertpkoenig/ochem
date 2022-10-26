@@ -1,8 +1,8 @@
 import LoadingScreen from "./LoadingScreen";
 
 interface IProps {
-    loading: boolean
-    children: JSX.Element
+  loading: boolean;
+  children: JSX.Element;
 }
 
 /**
@@ -10,13 +10,7 @@ interface IProps {
  * otherwise it shows the child components (the page content)
  */
 export default function ScreenWithLoading(props: IProps) {
+  const loadingScreen = <LoadingScreen />;
 
-    const loadingScreen = <LoadingScreen />
-
-    return (
-        <>
-            {props.loading?loadingScreen:props.children}
-        </>
-    )
-
+  return <>{props.loading ? loadingScreen : props.children}</>;
 }
