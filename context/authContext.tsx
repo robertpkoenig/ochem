@@ -43,6 +43,7 @@ export function AuthProvider({ children }: Props) {
         "/",
         "/auth/login",
         "/auth/signup",
+        "/auth/reset-password",
         "/student/invitation/[moduleId]"
     ]
 

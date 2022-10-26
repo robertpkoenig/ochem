@@ -26,7 +26,6 @@ export default function Login() {
         }
     }, [loginAttempted, user, router])
 
-
     return (
             <>
                 <Head>

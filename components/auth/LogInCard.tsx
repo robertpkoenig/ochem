@@ -46,6 +46,7 @@ export default function LogInCard() {
 
     return (
 
+        
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <img
@@ -109,9 +110,9 @@ export default function LogInCard() {
             
                         <div className="flex items-center justify-between">
                             <div className="text-sm">
-                                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                    Forgot your password?
-                                </a>
+                                <Link href={"/auth/reset-password"} >
+                                    <a className="font-medium text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+                                </Link>
                             </div>
                         </div>
             
