@@ -69,6 +69,8 @@ class Eraser {
     const arrowHovered =
       this.editorController.hoverDetector.curlyArrowCurrentlyHovered;
     if (arrowHovered != null) {
+      console.log("hello");
+      
       this.editorController.undoManager.addUndoPoint();
       this.editorController.reaction.currentStep.curlyArrows =
         this.editorController.reaction.currentStep.curlyArrows.filter(

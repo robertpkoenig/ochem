@@ -70,16 +70,6 @@ class DeleteManager {
   public static deleteBond(reaction: Reaction, bondToDelete: Bond) {
     this.removeAllReferencesToBond(bondToDelete, reaction);
 
-    // for dummy angle control bonds
-    if (bondToDelete.atoms[0].element.name == "dummy") {
-      this.deleteAtom(reaction, bondToDelete.atoms[0]);
-      return;
-    }
-    if (bondToDelete.atoms[1].element.name == "dummy") {
-      this.deleteAtom(reaction, bondToDelete.atoms[1]);
-      return;
-    }
-
     const listOne = this.getListOfAtomsConnectedToAtom(bondToDelete.atoms[0]);
     const listTwo = this.getListOfAtomsConnectedToAtom(bondToDelete.atoms[1]);
 
@@ -108,6 +98,18 @@ class DeleteManager {
     // Remove references to this bond within its bonded bodies
     for (const atom of bond.atoms) {
       atom.bonds = atom.bonds.filter((currBond) => currBond != bond);
+    }
+
+    // Remove any curly arrows that start or end on this bond in all reaction steps
+    for (const step of reaction.steps) {
+      for (const curlyArrow of step.curlyArrows) {
+        if (curlyArrow.startObject.uuid || curlyArrow.endObject == bond) {
+          step.curlyArrows =
+            reaction.currentStep.curlyArrows.filter(
+              (currlyArrow) => currlyArrow != curlyArrow
+            );
+        }
+      }
     }
   }
 
